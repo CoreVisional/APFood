@@ -48,7 +48,6 @@ public class CustomerForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
-        setPreferredSize(new java.awt.Dimension(1600, 900));
 
         sidePanel.setBackground(new java.awt.Color(0, 89, 100));
         sidePanel.setPreferredSize(new java.awt.Dimension(250, 900));
@@ -100,13 +99,13 @@ public class CustomerForm extends javax.swing.JFrame {
         sidePanelLayout.setVerticalGroup(
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidePanelLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(35, 35, 35)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(445, Short.MAX_VALUE))
+                .addContainerGap(428, Short.MAX_VALUE))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -130,9 +129,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/profile-icon.png"))); // NOI18N
-        jLabel5.setMaximumSize(new java.awt.Dimension(48, 48));
         jLabel5.setName(""); // NOI18N
-        jLabel5.setPreferredSize(new java.awt.Dimension(48, 48));
 
         jSeparator2.setForeground(new java.awt.Color(102, 102, 102));
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
