@@ -1,12 +1,13 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 
 public class RunnerForm extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
-    
+
     /**
      * Creates new form VendorFrame
      */
@@ -14,9 +15,11 @@ public class RunnerForm extends javax.swing.JFrame {
         initComponents();
         initCustomComponents();
     }
-    
+
     private void initCustomComponents() {
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
+        GUIHelper.JFrameSetup(this);
+
     }
 
     /**
