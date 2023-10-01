@@ -287,7 +287,7 @@ public class LoginForm extends javax.swing.JFrame {
     // Checks if user exists in text file
     public static User checkCredentials(String emailInput, String passwordInput) {
         try {
-            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\data\\users\\user.txt");
+            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\datafiles\\users\\user.txt");
             BufferedReader br = new BufferedReader(fr);
             String row;
             while ((row = br.readLine()) != null) {

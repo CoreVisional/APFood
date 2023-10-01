@@ -2,7 +2,7 @@ package com.apu.apfood.gui;
 
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
-import javax.swing.UIManager;
+import com.formdev.flatlaf.FlatDarculaLaf;
 
 public class AdminForm extends javax.swing.JFrame {
 
@@ -49,6 +49,7 @@ public class AdminForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
+        setResizable(false);
 
         sidePanel.setBackground(new java.awt.Color(0, 89, 100));
         sidePanel.setPreferredSize(new java.awt.Dimension(250, 900));
@@ -211,10 +212,12 @@ public class AdminForm extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        /* Set the FlatLaf look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         try {
-            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
-        } catch (Exception e) {
-            e.printStackTrace();
+            javax.swing.UIManager.setLookAndFeel(new FlatDarculaLaf());
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
