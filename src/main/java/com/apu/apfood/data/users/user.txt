@@ -1,0 +1,5 @@
+Account ID| Role| Full Name| Email| Password
+U01| Customer| Adam Smith| adam@example.com| Password123
+U02| Admin| Jane Doe| jane@example.com| SecurePass456
+U03| Employee| John Johnson| john@example.com| Secret123
+U04| Customer| Alice Johnson| alice@example.com| 12345Password
