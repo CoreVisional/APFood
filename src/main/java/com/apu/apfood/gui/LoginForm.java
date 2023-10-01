@@ -4,17 +4,43 @@
  */
 package com.apu.apfood.gui;
 
+import com.apu.apfood.classes.Admin;
+import com.apu.apfood.classes.Customer;
+import com.apu.apfood.classes.Runner;
+import com.apu.apfood.classes.User;
+import com.apu.apfood.classes.Vendor;
+import com.apu.apfood.helpers.GUIHelper;
+import com.apu.apfood.helpers.ImageHelper; // Add this import statement
+import java.awt.Font;
+import java.util.Map;
+import javax.swing.UIManager;
+import java.awt.font.TextAttribute;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Bryan
  */
 public class LoginForm extends javax.swing.JFrame {
 
+    private Font font;
+
+    // Instantiate helpers classes
+    ImageHelper imageHelper = new ImageHelper();
+
     /**
      * Creates new form LoginForm
      */
     public LoginForm() {
         initComponents();
+        initCustomComponents();
+    }
+
+    private void initCustomComponents() {
+        imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
+        GUIHelper.JFrameSetup(this);
     }
 
     /**
@@ -26,46 +52,218 @@ public class LoginForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenu1 = new javax.swing.JMenu();
+        registrationLink = new javax.swing.JLabel();
+        signInBtn = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        passwordInput = new javax.swing.JTextField();
+        passwordLabel = new javax.swing.JLabel();
+        emailInput = new javax.swing.JTextField();
+        emailLabel = new javax.swing.JLabel();
+
+        jMenu1.setText("jMenu1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(800, 900));
+
+        registrationLink.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        registrationLink.setText("Forgot your password? Click here!");
+        registrationLink.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        registrationLink.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                registrationLinkMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                registrationLinkMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                registrationLinkMouseExited(evt);
+            }
+        });
+
+        signInBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        signInBtn.setText("Sign in");
+        signInBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        signInBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signInBtnActionPerformed(evt);
+            }
+        });
+
+        clearBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        clearBtn.setText("Clear");
+        clearBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel1.setFont(new java.awt.Font("Nirmala UI Semilight", 1, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Welcome to APFood");
+        jLabel1.setToolTipText("");
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel1.setVerifyInputWhenFocusTarget(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(7, Short.MAX_VALUE))
+        );
+
+        passwordInput.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        passwordInput.setToolTipText("*********");
+        passwordInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordInputActionPerformed(evt);
+            }
+        });
+
+        passwordLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        passwordLabel.setText("Password");
+
+        emailInput.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        emailInput.setToolTipText("example@mail.com");
+        emailInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emailInputActionPerformed(evt);
+            }
+        });
+
+        emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        emailLabel.setText("Email");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(213, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(emailLabel)
+                            .addComponent(emailInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passwordInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passwordLabel)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(signInBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)
+                                .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(86, 86, 86)
+                        .addComponent(registrationLink)))
+                .addGap(202, 202, 202))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(138, 138, 138)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62)
+                .addComponent(emailLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(emailInput, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38)
+                .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(passwordInput, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(49, 49, 49)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(signInBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addComponent(registrationLink, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(238, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void registrationLinkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrationLinkMouseClicked
+        this.dispose();
+    }//GEN-LAST:event_registrationLinkMouseClicked
+
+    private void registrationLinkMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrationLinkMouseEntered
+        // When hovered, underline label
+        font = registrationLink.getFont();
+        Map attributes = font.getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        registrationLink.setFont(font.deriveFont(attributes));
+    }//GEN-LAST:event_registrationLinkMouseEntered
+
+    private void registrationLinkMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrationLinkMouseExited
+        // Remove underline when mouse leaves
+        registrationLink.setFont(font);
+    }//GEN-LAST:event_registrationLinkMouseExited
+
+    private void emailInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailInputActionPerformed
+
+    }//GEN-LAST:event_emailInputActionPerformed
+
+    private void signInBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInBtnActionPerformed
+        // Get credentials
+        String email = sanitizeEmail(emailInput.getText());
+        String password = passwordInput.getText();
+
+        Object result = checkCredentials(email, password);
+        if (result instanceof Admin) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new AdminForm();
+        } else if (result instanceof Customer) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new CustomerForm();
+        } else if (result instanceof Runner) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new RunnerForm();
+        } else if (result instanceof Vendor) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new VendorForm();
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid credentials!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_signInBtnActionPerformed
+
+
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        emailInput.setText("");
+        passwordInput.setText("");
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void passwordInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordInputActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         //</editor-fold>
 
@@ -77,6 +275,60 @@ public class LoginForm extends javax.swing.JFrame {
         });
     }
 
+    public static String sanitizeEmail(String email) {
+        // Remove leading and trailing white spaces
+        email = email.trim();
+
+        email = email.toLowerCase();
+
+        return email;
+    }
+
+    // Checks if user exists in text file
+    public static User checkCredentials(String emailInput, String passwordInput) {
+        try {
+            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\data\\users\\user.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String row;
+            while ((row = br.readLine()) != null) {
+                String[] rowArray = row.split("\\| ");
+                String userId = rowArray[0];
+                String name = rowArray[1];
+                String email = rowArray[2];
+                String password = rowArray[3];
+                String role = rowArray[4];
+
+                if (email.equals(emailInput) && password.equals(passwordInput)) {
+                    if (role.equals("Admin")) {
+                        return new Admin(userId, name, email, password, role);
+                    } else if (role.equals("Customer")) {
+                        return new Customer(userId, name, email, password, role);
+                    } else if (role.equals("Runner")) {
+                        return new Runner(userId, name, email, password, role);
+                    } else if (role.equals("Vendor")) {
+                        return new Vendor(userId, name, email, password, role);
+                    }
+
+                }
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton clearBtn;
+    private javax.swing.JTextField emailInput;
+    private javax.swing.JLabel emailLabel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField passwordInput;
+    private javax.swing.JLabel passwordLabel;
+    private javax.swing.JLabel registrationLink;
+    private javax.swing.JButton signInBtn;
     // End of variables declaration//GEN-END:variables
 }
