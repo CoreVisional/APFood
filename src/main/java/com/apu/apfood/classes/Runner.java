@@ -8,6 +8,9 @@ package com.apu.apfood.classes;
  *
  * @author Bryan
  */
-public class Runner {
-    
+public class Runner extends User {
+
+    public Runner(String userId, String name, String email, String password, String role) {
+        super(userId, name, email, password, role);
+    }
 }

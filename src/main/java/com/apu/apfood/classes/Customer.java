@@ -8,6 +8,9 @@ package com.apu.apfood.classes;
  *
  * @author Bryan
  */
-public class Customer {
-    
+public class Customer extends User{
+
+    public Customer(String userId, String name, String email, String password, String role) {
+        super(userId, name, email, password, role);
+    }
 }
