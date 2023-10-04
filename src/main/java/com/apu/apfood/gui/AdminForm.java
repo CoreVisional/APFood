@@ -48,6 +48,7 @@ public class AdminForm extends javax.swing.JFrame {
         contentPanel = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         submit = new javax.swing.JButton();
+        Try = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -193,25 +194,39 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
 
+        Try.setText("jTextField2");
+        Try.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
         contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(contentPanelLayout.createSequentialGroup()
-                .addGap(136, 136, 136)
                 .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(submit)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Try, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGap(136, 136, 136)
+                            .addComponent(submit))
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGap(125, 125, 125)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(1139, Short.MAX_VALUE))
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(contentPanelLayout.createSequentialGroup()
-                .addGap(54, 54, 54)
+                .addGap(74, 74, 74)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(90, 90, 90)
+                .addGap(70, 70, 70)
                 .addComponent(submit)
-                .addContainerGap(631, Short.MAX_VALUE))
+                .addGap(65, 65, 65)
+                .addComponent(Try, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(544, Short.MAX_VALUE))
         );
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
@@ -231,6 +246,10 @@ public class AdminForm extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void TryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TryActionPerformed
+        System.out.println("Dude");
+    }//GEN-LAST:event_TryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -254,6 +273,7 @@ public class AdminForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Try;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
