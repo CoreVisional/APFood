@@ -1,5 +1,6 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
 
@@ -7,7 +8,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
-    
+
     /**
      * Creates new form VendorFrame
      */
@@ -15,9 +16,11 @@ public class CustomerForm extends javax.swing.JFrame {
         initComponents();
         initCustomComponents();
     }
-    
+
     private void initCustomComponents() {
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
+        GUIHelper.JFrameSetup(this);
+
     }
 
     /**

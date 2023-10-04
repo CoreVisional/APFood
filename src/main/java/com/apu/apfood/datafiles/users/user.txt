@@ -1,0 +1,5 @@
+User ID| Name| Email| Password| Role
+U01| Adam Smith| qwe@qwe.com| qweqweqwe| Customer
+U02| Jane Doe| asd@asd.com| qweqweqwe| Admin
+U03| John Johnson| zxc@zxc.com| qweqweqwe| Vendor
+U04| Alice Johnson| 123@123.com| qweqweqwe| Runner
