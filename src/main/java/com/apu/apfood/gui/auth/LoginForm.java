@@ -1,16 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package com.apu.apfood.gui;
+package com.apu.apfood.gui.auth;
 
-import com.apu.apfood.classes.Admin;
-import com.apu.apfood.classes.Customer;
-import com.apu.apfood.classes.Runner;
-import com.apu.apfood.classes.User;
-import com.apu.apfood.classes.Vendor;
+import com.apu.apfood.gui.AdminForm;
+import com.apu.apfood.gui.CustomerForm;
+import com.apu.apfood.gui.RunnerForm;
+import com.apu.apfood.gui.VendorForm;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper; // Add this import statement
+import com.apu.apfood.models.User;
 import java.awt.Font;
 import java.util.Map;
 import javax.swing.UIManager;
@@ -66,7 +62,6 @@ public class LoginForm extends javax.swing.JFrame {
         jMenu1.setText("jMenu1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 900));
 
         registrationLink.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         registrationLink.setText("Forgot your password? Click here!");
