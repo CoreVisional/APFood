@@ -224,20 +224,21 @@ public class LoginForm extends javax.swing.JFrame {
         String email = sanitizeEmail(emailInput.getText());
         String password = passwordInput.getText();
 
-        Object result = checkCredentials(email, password);
-        if (result instanceof Admin) {
+        Object userObject = checkCredentials(email, password);
+        if (userObject instanceof Admin) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new AdminForm();
-        } else if (result instanceof Customer) {
+            // new AdminForm(userObject);
+        } else if (userObject instanceof Customer) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new CustomerForm();
-        } else if (result instanceof Runner) {
+        } else if (userObject instanceof Runner) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new RunnerForm();
-        } else if (result instanceof Vendor) {
+        } else if (userObject instanceof Vendor) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new VendorForm();
@@ -304,7 +305,6 @@ public class LoginForm extends javax.swing.JFrame {
                     } else if (role.equals("Vendor")) {
                         return new Vendor(userId, name, email, password, role);
                     }
-
                 }
             }
             br.close();
