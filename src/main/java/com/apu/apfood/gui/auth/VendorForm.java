@@ -1,10 +1,10 @@
-package com.apu.apfood.gui;
+package com.apu.apfood.gui.auth;
 
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
 
-public class CustomerForm extends javax.swing.JFrame {
+public class VendorForm extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -12,7 +12,7 @@ public class CustomerForm extends javax.swing.JFrame {
     /**
      * Creates new form VendorFrame
      */
-    public CustomerForm() {
+    public VendorForm() {
         initComponents();
         initCustomComponents();
     }
@@ -20,7 +20,6 @@ public class CustomerForm extends javax.swing.JFrame {
     private void initCustomComponents() {
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
-
     }
 
     /**
@@ -37,8 +36,6 @@ public class CustomerForm extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -75,19 +72,6 @@ public class CustomerForm extends javax.swing.JFrame {
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.setFocusPainted(false);
         jPanel3.add(jButton2);
-
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cafeterias");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.setFocusPainted(false);
-        jButton1.setPreferredSize(new java.awt.Dimension(50, 30));
-        jPanel3.add(jButton1);
-
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Activity");
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.setFocusPainted(false);
-        jPanel3.add(jButton3);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -231,16 +215,14 @@ public class CustomerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CustomerForm().setVisible(true);
+                new VendorForm().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
