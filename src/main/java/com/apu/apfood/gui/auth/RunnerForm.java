@@ -1,5 +1,6 @@
 package com.apu.apfood.gui.auth;
 
+import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
@@ -12,7 +13,7 @@ public class RunnerForm extends javax.swing.JFrame {
     /**
      * Creates new form VendorFrame
      */
-    public RunnerForm() {
+    public RunnerForm(User user) {
         initComponents();
         initCustomComponents();
     }
@@ -68,7 +69,7 @@ public class RunnerForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        jButton2.setForeground(new java.awt.Color(0, 0, 0));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Home");
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.setFocusPainted(false);
@@ -215,7 +216,7 @@ public class RunnerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RunnerForm().setVisible(true);
+                new RunnerForm(new User(4, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
             }
         });
     }
