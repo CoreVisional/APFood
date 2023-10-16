@@ -1,4 +1,4 @@
-package com.apu.apfood.gui.auth;
+git apackage com.apu.apfood.gui.auth;
 
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
@@ -8,7 +8,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
-
+    
     /**
      * Creates new form VendorFrame
      */
@@ -20,7 +20,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private void initCustomComponents() {
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
-
+        
     }
 
     /**
