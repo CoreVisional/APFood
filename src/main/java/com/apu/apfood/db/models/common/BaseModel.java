@@ -1,4 +1,4 @@
-package com.apu.apfood.models.common;
+package com.apu.apfood.db.models.common;
 
 /**
  *

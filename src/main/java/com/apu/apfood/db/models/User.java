@@ -1,6 +1,6 @@
-package com.apu.apfood.models;
+package com.apu.apfood.db.models;
 
-import com.apu.apfood.models.common.BaseModel;
+import com.apu.apfood.db.models.common.BaseModel;
 
 /**
  *
@@ -54,4 +54,3 @@ public class User extends BaseModel {
         this.role = role;
     }
 }
-
