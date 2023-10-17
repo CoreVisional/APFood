@@ -1,5 +1,0 @@
-id| name| email| password| role
-1| Adam Smith| qwe@qwe.com| qweqweqwe| Customer
-2| Jane Doe| asd@asd.com| qweqweqwe| Admin
-3| John Johnson| zxc@zxc.com| qweqweqwe| Vendor
-4| Alice Johnson| 123@123.com| qweqweqwe| Runner
