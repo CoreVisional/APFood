@@ -1,10 +1,17 @@
-package com.apu.apfood.gui.auth;
+package com.apu.apfood.gui;
 
+import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
+import com.apu.apfood.services.RunnerService;
 import com.formdev.flatlaf.FlatDarculaLaf;
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import javax.swing.table.JTableHeader;
 
-public class AdminForm extends javax.swing.JFrame {
+public class RunnerForm extends javax.swing.JFrame {
+
+    private Object[][] deliveryHistory;
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -12,14 +19,28 @@ public class AdminForm extends javax.swing.JFrame {
     /**
      * Creates new form VendorFrame
      */
-    public AdminForm() {
+    public RunnerForm(User user) {
+        RunnerService rs = new RunnerService(user);
+        deliveryHistory = rs.getDeliveryHistory();
         initComponents();
         initCustomComponents();
+
+        taskHistoryPanel.setName("TaskHistory");
+        runnerHomePanel.setName("RunnerHome");
+
+        contentPanel.add(taskHistoryPanel, "TaskHistory");
+        contentPanel.add(runnerHomePanel, "RunnerHome");
+
+        roleLabel.setText(user.getRole());
+        nameLabel.setText(user.getName());
+        emailLabel.setText(user.getEmail());
+
     }
 
     private void initCustomComponents() {
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
+
     }
 
     /**
@@ -36,16 +57,26 @@ public class AdminForm extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
+        deliveryHistoryNavBtn = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        roleLabel = new javax.swing.JLabel();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
+        emailLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
+        taskHistoryPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        deliveryHistoryJTable = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        runnerHomePanel = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -78,6 +109,35 @@ public class AdminForm extends javax.swing.JFrame {
         });
         jPanel3.add(jButton2);
 
+        deliveryHistoryNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        deliveryHistoryNavBtn.setText("Delivery History");
+        deliveryHistoryNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        deliveryHistoryNavBtn.setFocusPainted(false);
+        deliveryHistoryNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deliveryHistoryNavBtnActionPerformed(evt);
+            }
+        });
+        jPanel3.add(deliveryHistoryNavBtn);
+
+        jButton4.setForeground(new java.awt.Color(255, 255, 255));
+        jButton4.setText("Activity");
+        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton4.setFocusPainted(false);
+        jPanel3.add(jButton4);
+
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Cafeterias");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.setFocusPainted(false);
+        jButton1.setPreferredSize(new java.awt.Dimension(50, 30));
+        jPanel3.add(jButton1);
+
+        roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        roleLabel.setForeground(new java.awt.Color(255, 255, 255));
+        roleLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        roleLabel.setText("Full Name");
+
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
         sidePanelLayout.setHorizontalGroup(
@@ -89,6 +149,10 @@ public class AdminForm extends javax.swing.JFrame {
                     .addComponent(jSeparator1)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
+            .addGroup(sidePanelLayout.createSequentialGroup()
+                .addGap(85, 85, 85)
+                .addComponent(roleLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         sidePanelLayout.setVerticalGroup(
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,7 +163,9 @@ public class AdminForm extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(428, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                .addComponent(roleLabel)
+                .addGap(41, 41, 41))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -109,15 +175,15 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanel.setBackground(new java.awt.Color(255, 255, 255));
         topBarPanel.setPreferredSize(new java.awt.Dimension(1350, 80));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("Full Name");
+        nameLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        nameLabel.setForeground(new java.awt.Color(0, 0, 0));
+        nameLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nameLabel.setText("Full Name");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("TP0xxxxxx@mail.apu.edu.my");
+        emailLabel.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        emailLabel.setForeground(new java.awt.Color(102, 102, 102));
+        emailLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        emailLabel.setText("TP0xxxxxx@mail.apu.edu.my");
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
@@ -141,7 +207,7 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1021, Short.MAX_VALUE)
+                .addContainerGap(1027, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel7)
@@ -151,8 +217,8 @@ public class AdminForm extends javax.swing.JFrame {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(emailLabel)
+                    .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
@@ -170,9 +236,9 @@ public class AdminForm extends javax.swing.JFrame {
                                     .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(topBarPanelLayout.createSequentialGroup()
-                                            .addComponent(jLabel2)
+                                            .addComponent(nameLabel)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel3)))
+                                            .addComponent(emailLabel)))
                                     .addComponent(jLabel7))
                                 .addGap(2, 2, 2))))
                     .addGroup(topBarPanelLayout.createSequentialGroup()
@@ -185,16 +251,95 @@ public class AdminForm extends javax.swing.JFrame {
 
         mainPanel.add(topBarPanel, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
-        contentPanel.setLayout(contentPanelLayout);
-        contentPanelLayout.setHorizontalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1350, Short.MAX_VALUE)
+        contentPanel.setLayout(new java.awt.CardLayout());
+
+        deliveryHistoryJTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        deliveryHistoryJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.deliveryHistory,
+            new String [] {
+                "Location", "Status", "Review","Vendor"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        JTableHeader header = deliveryHistoryJTable.getTableHeader();
+        header.setPreferredSize(new Dimension(20, 40));
+        deliveryHistoryJTable.setRowHeight(30);
+        deliveryHistoryJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        deliveryHistoryJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        deliveryHistoryJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        deliveryHistoryJTable.setShowGrid(true);
+        deliveryHistoryJTable.getTableHeader().setResizingAllowed(false);
+        deliveryHistoryJTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(deliveryHistoryJTable);
+
+        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Delivery History");
+        jLabel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout taskHistoryPanelLayout = new javax.swing.GroupLayout(taskHistoryPanel);
+        taskHistoryPanel.setLayout(taskHistoryPanelLayout);
+        taskHistoryPanelLayout.setHorizontalGroup(
+            taskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(taskHistoryPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(taskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskHistoryPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(359, 359, 359))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskHistoryPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(436, 436, 436))))
         );
-        contentPanelLayout.setVerticalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
+        taskHistoryPanelLayout.setVerticalGroup(
+            taskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(taskHistoryPanelLayout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(244, Short.MAX_VALUE))
         );
+
+        contentPanel.add(taskHistoryPanel, "card2");
+
+        jLabel2.setText("Sup");
+
+        javax.swing.GroupLayout runnerHomePanelLayout = new javax.swing.GroupLayout(runnerHomePanel);
+        runnerHomePanel.setLayout(runnerHomePanelLayout);
+        runnerHomePanelLayout.setHorizontalGroup(
+            runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runnerHomePanelLayout.createSequentialGroup()
+                .addGap(549, 549, 549)
+                .addComponent(jLabel2)
+                .addContainerGap(781, Short.MAX_VALUE))
+        );
+        runnerHomePanelLayout.setVerticalGroup(
+            runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runnerHomePanelLayout.createSequentialGroup()
+                .addGap(143, 143, 143)
+                .addComponent(jLabel2)
+                .addContainerGap(661, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(runnerHomePanel, "card3");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -204,8 +349,14 @@ public class AdminForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void deliveryHistoryNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryHistoryNavBtnActionPerformed
+        CardLayout cardLayout = (CardLayout) contentPanel.getLayout();
+        cardLayout.show(contentPanel, "TaskHistory");
+    }//GEN-LAST:event_deliveryHistoryNavBtnActionPerformed
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        CardLayout cardLayout = (CardLayout) contentPanel.getLayout();
+        cardLayout.show(contentPanel, "RunnerHome");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -213,7 +364,6 @@ public class AdminForm extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the FlatLaf look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         try {
             javax.swing.UIManager.setLookAndFeel(new FlatDarculaLaf());
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
@@ -224,14 +374,19 @@ public class AdminForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm().setVisible(true);
+                new RunnerForm(new User(4, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JTable deliveryHistoryJTable;
+    private javax.swing.JButton deliveryHistoryNavBtn;
+    private javax.swing.JLabel emailLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -240,10 +395,15 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JLabel roleLabel;
+    private javax.swing.JPanel runnerHomePanel;
     private javax.swing.JPanel sidePanel;
+    private javax.swing.JPanel taskHistoryPanel;
     private javax.swing.JPanel topBarPanel;
     // End of variables declaration//GEN-END:variables
 }
