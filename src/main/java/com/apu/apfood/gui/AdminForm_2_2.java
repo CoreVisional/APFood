@@ -1,5 +1,7 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.gui.auth.AdminForm;
+import com.apu.apfood.gui.auth.CustomerForm;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
