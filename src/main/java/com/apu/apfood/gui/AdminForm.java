@@ -1,4 +1,4 @@
-package com.apu.apfood.gui.auth;
+package com.apu.apfood.gui;
 
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
