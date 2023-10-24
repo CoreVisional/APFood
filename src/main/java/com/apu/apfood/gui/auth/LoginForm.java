@@ -1,5 +1,9 @@
 package com.apu.apfood.gui.auth;
 
+import com.apu.apfood.gui.AdminForm;
+import com.apu.apfood.gui.VendorForm;
+import com.apu.apfood.gui.RunnerForm;
+import com.apu.apfood.gui.CustomerForm;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper; // Add this import statement
 import com.apu.apfood.db.models.User;

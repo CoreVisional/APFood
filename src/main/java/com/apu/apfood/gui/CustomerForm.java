@@ -1,4 +1,8 @@
+<<<<<<< HEAD:src/main/java/com/apu/apfood/gui/auth/CustomerForm.java
 git apackage com.apu.apfood.gui.auth;
+=======
+package com.apu.apfood.gui;
+>>>>>>> 9f1036bbfbfb9ee33744b27229a833414c2afe85:src/main/java/com/apu/apfood/gui/CustomerForm.java
 
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
