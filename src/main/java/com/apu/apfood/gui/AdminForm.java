@@ -217,7 +217,7 @@ public class AdminForm extends javax.swing.JFrame {
         try {
             javax.swing.UIManager.setLookAndFeel(new FlatDarculaLaf());
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
