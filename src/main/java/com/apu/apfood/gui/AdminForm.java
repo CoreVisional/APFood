@@ -3,13 +3,26 @@ package com.apu.apfood.gui;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
-import static java.lang.Math.E;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import javax.swing.JComboBox;
+import com.apu.apfood.helpers.FileHelper;
 
 public class AdminForm extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
+    FileHelper fileHelper = new FileHelper();
+    public static int id;
+    public static String name;
+    public static String email;
+    public static String password;
+    
+    
 
     /**
      * Creates new form VendorFrame
@@ -17,6 +30,7 @@ public class AdminForm extends javax.swing.JFrame {
     public AdminForm() {
         initComponents();
         initCustomComponents();
+        
     }
 
     private void initCustomComponents() {
@@ -60,8 +74,6 @@ public class AdminForm extends javax.swing.JFrame {
         RoleComboBox = new javax.swing.JComboBox<>();
         RegisterButton = new java.awt.Button();
         RegistrationTitle = new javax.swing.JLabel();
-        PhoneLabel = new javax.swing.JLabel();
-        PhoneTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -219,6 +231,12 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
 
+        PasswordTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasswordTextFieldActionPerformed(evt);
+            }
+        });
+
         RoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Vendor", "Customer", "Runner" }));
         RoleComboBox.addContainerListener(new java.awt.event.ContainerAdapter() {
             public void componentAdded(java.awt.event.ContainerEvent evt) {
@@ -239,14 +257,15 @@ public class AdminForm extends javax.swing.JFrame {
         RegisterButton.setActionCommand("Register");
         RegisterButton.setLabel("Register");
         RegisterButton.setName(""); // NOI18N
+        RegisterButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RegisterButtonMouseClicked(evt);
+            }
+        });
 
         RegistrationTitle.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         RegistrationTitle.setForeground(new java.awt.Color(255, 255, 255));
         RegistrationTitle.setText("Registration Form");
-
-        PhoneLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        PhoneLabel.setForeground(new java.awt.Color(255, 255, 255));
-        PhoneLabel.setText("Phone:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -258,31 +277,25 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGap(145, 145, 145))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(48, 48, 48)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(PhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(NameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(EmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(RoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(RegisterButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(PhoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(15, 15, 15))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(PasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(NameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(EmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(RegisterButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -297,21 +310,17 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
                     .addComponent(EmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PhoneLabel)
-                    .addComponent(PhoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43)
+                .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel11)
                     .addComponent(PasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(RoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                .addGap(45, 45, 45)
                 .addComponent(RegisterButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
@@ -348,15 +357,15 @@ public class AdminForm extends javax.swing.JFrame {
     
 
     private void NameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NameTextFieldActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_NameTextFieldActionPerformed
 
     private void EmailTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailTextFieldActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_EmailTextFieldActionPerformed
 
     private void RoleComboBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RoleComboBoxMouseClicked
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_RoleComboBoxMouseClicked
 
     private void RoleComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RoleComboBoxActionPerformed
@@ -368,6 +377,30 @@ public class AdminForm extends javax.swing.JFrame {
         
     }//GEN-LAST:event_RoleComboBoxComponentAdded
 
+    private void RegisterButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RegisterButtonMouseClicked
+        File file = new File("src/main/java/com/apu/apfood/db/datafiles/User.txt");
+        String headers = "id| name| email| password| role";
+        id = fileHelper.generateID("src/main/java/com/apu/apfood/db/datafiles/User.txt",file);
+        String userData = this.NameTextField.getText() + "| " + this.EmailTextField.getText() + "| " + this.PasswordTextField.getText() + "| " + (String)RoleComboBox.getSelectedItem();
+        try(BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8, StandardOpenOption.APPEND)){
+            if(file.length()==0){
+                writer.write(headers);
+            }
+            writer.write(id + "| " + userData);
+            writer.newLine();
+        }catch(IOException e){
+            e.printStackTrace(System.out);
+        }
+        
+    }//GEN-LAST:event_RegisterButtonMouseClicked
+
+    private void PasswordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordTextFieldActionPerformed
+        
+    }//GEN-LAST:event_PasswordTextFieldActionPerformed
+
+    public void registerUser(){
+        
+    };
     /**
      * @param args the command line arguments
      */
@@ -393,8 +426,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JTextField EmailTextField;
     private javax.swing.JTextField NameTextField;
     private javax.swing.JTextField PasswordTextField;
-    private javax.swing.JLabel PhoneLabel;
-    private javax.swing.JTextField PhoneTextField;
     private java.awt.Button RegisterButton;
     private javax.swing.JLabel RegistrationTitle;
     private javax.swing.JComboBox<String> RoleComboBox;

@@ -3,3 +3,6 @@ id| name| email| password| role
 2| Jane Doe| asd@asd.com| qweqweqwe| Admin
 3| John Johnson| zxc@zxc.com| qweqweqwe| Vendor
 4| Alice Johnson| 123@123.com| qweqweqwe| Runner
+5| Roger| roger@gmail.com| roger123| Vendor
+6| Herry| herry@gmail.com| herry123| Customer
+7| Gordon| gordon@gmail.com| gordon123| Runner
