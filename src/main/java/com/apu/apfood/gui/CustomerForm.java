@@ -3,11 +3,26 @@ package com.apu.apfood.gui;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
+import com.apu.apfood.db.dao.VendorDao;
+import com.apu.apfood.helpers.TableButtonHelper;
+import com.apu.apfood.helpers.TableHelper;
+import com.apu.apfood.services.VendorService;
+import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JOptionPane;
 
 public class CustomerForm extends javax.swing.JFrame {
 
+    VendorDao vendorDao = new VendorDao();
+    VendorService vendorService = new VendorService(vendorDao);
+    
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
+    TableHelper tableHelper = new TableHelper();
+    GUIHelper guiHelper = new GUIHelper();
     
     /**
      * Creates new form VendorFrame
@@ -21,7 +36,29 @@ public class CustomerForm extends javax.swing.JFrame {
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
         
+        populateVendorsTable();
     }
+    
+    public void populateVendorsTable() {
+        List<String> vendorNames = vendorService.getDistinctVendorNames();
+        List<String[]> vendorData = vendorNames.stream()
+                                               .map(name -> new String[]{name, "Order"})
+                                               .collect(Collectors.toList());
+        
+        tableHelper.populateTable(vendorData, vendorsTable);
+        tableHelper.centerTableValues(vendorsTable);
+        
+        TableButtonHelper tableButtonHelper  = new TableButtonHelper(vendorsTable, orderAction);
+        tableButtonHelper .initialize(2);
+    }
+    
+    private final Action orderAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {           
+            int modelRow = Integer.parseInt(e.getActionCommand());
+            JOptionPane.showMessageDialog(null, "Order button clicked for row " + modelRow);
+        }
+    };
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -36,7 +73,7 @@ public class CustomerForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        homeSidebarBtn = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
@@ -49,6 +86,16 @@ public class CustomerForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
+        vendorsPanel = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        vendorsTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        searchVendorTxtField = new javax.swing.JTextField();
+        homePanel = new javax.swing.JPanel();
+        vendorMenuPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -70,11 +117,11 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Home");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.setFocusPainted(false);
-        jPanel3.add(jButton2);
+        homeSidebarBtn.setForeground(new java.awt.Color(255, 255, 255));
+        homeSidebarBtn.setText("Home");
+        homeSidebarBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        homeSidebarBtn.setFocusPainted(false);
+        jPanel3.add(homeSidebarBtn);
 
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Cafeterias");
@@ -196,16 +243,120 @@ public class CustomerForm extends javax.swing.JFrame {
 
         mainPanel.add(topBarPanel, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
-        contentPanel.setLayout(contentPanelLayout);
-        contentPanelLayout.setHorizontalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        contentPanel.setLayout(new java.awt.CardLayout());
+
+        vendorsPanel.setLayout(new java.awt.BorderLayout());
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "APFood Cafeterias", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel6.setForeground(new java.awt.Color(255, 255, 255));
+
+        vendorsTable.setForeground(new java.awt.Color(255, 255, 255));
+        vendorsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "#", "Cafeteria Name", "Actions"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        vendorsTable.setRowHeight(40);
+        vendorsTable.setShowGrid(true);
+        jScrollPane1.setViewportView(vendorsTable);
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Search:");
+        jLabel8.setPreferredSize(new java.awt.Dimension(60, 20));
+        jPanel1.add(jLabel8, java.awt.BorderLayout.LINE_START);
+
+        searchVendorTxtField.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel1.add(searchVendorTxtField, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1316, Short.MAX_VALUE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 708, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        vendorsPanel.add(jPanel5, java.awt.BorderLayout.CENTER);
+
+        contentPanel.add(vendorsPanel, "card3");
+
+        javax.swing.GroupLayout homePanelLayout = new javax.swing.GroupLayout(homePanel);
+        homePanel.setLayout(homePanelLayout);
+        homePanelLayout.setHorizontalGroup(
+            homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1350, Short.MAX_VALUE)
         );
-        contentPanelLayout.setVerticalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        homePanelLayout.setVerticalGroup(
+            homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 820, Short.MAX_VALUE)
         );
+
+        contentPanel.add(homePanel, "homePanel");
+
+        javax.swing.GroupLayout vendorMenuPanelLayout = new javax.swing.GroupLayout(vendorMenuPanel);
+        vendorMenuPanel.setLayout(vendorMenuPanelLayout);
+        vendorMenuPanelLayout.setHorizontalGroup(
+            vendorMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1350, Short.MAX_VALUE)
+        );
+        vendorMenuPanelLayout.setVerticalGroup(
+            vendorMenuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 820, Short.MAX_VALUE)
+        );
+
+        contentPanel.add(vendorMenuPanel, "card4");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -238,8 +389,9 @@ public class CustomerForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JPanel homePanel;
+    private javax.swing.JButton homeSidebarBtn;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -248,11 +400,20 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JTextField searchVendorTxtField;
     private javax.swing.JPanel sidePanel;
     private javax.swing.JPanel topBarPanel;
+    private javax.swing.JPanel vendorMenuPanel;
+    private javax.swing.JPanel vendorsPanel;
+    private javax.swing.JTable vendorsTable;
     // End of variables declaration//GEN-END:variables
 }
