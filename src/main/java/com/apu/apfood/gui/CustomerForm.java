@@ -121,6 +121,11 @@ public class CustomerForm extends javax.swing.JFrame {
         homeSidebarBtn.setText("Home");
         homeSidebarBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         homeSidebarBtn.setFocusPainted(false);
+        homeSidebarBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                homeSidebarBtnMousePressed(evt);
+            }
+        });
         jPanel3.add(homeSidebarBtn);
 
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
@@ -365,6 +370,11 @@ public class CustomerForm extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void homeSidebarBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeSidebarBtnMousePressed
+        guiHelper.buttonPanelSwitcher(homeSidebarBtn, contentPanel, "homePanel");
+        setTitle("Home - APFood");
+    }//GEN-LAST:event_homeSidebarBtnMousePressed
 
     /**
      * @param args the command line arguments
