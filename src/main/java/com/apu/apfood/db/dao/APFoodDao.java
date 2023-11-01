@@ -3,6 +3,7 @@ package com.apu.apfood.db.dao;
 import com.apu.apfood.helpers.FileHelper;
 import com.apu.apfood.db.models.common.BaseModel;
 import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -29,6 +30,10 @@ public abstract class APFoodDao<T extends BaseModel> {
 
         String serializedData = serialize(entity);
         fileHelper.writeFile(filePath, new File(filePath), fileHeaders, serializedData);
+    }
+    
+    public List<String[]> getAll() {
+        return fileHelper.readFile(filePath);
     }
     
     protected abstract String serialize(T entity);
