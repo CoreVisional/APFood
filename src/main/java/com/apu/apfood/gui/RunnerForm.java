@@ -24,10 +24,7 @@ public class RunnerForm extends javax.swing.JFrame {
         deliveryHistory = rs.getDeliveryHistory();
         initComponents();
         initCustomComponents();
-
-        taskHistoryPanel.setName("TaskHistory");
-        runnerHomePanel.setName("RunnerHome");
-
+        
         contentPanel.add(taskHistoryPanel, "TaskHistory");
         contentPanel.add(runnerHomePanel, "RunnerHome");
 
