@@ -1,0 +1,4 @@
+id| deliveryRunnerID| status
+1| 5| unavailable
+2| 6| unavailable
+3| 7| unavailable

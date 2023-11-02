@@ -45,6 +45,7 @@ public class FileHelper {
             }
             for (String line : varargs) {
                 writer.write(id + "| " + line);
+                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace(System.out);

@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class RunnerDao extends APFoodDao<User> {
 
-    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerTask.txt";
-    private static final String HEADERS = "deliveryRunnerID| location| status| orderID| deliveryFeedback| vendor\n";
+    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerTasks.txt";
+    private static final String HEADERS = "id| deliveryRunnerID| location| status| orderID| deliveryFeedback| vendor\n";
 
     public RunnerDao() {
         super(USER_FILEPATH, HEADERS);
@@ -41,7 +41,7 @@ public class RunnerDao extends APFoodDao<User> {
 
         // Create an empty list to store matching rows
         List<String[]> rows = new ArrayList<>();
-        
+
         try {
             FileReader fr = new FileReader(filePath);
             BufferedReader br = new BufferedReader(fr);
@@ -49,8 +49,8 @@ public class RunnerDao extends APFoodDao<User> {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split("\\| ");
-                if (values[0].equals(String.valueOf(user.getId())) && values[2].equals("Completed")) {
-                    String[] row = {values[1], values[2], values[4], values[5]};
+                if (values[1].equals(String.valueOf(user.getId())) && values[3].equals("Completed")) {
+                    String[] row = {values[2], values[3], values[5], values[6]};
                     rows.add(row);
                 }
             }
@@ -58,13 +58,15 @@ public class RunnerDao extends APFoodDao<User> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         // Convert the list of matching rows to a 2D array
-        deliveryHistory = new Object[rows.size()][4];
+        deliveryHistory = new Object[rows.size()][5];
         for (int i = 0; i < rows.size(); i++) {
             deliveryHistory[i] = rows.get(i);
         }
 
         return deliveryHistory;
     }
+
+
 }
