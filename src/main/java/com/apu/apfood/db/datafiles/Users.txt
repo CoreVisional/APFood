@@ -1,0 +1,6 @@
+id| name| email| password| role
+1| Adam Smith| qwe@qwe.com| qweqweqwe| customer
+2| Jane Doe| asd@asd.com| qweqweqwe| admin
+3| Jack Kwan| jack@picante.apu.edu.my| qweqweqwe| vendor
+4| Howard Lim| picante@picante.apu.edu.my| qqqqqqqq| vendor
+5| Alice Johnson| 123@123.com| qweqweqwe| runner
