@@ -49,7 +49,7 @@ public class RunnerDao extends APFoodDao<User> {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split("\\| ");
-                if (values[1].equals(String.valueOf(user.getId())) && values[3].equals("Completed")) {
+                if (values[1].equals(String.valueOf(user.getId())) && values[3].equals("Accepted")) {
                     String[] row = {values[2], values[3], values[5], values[6]};
                     rows.add(row);
                 }

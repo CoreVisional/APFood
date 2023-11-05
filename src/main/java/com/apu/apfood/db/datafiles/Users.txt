@@ -5,3 +5,4 @@ id| user_id| name| email| password| role
 4| 4| Howard Lim| picante@picante.apu.edu.my| qqqqqqqq| vendor
 5| 5| Alice Johnson| 123@123.com| qweqweqwe| runner
 6| 6| Jilbert Gustin| zxc@zxc.com| qweqweqwe| runner
+7| 7| Gil Bin| zxcc@zxc.com| qweqweqwe| runner
