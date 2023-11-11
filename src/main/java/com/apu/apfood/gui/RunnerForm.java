@@ -11,8 +11,9 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.util.Map;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 public class RunnerForm extends javax.swing.JFrame {
 
@@ -58,7 +59,6 @@ public class RunnerForm extends javax.swing.JFrame {
             if (orderKeys.length == 0) {
                 CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
                 card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
-                System.out.println("No order keys found.");
             } else {
                 rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
                 CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
@@ -696,15 +696,15 @@ public class RunnerForm extends javax.swing.JFrame {
         deliveryHistoryJTable.setModel(new javax.swing.table.DefaultTableModel(
             this.deliveryHistory,
             new String [] {
-                "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
+                "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus", "Feedback"
             }
         )
         {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,  java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,  java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -715,10 +715,18 @@ public class RunnerForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        int[] columnWidths = {20, 20, 100, 50, 50, 50, 50, 50, 350}; // Set your desired widths
+        TableColumnModel columnModel = deliveryHistoryJTable.getColumnModel();
+
+        for (int i = 0; i < columnWidths.length; i++) {
+            TableColumn column = columnModel.getColumn(i);
+            column.setPreferredWidth(columnWidths[i]);
+        }
+
         JTableHeader header = deliveryHistoryJTable.getTableHeader();
         header.setPreferredSize(new Dimension(20, 40));
         tableHelper.centerTableValues(deliveryHistoryJTable);
-        deliveryHistoryJTable.setRowHeight(30);
+        deliveryHistoryJTable.setRowHeight(40);
         deliveryHistoryJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
         deliveryHistoryJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
         deliveryHistoryJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -739,14 +747,14 @@ public class RunnerForm extends javax.swing.JFrame {
         runnerTaskHistoryPanelLayout.setHorizontalGroup(
             runnerTaskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(runnerTaskHistoryPanelLayout.createSequentialGroup()
-                .addContainerGap(242, Short.MAX_VALUE)
+                .addContainerGap(77, Short.MAX_VALUE)
                 .addGroup(runnerTaskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerTaskHistoryPanelLayout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(359, 359, 359))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerTaskHistoryPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 883, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(229, 229, 229))))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(63, 63, 63))))
         );
         runnerTaskHistoryPanelLayout.setVerticalGroup(
             runnerTaskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

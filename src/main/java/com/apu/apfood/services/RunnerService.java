@@ -35,23 +35,11 @@ public class RunnerService {
         return runnerTaskDao.getDeliveryHistory(this.runner);
     }
 
-    public String getTotalRevenue(User user) {
-        return runnerRevenueDao.checkTotalRevenue(user);
-    }
-
-    public String getMonthsRevenue(User user, int months) {
-        return runnerRevenueDao.checkPastMonthRevenue(user, months);
-    }
-
-    public String getDailyRevenue(User user) {
-        return runnerRevenueDao.checkDailyRevenue(user);
-    }
-
     public void setRevenueValues(User user, javax.swing.JLabel totalRevenueJLabel, javax.swing.JLabel monthlyRevenueJLabel, javax.swing.JLabel yearlyRevenueJLabel,javax.swing.JLabel todayRevenueJLabel) {
-        totalRevenueJLabel.setText("RM " + getTotalRevenue(user));
-        monthlyRevenueJLabel.setText("RM " + getMonthsRevenue(user, 1));
-        yearlyRevenueJLabel.setText("RM " + getMonthsRevenue(user, 12));
-        todayRevenueJLabel.setText("RM " + getDailyRevenue(user));
+        totalRevenueJLabel.setText("RM " + runnerRevenueDao.checkTotalRevenue(user));
+        monthlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 1));
+        yearlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 12));
+        todayRevenueJLabel.setText("RM " + runnerRevenueDao.checkDailyRevenue(user));
     }
 
     public Map<String, RunnerTaskDao.OrderDetails> getDeliveryTask(User user) {

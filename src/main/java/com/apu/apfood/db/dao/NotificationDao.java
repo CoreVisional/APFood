@@ -27,7 +27,6 @@ public class NotificationDao extends APFoodDao<User> {
 
     public void writeNotification(String content) {
         this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, content);
-
     }
 
 }

@@ -60,19 +60,14 @@ public class RunnerTaskDao extends APFoodDao<User> {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split("\\| ");
                 if (values[2].equals(String.valueOf(user.getId())) && values[3].equals("Accepted")) {
-                    // Delivery ID from runner delivery ID D
-                    // Vendor D
-                    // orderId
-                    // Location D
-                    // Customer Name D
-                    // Date D
-                    // Time D
-                    // Delivery status D
 
+                    // Retrieve orderid, vendor name, delivery location
                     String orderId = values[1];
                     String vendorName = values[4];
                     String location = values[5];
-
+                    String feedback = getRunnerFeedback(orderId, vendorName);
+                    
+                    
                     // Retrive customer name, date and time
                     FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
@@ -82,7 +77,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     while ((row2 = br2.readLine()) != null) {
                         String[] rowArray2 = row2.split("\\| ");
                         if (rowArray2[1].equals(orderId)) {
-                            // Account Id, date and time
+                            // Retrieve account Id, date, time and customer name
                             String accountId = rowArray2[2];
                             String date = rowArray2[5];
                             String time = rowArray2[6];
@@ -96,10 +91,11 @@ public class RunnerTaskDao extends APFoodDao<User> {
                                 String[] rowArray3 = row3.split("\\| ");
 
                                 if (rowArray3[1].equals(orderId) && rowArray3[3].equals(vendorName)) {
-                                    // If runner has ongoing task, return true
                                     String deliveryId = rowArray3[0];
                                     String deliveryStatus = rowArray3[2];
-                                    String[] row = {deliveryId, orderId, customerName, vendorName, location, date, time, deliveryStatus};
+
+                                    // Populate table row
+                                    String[] row = {deliveryId, orderId, customerName, vendorName, location, date, time, deliveryStatus, feedback};
                                     rows.add(row);
 
                                 }
@@ -123,6 +119,25 @@ public class RunnerTaskDao extends APFoodDao<User> {
         }
 
         return deliveryHistory;
+    }
+
+    public String getRunnerFeedback(String orderId, String vendorName) {
+        String feedback = "";
+        try {
+            FileReader fr = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerFeedback.txt");
+            BufferedReader br = new BufferedReader(fr);
+            br.readLine();
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\\| ");
+                if (values[2].equals(orderId) && values[3].equals(vendorName)) {
+                    feedback = values[4];
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return feedback;
     }
 
     public Map<String, OrderDetails> getOrderList(User user) {
