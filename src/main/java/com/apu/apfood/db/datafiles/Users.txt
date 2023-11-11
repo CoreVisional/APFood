@@ -1,4 +1,4 @@
-id| user_id| name| email| password| role
+id| userId| name| email| password| role
 1| 1| Adam Smith| qwe@qwe.com| qweqweqwe| customer
 2| 2| Jane Doe| asd@asd.com| qweqweqwe| admin
 3| 3| Jack Kwan| jack@picante.apu.edu.my| qweqweqwe| vendor

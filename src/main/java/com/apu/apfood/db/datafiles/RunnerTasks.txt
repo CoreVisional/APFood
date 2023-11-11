@@ -1,8 +1,8 @@
 id| deliveryRunnerID| location| status| orderID| deliveryFeedback| vendor
 1| 5| Block B| Accepted| 1| Great!| Modesto
 2| 5| Block C| Pending| 2| Satisfactory| Modesto
-3| 5| Block A| Accepted| 3| Excellent| Modesto
-4| 5| Block A| Accepted| 4| Excellent| Modesto
+3| 5| Block A| Pending| 3| Excellent| Modesto
+4| 5| Block A| Cancelled| 4| Excellent| Modesto
 5| 5| Block A| Cancelled| 5| Excellent| Modesto
-6| 6| Block D| Accepted| 8| Good| Modesto
-7| 6| Block E| Accepted| 1| Average| Modesto
+6| 6| Block D| Cancelled| 8| Good| Modesto
+7| 6| Block E| Cancelled| 2| Average| Modesto

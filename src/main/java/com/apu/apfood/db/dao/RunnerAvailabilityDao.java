@@ -59,7 +59,7 @@ public class RunnerAvailabilityDao extends APFoodDao<User> {
     }
 
     public void addNewRunnerAvailability(User user) {
-        fileHelper.writeFile(filePath, new File(filePath), HEADERS, String.valueOf(user.getId()) + "| unavailable");
+        fileHelper.writeFile(filePath, new File(filePath), HEADERS, String.valueOf(user.getId()) + "| Available");
     }
 
     public void updateAvailability(User user, String newAvailability) {
@@ -69,13 +69,14 @@ public class RunnerAvailabilityDao extends APFoodDao<User> {
         try {
             FileReader fr = new FileReader(filePath);
             BufferedReader br = new BufferedReader(fr);
-            updatedLines.add( br.readLine());
+            updatedLines.add( br.readLine()); // Add header row
+            
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split("\\| ");
-                int id = Integer.parseInt(values[0].trim());
-                String deliveryRunnerID = values[1].trim();
-                String availability = values[2].trim();
+                int id = Integer.parseInt(values[0]);
+                String deliveryRunnerID = values[1];
+                String availability = values[2];
                 if (values[1].equals(String.valueOf(user.getId()))) {
                     availability = newAvailability;
                 }
@@ -88,7 +89,6 @@ public class RunnerAvailabilityDao extends APFoodDao<User> {
 
             // Write the updated lines to the file
             for (String updatedLine : updatedLines) {
-                System.out.println(updatedLine);
                 bw.write(updatedLine);
                 bw.newLine(); // Add a newline character to separate lines
             }

@@ -4,12 +4,13 @@
  */
 package com.apu.apfood.services;
 
-import com.apu.apfood.db.dao.RunnerDao;
+import com.apu.apfood.db.dao.NotificationDao;
 import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.RunnerRevenueDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
 import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.User;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JRadioButton;
 
@@ -23,36 +24,15 @@ public class RunnerService {
     private RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
     private RunnerRevenueDao runnerRevenueDao = new RunnerRevenueDao();
     private RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
+    private NotificationDao notificationDao = new NotificationDao();
+    private UserDao userDao = new UserDao();
 
     public RunnerService(User runner) {
         this.runner = runner;
     }
 
     public Object[][] getDeliveryHistory() {
-        RunnerDao rd = new RunnerDao();
-        return rd.getDeliveryHistory(this.runner);
-    }
-
-    public void setAvailabilityRadioButton(User user, JRadioButton availableBtn, JRadioButton unavailableBtn) {
-        String status = runnerAvailabilityDao.getAvailability(user);
-        if (status == null) {
-            runnerAvailabilityDao.addNewRunnerAvailability(user);
-            unavailableBtn.setSelected(true);
-        } else if (status.equals("unavailable")) {
-            unavailableBtn.setSelected(true);
-        } else {
-            availableBtn.setSelected(true);
-        }
-    }
-
-    public void modifyAvailability(String status) {
-        String availability;
-        if (status.equals("Yes")) {
-            availability = "available";
-        } else {
-            availability = "unavailable";
-        }
-        runnerAvailabilityDao.updateAvailability(runner, availability);
+        return runnerTaskDao.getDeliveryHistory(this.runner);
     }
 
     public String getTotalRevenue(User user) {
@@ -65,6 +45,13 @@ public class RunnerService {
 
     public String getDailyRevenue(User user) {
         return runnerRevenueDao.checkDailyRevenue(user);
+    }
+
+    public void setRevenueValues(User user, javax.swing.JLabel totalRevenueJLabel, javax.swing.JLabel monthlyRevenueJLabel, javax.swing.JLabel yearlyRevenueJLabel,javax.swing.JLabel todayRevenueJLabel) {
+        totalRevenueJLabel.setText("RM " + getTotalRevenue(user));
+        monthlyRevenueJLabel.setText("RM " + getMonthsRevenue(user, 1));
+        yearlyRevenueJLabel.setText("RM " + getMonthsRevenue(user, 12));
+        todayRevenueJLabel.setText("RM " + getDailyRevenue(user));
     }
 
     public Map<String, RunnerTaskDao.OrderDetails> getDeliveryTask(User user) {
@@ -92,26 +79,82 @@ public class RunnerService {
 
     public void displayTask(String[] orderKeys, int orderListPanelIndex, Map<String, RunnerTaskDao.OrderDetails> deliveryTasks, javax.swing.JLabel taskCustomerNameJLabel, javax.swing.JLabel taskVendorNameJLabel, javax.swing.JLabel taskOrderIdJLabel, javax.swing.JTextArea taskOrderListJTextArea) {
         UserDao ud = new UserDao();
+
+        // Get order details based on chosen key
         String chosenKey = orderKeys[orderListPanelIndex];
         RunnerTaskDao.OrderDetails orderDetails = deliveryTasks.get(chosenKey);
-
         String customerName = ud.getCustomerName(orderDetails.getAccountId());
+
+        // Display information
         taskCustomerNameJLabel.setText(customerName);
         taskVendorNameJLabel.setText(orderDetails.getVendorName());
-        taskOrderIdJLabel.setText("Order ID: #" + orderDetails.getOrderId());
+        taskOrderIdJLabel.setText("#" + orderDetails.getOrderId());
 
-        StringBuilder itemsStringBuilder = new StringBuilder();
+        StringBuilder foodItemsStringBuilder = new StringBuilder();
 
         for (RunnerTaskDao.FoodDetails foodDetails : orderDetails.getFoodDetailsList()) {
             String item = "- " + foodDetails.getFoodName() + " x" + foodDetails.getQuantity() + "\n";
-            itemsStringBuilder.append(item);
+            foodItemsStringBuilder.append(item);
         }
-        String allItems = itemsStringBuilder.toString();
-        taskOrderListJTextArea.setText(allItems);
+        String allFoodItems = foodItemsStringBuilder.toString();
+        taskOrderListJTextArea.setText(allFoodItems);
     }
 
     public String[] getOrderKeys(User user) {
         return runnerTaskDao.getOrderKeys(user);
     }
 
+    public void changeTaskAssignmentStatus(User user, String state, String inputOrderId, String vendorName) {
+        // Remove # from order id
+        String orderId = inputOrderId.replace("#", "");
+        runnerTaskDao.changeTaskAssignmentStatus(user, state, orderId);
+
+        if (state.equals("Accepted")) {
+            // Set availability to unavailable
+            runnerAvailabilityDao.updateAvailability(user, "Unavailable");
+            // Add "Ongoing" delivery status RunnerDelivery.txt
+            runnerTaskDao.addRunnerDeliveryRecord(orderId, vendorName, String.valueOf(user.getId()));
+        }
+    }
+
+    public void notifyIfNoVendor(String inputOrderId, String vendorName) {
+        // Remove # from order id
+        String orderId = inputOrderId.replace("#", "");
+        
+        String userId = userDao.getCustomerId(orderId, vendorName);
+        runnerTaskDao.notifyNoRunner(orderId, vendorName, userId);
+    }
+
+    public void notifyDeliveryOngoing(String inputOrderId, String vendorName) {
+        // Remove # from order id
+        String orderId = inputOrderId.replace("#", "");
+        String userId = userDao.getCustomerId(orderId, vendorName);
+
+        notificationDao.writeNotification(userId + "| " + "Delivery ongoing [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified");
+    }
+
+    public boolean checkOngoingTask(User user) {
+        return runnerTaskDao.checkRunnerHandlingTask(String.valueOf(user.getId()));
+    }
+
+    public void displayOngoingTaskDetails(User user, javax.swing.JLabel ongCustomerNameJLabel, javax.swing.JLabel ongLocationJLabel, javax.swing.JLabel ongOrderIdJLabel, javax.swing.JLabel ongVendorNameJLabel) {
+        List<String> taskDetails = runnerTaskDao.getTaskDetails(String.valueOf(user.getId()));
+        ongLocationJLabel.setText(taskDetails.get(0));
+        ongOrderIdJLabel.setText("#" + taskDetails.get(1));
+        ongVendorNameJLabel.setText(taskDetails.get(2));
+        ongCustomerNameJLabel.setText(taskDetails.get(3));
+    }
+
+    public void finishTask(User user, String inputOrderId, String vendorName) {
+        String orderId = inputOrderId.replace("#", "");
+        String userId = userDao.getCustomerId(orderId, vendorName);
+
+        runnerAvailabilityDao.updateAvailability(user, "Available");
+        runnerTaskDao.updateDeliveryStatus(orderId, vendorName);
+        notificationDao.writeNotification(userId + "| " + "Delivery completed [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified");
+    }
+
+    public static void main(String[] args) {
+        RunnerService rs = new RunnerService(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner"));
+    }
 }

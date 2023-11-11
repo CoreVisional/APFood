@@ -1,2 +1,2 @@
-id| orderId| status
-1| 1| Complete
+id| orderId| status| vendor| deliveryRunnerId
+1| 1| Completed| Modesto| 5

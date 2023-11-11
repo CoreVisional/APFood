@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class RunnerRevenueDao extends APFoodDao<User> {
 
     private static final String BASE_PATH = System.getProperty("user.dir");
-    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerTasks.txt";
+    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt";
     private static final String HEADERS = "id| deliveryRunnerID| status\n";
 
     FileHelper fileHelper = new FileHelper();
@@ -48,27 +48,10 @@ public class RunnerRevenueDao extends APFoodDao<User> {
             while ((row = br.readLine()) != null) {
                 String[] rowArray = row.split("\\| ");
 
-                // Check RunnerTasks.txt for any accepted tasks
-                if (rowArray[1].equals(String.valueOf(user.getId())) && rowArray[3].equals("Accepted")) {
+                // Check RunnerDelivery.txt for any completed tasks
+                if (rowArray[2].equals("Completed") && rowArray[4].equals(String.valueOf(user.getId()))) {
                     // Retrieve Order Id and vendor for that userID
-                    String orderId = rowArray[4];
-                    String vendorName = rowArray[6];
-
-                    // Check if delivery has been completed
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt");
-                    BufferedReader br2 = new BufferedReader(fr2);
-                    String row2;
-
-                    while ((row2 = br2.readLine()) != null) {
-                        String[] rowArray2 = row2.split("\\| ");
-
-                        if (rowArray2[1].equals(orderId) && rowArray2[2].equals("Complete")) {
-                            // Increment earnings by 3 if order id exist and status is completed.
-                            earnings += 3;
-                            break;
-                        }
-                    }
-
+                    earnings += 3;
                 }
             }
             br.close();
@@ -99,12 +82,13 @@ public class RunnerRevenueDao extends APFoodDao<User> {
             while ((row = br.readLine()) != null) {
                 String[] rowArray = row.split("\\| ");
 
-                if (rowArray[1].equals(String.valueOf(user.getId())) && rowArray[3].equals("Accepted")) {
+                // Check RunnerDelivery.txt for any completed tasks
+                if (rowArray[2].equals("Completed") && rowArray[4].equals(String.valueOf(user.getId()))) {
 
                     // Check if the order date is within the past month
                     // Retrieve OrderId and vendor for that RunnerId
-                    String orderId = rowArray[4];
-                    String vendorName = rowArray[6];
+                    String orderId = rowArray[1];
+                    String vendorName = rowArray[3];
 
                     FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
@@ -116,20 +100,8 @@ public class RunnerRevenueDao extends APFoodDao<User> {
                         LocalDate orderDate = LocalDate.parse(rowArray2[5], dateFormatter);
 
                         if (rowArray2[1].equals(orderId) && (orderDate.isAfter(startDateOfPastMonth) || orderDate.isEqual(startDateOfPastMonth))) {
-                            // Check if delivery has been completed
-                            FileReader fr3 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt");
-                            BufferedReader br3 = new BufferedReader(fr3);
-                            String row3;
-
-                            while ((row3 = br3.readLine()) != null) {
-                                String[] rowArray3 = row3.split("\\| ");
-
-                                if (rowArray3[1].equals(orderId) && rowArray3[2].equals("Complete")) {
-                                    // Increment earnings by 3 if order id exist and status is completed.
-                                    earnings += 3;
-                                    break;
-                                }
-                            }
+                            // Increment earnings by 3
+                            earnings += 3;
                             break;
                         }
                     }
@@ -160,12 +132,11 @@ public class RunnerRevenueDao extends APFoodDao<User> {
             while ((row = br.readLine()) != null) {
                 String[] rowArray = row.split("\\| ");
 
-                if (rowArray[1].equals(String.valueOf(user.getId())) && rowArray[3].equals("Accepted")) {
+                if (rowArray[2].equals("Completed") && rowArray[4].equals(String.valueOf(user.getId()))) {
 
-                    // Check if the order date is within the past month
                     // Retrieve Order Id and vendor for that userID
-                    String orderId = rowArray[4];
-                    String vendorName = rowArray[6];
+                    String orderId = rowArray[1];
+                    String vendorName = rowArray[3];
 
                     FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
@@ -177,20 +148,8 @@ public class RunnerRevenueDao extends APFoodDao<User> {
                         LocalDate orderDate = LocalDate.parse(rowArray2[5], dateFormatter);
 
                         if (rowArray2[1].equals(orderId) && orderDate.isEqual(currentDate)) {
-                            // Check if delivery has been completed
-                            FileReader fr3 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt");
-                            BufferedReader br3 = new BufferedReader(fr3);
-                            String row3;
-
-                            while ((row3 = br3.readLine()) != null) {
-                                String[] rowArray3 = row3.split("\\| ");
-
-                                if (rowArray3[1].equals(orderId) && rowArray3[2].equals("Complete")) {
-                                    // Increment earnings by 3 if order id exist and status is completed.
-                                    earnings += 3;
-                                    break;
-                                }
-                            }
+                            // Increment earnings by 3
+                            earnings += 3;
                             break;
                         }
                     }
@@ -205,9 +164,6 @@ public class RunnerRevenueDao extends APFoodDao<User> {
     }
 
     public static void main(String[] args) {
-//        String vendorName = "Picante";
-//        System.out.println(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
-//        System.out.println(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + "VendorUser.txt");
         RunnerRevenueDao rrd = new RunnerRevenueDao();
         rrd.checkPastMonthRevenue(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner"), 1);
 

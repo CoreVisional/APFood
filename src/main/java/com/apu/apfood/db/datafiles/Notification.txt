@@ -1,0 +1,22 @@
+id| userId| content| status
+1| 1| Order has been placed| Notified
+2| 1| Order has been accepted| Notified
+3| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified
+4| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified
+5| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified
+6| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified
+7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified
+8| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified
+9| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified
+10| 1| Delivery completed [order id: 1, vendor name: Modesto]| Not Notified
+11| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified
+12| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified
+13| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified
+14| 1| Delivery completed [order id: 1, vendor name: Modesto]| Not Notified
+15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified
+16| 1| Delivery completed [order id: 1, vendor name: Modesto]| Not Notified
+17| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified
+18| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified
+19| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified
+20| 1| Delivery completed [order id: 1, vendor name: Modesto]| Not Notified
+21| 2| Delivery runner not found [order id: 2, vendor name: Modesto]| Not Notified
