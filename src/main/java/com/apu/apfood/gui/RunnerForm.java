@@ -1,35 +1,75 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.db.dao.RunnerTaskDao;
+import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
+import com.apu.apfood.helpers.TableHelper;
 import com.apu.apfood.services.RunnerService;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.Map;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 public class RunnerForm extends javax.swing.JFrame {
 
+    private User user;
     private Object[][] deliveryHistory;
+    private RunnerService rs;
+    private UserDao ud;
+    private Map<String, RunnerTaskDao.OrderDetails> deliveryTasks;
+    private String[] orderKeys;
+    private int orderListPanelIndex = 0;
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
+    GUIHelper guiHelper = new GUIHelper();
+    TableHelper tableHelper = new TableHelper();
 
     /**
      * Creates new form VendorFrame
      */
     public RunnerForm(User user) {
-        RunnerService rs = new RunnerService(user);
-        deliveryHistory = rs.getDeliveryHistory();
+        this.user = user;
+        this.rs = new RunnerService(user);
+        this.ud = new UserDao();
+
+        this.deliveryHistory = rs.getDeliveryHistory();
+
         initComponents();
         initCustomComponents();
 
-        taskHistoryPanel.setName("TaskHistory");
-        runnerHomePanel.setName("RunnerHome");
+        // Set revenue values
+        rs.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
 
-        contentPanel.add(taskHistoryPanel, "TaskHistory");
-        contentPanel.add(runnerHomePanel, "RunnerHome");
+        // Delivery Task 
+        if (rs.checkOngoingTask(user)) {
+            // If runner has ongoing task display a new card
+            CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+            card.show(runnerTaskPanel, "RunnerOngoingTask");
+            rs.displayOngoingTaskDetails(user, ongCustomerNameJLabel, ongLocationJLabel, ongOrderIdJLabel, ongVendorNameJLabel);
+        } else {
+            this.deliveryTasks = rs.getDeliveryTask(user);
+            this.orderKeys = rs.getOrderKeys(user);
+
+            if (orderKeys.length == 0) {
+                CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+                card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
+            } else {
+                rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+                CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+                card.show(runnerTaskPanel, "RunnerPendingTask");
+            }
+        }
+
+        // Enable side buttons for switching panels
+        guiHelper.buttonPanelSwitcher(homeNavBtn, contentPanel, "RunnerHome");
+        guiHelper.buttonPanelSwitcher(deliveryHistoryNavBtn, contentPanel, "RunnerTaskHistory");
+        guiHelper.buttonPanelSwitcher(revenueNavBtn, contentPanel, "RunnerRevenue");
 
         roleLabel.setText(user.getRole());
         nameLabel.setText(user.getName());
@@ -40,7 +80,6 @@ public class RunnerForm extends javax.swing.JFrame {
     private void initCustomComponents() {
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
-
     }
 
     /**
@@ -52,14 +91,14 @@ public class RunnerForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        runnerAvailabilityButtonGroup = new javax.swing.ButtonGroup();
         sidePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        homeNavBtn = new javax.swing.JButton();
         deliveryHistoryNavBtn = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        revenueNavBtn = new javax.swing.JButton();
         roleLabel = new javax.swing.JLabel();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
@@ -71,12 +110,61 @@ public class RunnerForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
-        taskHistoryPanel = new javax.swing.JPanel();
+        runnerHomePanel = new javax.swing.JPanel();
+        runnerTaskPanel = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel21 = new javax.swing.JLabel();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel22 = new javax.swing.JLabel();
+        taskFinishBtn = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        ongVendorNameJLabel = new javax.swing.JLabel();
+        ongCustomerNameJLabel = new javax.swing.JLabel();
+        ongOrderIdJLabel = new javax.swing.JLabel();
+        ongLocationJLabel = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabelText = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        taskDeclineBtn = new javax.swing.JButton();
+        taskAcceptBtn = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        taskOrderListJTextArea = new javax.swing.JTextArea();
+        jLabel16 = new javax.swing.JLabel();
+        leftPanelBtn = new javax.swing.JButton();
+        taskCustomerNameJLabel = new javax.swing.JLabel();
+        rightPanelBtn = new javax.swing.JButton();
+        jLabel20 = new javax.swing.JLabel();
+        taskVendorNameJLabel = new javax.swing.JLabel();
+        taskOrderIdJLabel = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        runnerTaskHistoryPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         deliveryHistoryJTable = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        runnerHomePanel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        runnerRevenuePanel = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        totalRevenueJLabel = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        monthlyRevenueJLabel = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        yearlyRevenueJLabel = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        yearlyRevenueJLabel1 = new javax.swing.JLabel();
+        todayRevenueJLabel = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -98,16 +186,16 @@ public class RunnerForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Home");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.setFocusPainted(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        homeNavBtn.setText("Home");
+        homeNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        homeNavBtn.setFocusPainted(false);
+        homeNavBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                homeNavBtnActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton2);
+        jPanel3.add(homeNavBtn);
 
         deliveryHistoryNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         deliveryHistoryNavBtn.setText("Delivery History");
@@ -120,18 +208,11 @@ public class RunnerForm extends javax.swing.JFrame {
         });
         jPanel3.add(deliveryHistoryNavBtn);
 
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Activity");
-        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton4.setFocusPainted(false);
-        jPanel3.add(jButton4);
-
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cafeterias");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.setFocusPainted(false);
-        jButton1.setPreferredSize(new java.awt.Dimension(50, 30));
-        jPanel3.add(jButton1);
+        revenueNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        revenueNavBtn.setText("Revenue");
+        revenueNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        revenueNavBtn.setFocusPainted(false);
+        jPanel3.add(revenueNavBtn);
 
         roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         roleLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -145,7 +226,7 @@ public class RunnerForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jSeparator1)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
@@ -163,7 +244,7 @@ public class RunnerForm extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(roleLabel)
                 .addGap(41, 41, 41))
         );
@@ -207,7 +288,7 @@ public class RunnerForm extends javax.swing.JFrame {
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1027, Short.MAX_VALUE)
+                .addContainerGap(1036, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel7)
@@ -253,19 +334,377 @@ public class RunnerForm extends javax.swing.JFrame {
 
         contentPanel.setLayout(new java.awt.CardLayout());
 
+        runnerTaskPanel.setLayout(new java.awt.CardLayout());
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel9.setVerifyInputWhenFocusTarget(false);
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel21.setText("No delivery task at the moment");
+        jLabel21.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(154, 154, 154))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(216, 216, 216)
+                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        runnerTaskPanel.add(jPanel9, "RunnerNoTaskAtTheMoment");
+
+        jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel10.setPreferredSize(new java.awt.Dimension(898, 538));
+        jPanel10.setVerifyInputWhenFocusTarget(false);
+
+        jLabel22.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel22.setText("Delivery Ongoing");
+        jLabel22.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        taskFinishBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskFinishBtn.setText("Complete delivery");
+        taskFinishBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taskFinishBtnActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel14.setText("Customer Name:");
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel18.setText("Location:");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel2.setText("Order ID:");
+
+        jLabel11.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel23.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        ongVendorNameJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        ongVendorNameJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ongVendorNameJLabel.setText("jLabel24");
+
+        ongCustomerNameJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        ongCustomerNameJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ongCustomerNameJLabel.setText("jLabel24");
+
+        ongOrderIdJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        ongOrderIdJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ongOrderIdJLabel.setText("jLabel24");
+
+        ongLocationJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        ongLocationJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ongLocationJLabel.setText("jLabel24");
+
+        jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel24.setText("Vendor Name: ");
+
+        jLabel25.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 194, Short.MAX_VALUE)
+                        .addComponent(ongCustomerNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ongLocationJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ongOrderIdJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ongVendorNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+            .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(ongCustomerNameJLabel))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(ongLocationJLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ongVendorNameJLabel)
+                    .addComponent(jLabel24))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(ongOrderIdJLabel))
+                .addGap(14, 14, 14))
+        );
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap(141, Short.MAX_VALUE)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 496, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(155, 155, 155))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                                .addComponent(taskFinishBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(148, 148, 148))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(69, 69, 69))))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(taskFinishBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(60, Short.MAX_VALUE))
+        );
+
+        runnerTaskPanel.add(jPanel10, "RunnerOngoingTask");
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel8.setPreferredSize(new java.awt.Dimension(898, 532));
+
+        jLabelText.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelText.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelText.setText("Order ID:");
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel15.setText("Customer Name:");
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel17.setText("Incoming Delivery Task");
+        jLabel17.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        taskDeclineBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskDeclineBtn.setText("Decline");
+        taskDeclineBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taskDeclineBtnActionPerformed(evt);
+            }
+        });
+
+        taskAcceptBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskAcceptBtn.setText("Accept");
+        taskAcceptBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taskAcceptBtnActionPerformed(evt);
+            }
+        });
+
+        taskOrderListJTextArea.setEditable(false);
+        taskOrderListJTextArea.setColumns(20);
+        taskOrderListJTextArea.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskOrderListJTextArea.setRows(5);
+        taskOrderListJTextArea.setText("- Food\n- Food\n- Food\n- Food\n- Food\n- Food\n- Food");
+        jScrollPane2.setViewportView(taskOrderListJTextArea);
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel16.setText("Order List");
+
+        leftPanelBtn.setText("<");
+        leftPanelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leftPanelBtnActionPerformed(evt);
+            }
+        });
+
+        taskCustomerNameJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskCustomerNameJLabel.setText("Alice Johnson");
+
+        rightPanelBtn.setText(">");
+        rightPanelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rightPanelBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel20.setText("Vendor Name:");
+
+        taskVendorNameJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskVendorNameJLabel.setText("Picante");
+
+        taskOrderIdJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskOrderIdJLabel.setText("#244");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(154, 154, 154)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(leftPanelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 72, Short.MAX_VALUE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(taskCustomerNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabelText, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(taskOrderIdJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(11, 11, 11)
+                                .addComponent(taskVendorNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(25, 25, 25)))
+                .addComponent(rightPanelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(taskAcceptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(109, 109, 109)
+                .addComponent(taskDeclineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(247, 247, 247))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(taskVendorNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(leftPanelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rightPanelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(92, 92, 92)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabelText, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(taskOrderIdJLabel))
+                                .addGap(9, 9, 9))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(taskCustomerNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addComponent(jScrollPane2)))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(taskAcceptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(taskDeclineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        runnerTaskPanel.add(jPanel8, "RunnerPendingTask");
+
+        jLabel13.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel13.setText("Home");
+        jLabel13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout runnerHomePanelLayout = new javax.swing.GroupLayout(runnerHomePanel);
+        runnerHomePanel.setLayout(runnerHomePanelLayout);
+        runnerHomePanelLayout.setHorizontalGroup(
+            runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runnerHomePanelLayout.createSequentialGroup()
+                .addContainerGap(372, Short.MAX_VALUE)
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(359, 359, 359))
+            .addGroup(runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerHomePanelLayout.createSequentialGroup()
+                    .addContainerGap(246, Short.MAX_VALUE)
+                    .addComponent(runnerTaskPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(210, 210, 210)))
+        );
+        runnerHomePanelLayout.setVerticalGroup(
+            runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runnerHomePanelLayout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(697, Short.MAX_VALUE))
+            .addGroup(runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(runnerHomePanelLayout.createSequentialGroup()
+                    .addGap(172, 172, 172)
+                    .addComponent(runnerTaskPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(110, Short.MAX_VALUE)))
+        );
+
+        contentPanel.add(runnerHomePanel, "RunnerHome");
+
         deliveryHistoryJTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         deliveryHistoryJTable.setModel(new javax.swing.table.DefaultTableModel(
             this.deliveryHistory,
             new String [] {
-                "Location", "Status", "Review","Vendor"
+                "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus", "Feedback"
             }
         )
         {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,  java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -276,9 +715,18 @@ public class RunnerForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        int[] columnWidths = {20, 20, 100, 50, 50, 50, 50, 50, 350}; // Set your desired widths
+        TableColumnModel columnModel = deliveryHistoryJTable.getColumnModel();
+
+        for (int i = 0; i < columnWidths.length; i++) {
+            TableColumn column = columnModel.getColumn(i);
+            column.setPreferredWidth(columnWidths[i]);
+        }
+
         JTableHeader header = deliveryHistoryJTable.getTableHeader();
         header.setPreferredSize(new Dimension(20, 40));
-        deliveryHistoryJTable.setRowHeight(30);
+        tableHelper.centerTableValues(deliveryHistoryJTable);
+        deliveryHistoryJTable.setRowHeight(40);
         deliveryHistoryJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
         deliveryHistoryJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
         deliveryHistoryJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -288,58 +736,231 @@ public class RunnerForm extends javax.swing.JFrame {
         jScrollPane1.setViewportView(deliveryHistoryJTable);
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Delivery History");
         jLabel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        javax.swing.GroupLayout taskHistoryPanelLayout = new javax.swing.GroupLayout(taskHistoryPanel);
-        taskHistoryPanel.setLayout(taskHistoryPanelLayout);
-        taskHistoryPanelLayout.setHorizontalGroup(
-            taskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(taskHistoryPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(taskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskHistoryPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout runnerTaskHistoryPanelLayout = new javax.swing.GroupLayout(runnerTaskHistoryPanel);
+        runnerTaskHistoryPanel.setLayout(runnerTaskHistoryPanelLayout);
+        runnerTaskHistoryPanelLayout.setHorizontalGroup(
+            runnerTaskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runnerTaskHistoryPanelLayout.createSequentialGroup()
+                .addContainerGap(77, Short.MAX_VALUE)
+                .addGroup(runnerTaskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerTaskHistoryPanelLayout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(359, 359, 359))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskHistoryPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(436, 436, 436))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerTaskHistoryPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(63, 63, 63))))
         );
-        taskHistoryPanelLayout.setVerticalGroup(
-            taskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(taskHistoryPanelLayout.createSequentialGroup()
+        runnerTaskHistoryPanelLayout.setVerticalGroup(
+            runnerTaskHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runnerTaskHistoryPanelLayout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
+                .addGap(58, 58, 58)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(244, Short.MAX_VALUE))
+                .addContainerGap(237, Short.MAX_VALUE))
         );
 
-        contentPanel.add(taskHistoryPanel, "card2");
+        contentPanel.add(runnerTaskHistoryPanel, "RunnerTaskHistory");
 
-        jLabel2.setText("Sup");
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        javax.swing.GroupLayout runnerHomePanelLayout = new javax.swing.GroupLayout(runnerHomePanel);
-        runnerHomePanel.setLayout(runnerHomePanelLayout);
-        runnerHomePanelLayout.setHorizontalGroup(
-            runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runnerHomePanelLayout.createSequentialGroup()
-                .addGap(549, 549, 549)
-                .addComponent(jLabel2)
-                .addContainerGap(781, Short.MAX_VALUE))
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Total");
+
+        totalRevenueJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        totalRevenueJLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(totalRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
-        runnerHomePanelLayout.setVerticalGroup(
-            runnerHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(runnerHomePanelLayout.createSequentialGroup()
-                .addGap(143, 143, 143)
-                .addComponent(jLabel2)
-                .addContainerGap(661, Short.MAX_VALUE))
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addComponent(totalRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        contentPanel.add(runnerHomePanel, "card3");
+        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("Monthly");
+
+        monthlyRevenueJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        monthlyRevenueJLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(monthlyRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel9)
+                .addGap(18, 18, 18)
+                .addComponent(monthlyRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel10.setText("Yearly");
+
+        yearlyRevenueJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        yearlyRevenueJLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(yearlyRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel10)
+                .addGap(18, 18, 18)
+                .addComponent(yearlyRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel12.setText("Today's earnings:");
+
+        yearlyRevenueJLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        yearlyRevenueJLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        todayRevenueJLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        todayRevenueJLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(yearlyRevenueJLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66)
+                        .addComponent(todayRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(108, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(todayRevenueJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addGap(18, 18, 18)
+                .addComponent(yearlyRevenueJLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(86, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(78, 78, 78)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(75, 75, 75)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(71, 71, 71))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+
+        jLabel19.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel19.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel19.setText("Revenue");
+        jLabel19.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout runnerRevenuePanelLayout = new javax.swing.GroupLayout(runnerRevenuePanel);
+        runnerRevenuePanel.setLayout(runnerRevenuePanelLayout);
+        runnerRevenuePanelLayout.setHorizontalGroup(
+            runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(runnerRevenuePanelLayout.createSequentialGroup()
+                .addContainerGap(262, Short.MAX_VALUE)
+                .addGroup(runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(350, 350, 350))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(211, 211, 211))))
+        );
+        runnerRevenuePanelLayout.setVerticalGroup(
+            runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(97, 97, 97)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(222, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(runnerRevenuePanel, "RunnerRevenue");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -349,15 +970,107 @@ public class RunnerForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void deliveryHistoryNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryHistoryNavBtnActionPerformed
-        CardLayout cardLayout = (CardLayout) contentPanel.getLayout();
-        cardLayout.show(contentPanel, "TaskHistory");
+
     }//GEN-LAST:event_deliveryHistoryNavBtnActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        CardLayout cardLayout = (CardLayout) contentPanel.getLayout();
-        cardLayout.show(contentPanel, "RunnerHome");
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
+    }//GEN-LAST:event_homeNavBtnActionPerformed
+
+    private void taskDeclineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskDeclineBtnActionPerformed
+        // Modify status to Declined in RunnerTaskAssignment.txt for the runner.
+        String orderId = taskOrderIdJLabel.getText();
+        String vendorName = taskVendorNameJLabel.getText();
+        rs.changeTaskAssignmentStatus(user, "Declined", orderId, vendorName);
+
+        // Check if any vendor left.RunnerTaskAssignment
+        // If no vendor:
+        // Status change to "cancelled" in runnertasks.txt
+        // Send notification
+        rs.notifyIfNoVendor(orderId, vendorName);
+
+        // Refresh displayTask.
+        this.deliveryTasks = rs.getDeliveryTask(user);
+        this.orderKeys = rs.getOrderKeys(user);
+
+        // DisplayTask() if orderkeys.length > 0;
+        if (orderKeys.length == 0) {
+            CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+            card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
+        } else {
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+            CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+            card.show(runnerTaskPanel, "RunnerPendingTask");
+        }
+    }//GEN-LAST:event_taskDeclineBtnActionPerformed
+
+    private void taskAcceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskAcceptBtnActionPerformed
+        // Modify status to Accepted in for this runner and all other runner to Declined in RunnerTasks.txt
+        String orderId = taskOrderIdJLabel.getText();
+        String vendorName = taskVendorNameJLabel.getText();
+
+        // Change task status to "Accepted" in RunnerTasks.txt
+        // Write a record with "Ongoing" in RunnerDelivery.txt
+        // All other runners status for this task are set to "Declined".
+        rs.changeTaskAssignmentStatus(user, "Accepted", orderId, vendorName);
+
+        // Write notification to text file
+        rs.notifyDeliveryOngoing(orderId, vendorName);
+
+        // Show a panel where runner needs to click to finish the task.
+        CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+        card.show(runnerTaskPanel, "RunnerOngoingTask");
+        rs.displayOngoingTaskDetails(user, ongCustomerNameJLabel, ongLocationJLabel, ongOrderIdJLabel, ongVendorNameJLabel);
+
+        // Refresh delivery history table
+        this.deliveryHistory = rs.getDeliveryHistory();
+        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory);
+    }//GEN-LAST:event_taskAcceptBtnActionPerformed
+
+    private void leftPanelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftPanelBtnActionPerformed
+        if (orderListPanelIndex > 0) {
+            this.orderListPanelIndex--;
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+        }
+    }//GEN-LAST:event_leftPanelBtnActionPerformed
+
+    private void rightPanelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightPanelBtnActionPerformed
+        if (orderListPanelIndex < orderKeys.length - 1) {
+            this.orderListPanelIndex++;
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+        }
+    }//GEN-LAST:event_rightPanelBtnActionPerformed
+
+    private void taskFinishBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskFinishBtnActionPerformed
+        String orderId = ongOrderIdJLabel.getText();
+        String vendorName = ongVendorNameJLabel.getText();
+
+        // Change runner status to available
+        // Write notification
+        // Change task status to completed
+        rs.finishTask(user, orderId, vendorName);
+
+        this.deliveryTasks = rs.getDeliveryTask(user);
+        this.orderKeys = rs.getOrderKeys(user);
+
+        //  DisplayTask() if orderkeys.length > 0;
+        if (orderKeys.length == 0) {
+            CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+            card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
+        } else {
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+            CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+            card.show(runnerTaskPanel, "RunnerPendingTask");
+        }
+
+        // Refresh delivery history table
+        this.deliveryHistory = rs.getDeliveryHistory();
+        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory);
+
+        // Refresh revenue values
+        rs.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
+    }//GEN-LAST:event_taskFinishBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -374,7 +1087,7 @@ public class RunnerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RunnerForm(new User(4, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
+                new RunnerForm(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
             }
         });
     }
@@ -384,26 +1097,75 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JTable deliveryHistoryJTable;
     private javax.swing.JButton deliveryHistoryNavBtn;
     private javax.swing.JLabel emailLabel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton homeNavBtn;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelText;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JButton leftPanelBtn;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JLabel monthlyRevenueJLabel;
     private javax.swing.JLabel nameLabel;
+    private javax.swing.JLabel ongCustomerNameJLabel;
+    private javax.swing.JLabel ongLocationJLabel;
+    private javax.swing.JLabel ongOrderIdJLabel;
+    private javax.swing.JLabel ongVendorNameJLabel;
+    private javax.swing.JButton revenueNavBtn;
+    private javax.swing.JButton rightPanelBtn;
     private javax.swing.JLabel roleLabel;
+    private javax.swing.ButtonGroup runnerAvailabilityButtonGroup;
     private javax.swing.JPanel runnerHomePanel;
+    private javax.swing.JPanel runnerRevenuePanel;
+    private javax.swing.JPanel runnerTaskHistoryPanel;
+    private javax.swing.JPanel runnerTaskPanel;
     private javax.swing.JPanel sidePanel;
-    private javax.swing.JPanel taskHistoryPanel;
+    private javax.swing.JButton taskAcceptBtn;
+    private javax.swing.JLabel taskCustomerNameJLabel;
+    private javax.swing.JButton taskDeclineBtn;
+    private javax.swing.JButton taskFinishBtn;
+    private javax.swing.JLabel taskOrderIdJLabel;
+    private javax.swing.JTextArea taskOrderListJTextArea;
+    private javax.swing.JLabel taskVendorNameJLabel;
+    private javax.swing.JLabel todayRevenueJLabel;
     private javax.swing.JPanel topBarPanel;
+    private javax.swing.JLabel totalRevenueJLabel;
+    private javax.swing.JLabel yearlyRevenueJLabel;
+    private javax.swing.JLabel yearlyRevenueJLabel1;
     // End of variables declaration//GEN-END:variables
 }

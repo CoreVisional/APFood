@@ -23,7 +23,7 @@ public class FileHelper {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] fields = line.split("| ");
+                String[] fields = line.split("\\| ");
                 int currId = Integer.parseInt(fields[0].trim());
                 if (currId >= id) {
                     id = currId + 1;
@@ -38,13 +38,13 @@ public class FileHelper {
     public void writeFile(String filename, File file, String headers, String... varargs) {
         
         int id = generateID(filename, file);
-        
         try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8, StandardOpenOption.APPEND)) {
             if (file.length() == 0) {
                 writer.write(headers);
             }
             for (String line : varargs) {
                 writer.write(id + "| " + line);
+                writer.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace(System.out);

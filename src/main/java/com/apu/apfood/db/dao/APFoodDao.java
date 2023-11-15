@@ -13,7 +13,6 @@ import java.util.List;
 public abstract class APFoodDao<T extends BaseModel> {
     
     private static final String BASE_PATH = System.getProperty("user.dir");
-    
     protected String filePath;
     protected FileHelper fileHelper;
     protected String fileHeaders;

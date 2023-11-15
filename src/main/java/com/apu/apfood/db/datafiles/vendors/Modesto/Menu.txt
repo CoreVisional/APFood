@@ -1,3 +1,4 @@
 id| name| type| price
 1| Nasi| food| 2.50
 2| Orange Chicken| food| 5.00
+3| Kuih| food| 1.00
