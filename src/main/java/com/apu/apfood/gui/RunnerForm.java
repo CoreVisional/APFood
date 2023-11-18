@@ -176,7 +176,6 @@ public class RunnerForm extends javax.swing.JFrame {
         topBarPanel.setPreferredSize(new java.awt.Dimension(1350, 80));
 
         nameLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        nameLabel.setForeground(new java.awt.Color(0, 0, 0));
         nameLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         nameLabel.setText("Full Name");
 
@@ -280,7 +279,6 @@ public class RunnerForm extends javax.swing.JFrame {
         header.setPreferredSize(new Dimension(20, 40));
         deliveryHistoryJTable.setRowHeight(30);
         deliveryHistoryJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
-        deliveryHistoryJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
         deliveryHistoryJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         deliveryHistoryJTable.setShowGrid(true);
         deliveryHistoryJTable.getTableHeader().setResizingAllowed(false);

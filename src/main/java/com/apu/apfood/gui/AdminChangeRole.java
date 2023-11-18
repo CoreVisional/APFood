@@ -6,7 +6,7 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
-public class AdminForm_2_2 extends javax.swing.JFrame {
+public class AdminChangeRole extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -14,7 +14,7 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
     /**
      * Creates new form VendorFrame
      */
-    public AdminForm_2_2() {
+    public AdminChangeRole() {
         initComponents();
         initCustomComponents();
     }
@@ -42,10 +42,11 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
         jDialog6 = new javax.swing.JDialog();
         jDialog7 = new javax.swing.JDialog();
         sidePanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        APFoodLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        RegisterMenuButton = new javax.swing.JButton();
+        ModifyMenuButton = new javax.swing.JButton();
+        TopUpMenuLabel = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -60,8 +61,8 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
         ChangeRoleConfirmButton = new javax.swing.JPanel();
         CurrentRoleLabel = new javax.swing.JLabel();
         NewRoleLabel = new javax.swing.JLabel();
-        ChangeNewRoleButton = new javax.swing.JButton();
-        CurrentRoleInput = new javax.swing.JTextField();
+        ChangeRoleButton = new javax.swing.JButton();
+        CurrentRoleField = new javax.swing.JTextField();
         NewRoleComboBox = new javax.swing.JComboBox<>();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
@@ -159,21 +160,24 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
         sidePanel.setBackground(new java.awt.Color(0, 89, 100));
         sidePanel.setPreferredSize(new java.awt.Dimension(250, 900));
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("APFood");
+        APFoodLabel.setBackground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        APFoodLabel.setForeground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        APFoodLabel.setText("APFood");
 
         jPanel3.setForeground(new java.awt.Color(30, 30, 30));
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        jButton3.setText("Register");
-        jPanel3.add(jButton3);
+        RegisterMenuButton.setText("Register");
+        jPanel3.add(RegisterMenuButton);
 
-        jButton1.setText("Update");
-        jPanel3.add(jButton1);
+        ModifyMenuButton.setText("Modify");
+        jPanel3.add(ModifyMenuButton);
+
+        TopUpMenuLabel.setText("Top up credit");
+        jPanel3.add(TopUpMenuLabel);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -182,7 +186,7 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(APFoodLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
         );
@@ -190,7 +194,7 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidePanelLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jLabel1)
+                .addComponent(APFoodLabel)
                 .addGap(47, 47, 47)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(428, Short.MAX_VALUE))
@@ -288,16 +292,16 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
         NewRoleLabel.setForeground(new java.awt.Color(255, 255, 255));
         NewRoleLabel.setText("Choose new role:");
 
-        ChangeNewRoleButton.setText("Change Role");
-        ChangeNewRoleButton.addActionListener(new java.awt.event.ActionListener() {
+        ChangeRoleButton.setText("Change Role");
+        ChangeRoleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ChangeNewRoleButtonActionPerformed(evt);
+                ChangeRoleButtonActionPerformed(evt);
             }
         });
 
-        CurrentRoleInput.addActionListener(new java.awt.event.ActionListener() {
+        CurrentRoleField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CurrentRoleInputActionPerformed(evt);
+                CurrentRoleFieldActionPerformed(evt);
             }
         });
 
@@ -319,8 +323,8 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
                     .addComponent(NewRoleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ChangeNewRoleButton)
-                    .addComponent(CurrentRoleInput, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ChangeRoleButton)
+                    .addComponent(CurrentRoleField, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(NewRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(75, Short.MAX_VALUE))
         );
@@ -330,13 +334,13 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
                 .addGap(61, 61, 61)
                 .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CurrentRoleLabel)
-                    .addComponent(CurrentRoleInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CurrentRoleField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
                 .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(NewRoleLabel)
                     .addComponent(NewRoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(102, 102, 102)
-                .addComponent(ChangeNewRoleButton)
+                .addComponent(ChangeRoleButton)
                 .addContainerGap(261, Short.MAX_VALUE))
         );
 
@@ -372,14 +376,14 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CurrentRoleInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CurrentRoleInputActionPerformed
+    private void CurrentRoleFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CurrentRoleFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_CurrentRoleInputActionPerformed
+    }//GEN-LAST:event_CurrentRoleFieldActionPerformed
 
-    private void ChangeNewRoleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangeNewRoleButtonActionPerformed
+    private void ChangeRoleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangeRoleButtonActionPerformed
         // TODO add your handling code here:
         JOptionPane.showMessageDialog(this,"Clicked Event Done");
-    }//GEN-LAST:event_ChangeNewRoleButtonActionPerformed
+    }//GEN-LAST:event_ChangeRoleButtonActionPerformed
 
     private void NewRoleComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewRoleComboBoxActionPerformed
         // TODO add your handling code here:
@@ -405,21 +409,23 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm().setVisible(true);
+                new AdminRegister().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ChangeNewRoleButton;
+    private javax.swing.JLabel APFoodLabel;
+    private javax.swing.JButton ChangeRoleButton;
     private javax.swing.JPanel ChangeRoleConfirmButton;
-    private javax.swing.JTextField CurrentRoleInput;
+    private javax.swing.JTextField CurrentRoleField;
     private javax.swing.JLabel CurrentRoleLabel;
+    private javax.swing.JButton ModifyMenuButton;
     private javax.swing.JComboBox<String> NewRoleComboBox;
     private javax.swing.JLabel NewRoleLabel;
+    private javax.swing.JButton RegisterMenuButton;
+    private javax.swing.JButton TopUpMenuLabel;
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JDialog jDialog3;
@@ -428,7 +434,6 @@ public class AdminForm_2_2 extends javax.swing.JFrame {
     private javax.swing.JDialog jDialog6;
     private javax.swing.JDialog jDialog7;
     private javax.swing.JFrame jFrame1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

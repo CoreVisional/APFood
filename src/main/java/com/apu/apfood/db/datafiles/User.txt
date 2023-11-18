@@ -6,3 +6,4 @@ id| name| email| password| role
 5| Roger| roger@gmail.com| roger123| Vendor
 6| Herry| herry@gmail.com| herry123| Customer
 7| Gordon| gordon@gmail.com| gordon123| Runner
+8| Lula| lula@gmail.com| lula123| Vendor

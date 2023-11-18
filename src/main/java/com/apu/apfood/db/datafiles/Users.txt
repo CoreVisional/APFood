@@ -4,3 +4,4 @@ id| name| email| password| role
 3| Jack Kwan| jack@picante.apu.edu.my| qweqweqwe| vendor
 4| Howard Lim| picante@picante.apu.edu.my| qqqqqqqq| vendor
 5| Alice Johnson| 123@123.com| qweqweqwe| runner
+6| Dodo| dodo@123| dodo12345| Customer

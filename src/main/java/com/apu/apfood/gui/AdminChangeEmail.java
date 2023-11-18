@@ -6,7 +6,7 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
-public class AdminForm_changeEmail extends javax.swing.JFrame {
+public class AdminChangeEmail extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -14,7 +14,7 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
     /**
      * Creates new form VendorFrame
      */
-    public AdminForm_changeEmail() {
+    public AdminChangeEmail() {
         initComponents();
         initCustomComponents();
     }
@@ -44,8 +44,9 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
         sidePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        RegisterMenuButton = new javax.swing.JButton();
+        ModifyMenuButton = new javax.swing.JButton();
+        TopUpMenuLabel = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -57,12 +58,12 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        ChangeRoleConfirmButton = new javax.swing.JPanel();
+        ChangeEmailPanel = new javax.swing.JPanel();
         CurrentEmailLabel = new javax.swing.JLabel();
         NewEmailLabel = new javax.swing.JLabel();
-        ChangeNewEmailButton = new javax.swing.JButton();
-        CurrentEmailInput = new javax.swing.JTextField();
-        NewEmailInput = new javax.swing.JTextField();
+        ChangeEmailButton = new javax.swing.JButton();
+        CurrentEmailField = new javax.swing.JTextField();
+        NewEmailField = new javax.swing.JTextField();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -169,11 +170,14 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        jButton3.setText("Register");
-        jPanel3.add(jButton3);
+        RegisterMenuButton.setText("Register");
+        jPanel3.add(RegisterMenuButton);
 
-        jButton1.setText("Update");
-        jPanel3.add(jButton1);
+        ModifyMenuButton.setText("Modify");
+        jPanel3.add(ModifyMenuButton);
+
+        TopUpMenuLabel.setText("Top up credit");
+        jPanel3.add(TopUpMenuLabel);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -278,7 +282,7 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
 
         mainPanel.add(topBarPanel, java.awt.BorderLayout.PAGE_START);
 
-        ChangeRoleConfirmButton.setBackground(new java.awt.Color(0, 102, 102));
+        ChangeEmailPanel.setBackground(new java.awt.Color(0, 102, 102));
 
         CurrentEmailLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         CurrentEmailLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -288,50 +292,50 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
         NewEmailLabel.setForeground(new java.awt.Color(255, 255, 255));
         NewEmailLabel.setText("Enter new user email:");
 
-        ChangeNewEmailButton.setText("Change Email");
-        ChangeNewEmailButton.addActionListener(new java.awt.event.ActionListener() {
+        ChangeEmailButton.setText("Change Email");
+        ChangeEmailButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ChangeNewEmailButtonActionPerformed(evt);
+                ChangeEmailButtonActionPerformed(evt);
             }
         });
 
-        CurrentEmailInput.addActionListener(new java.awt.event.ActionListener() {
+        CurrentEmailField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CurrentEmailInputActionPerformed(evt);
+                CurrentEmailFieldActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout ChangeRoleConfirmButtonLayout = new javax.swing.GroupLayout(ChangeRoleConfirmButton);
-        ChangeRoleConfirmButton.setLayout(ChangeRoleConfirmButtonLayout);
-        ChangeRoleConfirmButtonLayout.setHorizontalGroup(
-            ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ChangeRoleConfirmButtonLayout.createSequentialGroup()
+        javax.swing.GroupLayout ChangeEmailPanelLayout = new javax.swing.GroupLayout(ChangeEmailPanel);
+        ChangeEmailPanel.setLayout(ChangeEmailPanelLayout);
+        ChangeEmailPanelLayout.setHorizontalGroup(
+            ChangeEmailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ChangeEmailPanelLayout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ChangeRoleConfirmButtonLayout.createSequentialGroup()
+                .addGroup(ChangeEmailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ChangeEmailPanelLayout.createSequentialGroup()
                         .addComponent(NewEmailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ChangeNewEmailButton)
-                            .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(NewEmailInput)
-                                .addComponent(CurrentEmailInput, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))))
+                        .addGroup(ChangeEmailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ChangeEmailButton)
+                            .addGroup(ChangeEmailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(NewEmailField)
+                                .addComponent(CurrentEmailField, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))))
                     .addComponent(CurrentEmailLabel))
                 .addContainerGap(51, Short.MAX_VALUE))
         );
-        ChangeRoleConfirmButtonLayout.setVerticalGroup(
-            ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ChangeRoleConfirmButtonLayout.createSequentialGroup()
+        ChangeEmailPanelLayout.setVerticalGroup(
+            ChangeEmailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ChangeEmailPanelLayout.createSequentialGroup()
                 .addGap(61, 61, 61)
-                .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(ChangeEmailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CurrentEmailLabel)
-                    .addComponent(CurrentEmailInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CurrentEmailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
-                .addGroup(ChangeRoleConfirmButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(NewEmailInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(ChangeEmailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(NewEmailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(NewEmailLabel))
                 .addGap(42, 42, 42)
-                .addComponent(ChangeNewEmailButton)
+                .addComponent(ChangeEmailButton)
                 .addContainerGap(331, Short.MAX_VALUE))
         );
 
@@ -346,7 +350,7 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
                         .addComponent(jLabel8))
                     .addGroup(contentPanelLayout.createSequentialGroup()
                         .addGap(454, 454, 454)
-                        .addComponent(ChangeRoleConfirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ChangeEmailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(396, Short.MAX_VALUE))
         );
         contentPanelLayout.setVerticalGroup(
@@ -355,7 +359,7 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addComponent(jLabel8)
                 .addGap(33, 33, 33)
-                .addComponent(ChangeRoleConfirmButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ChangeEmailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(216, Short.MAX_VALUE))
         );
 
@@ -367,14 +371,14 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CurrentEmailInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CurrentEmailInputActionPerformed
+    private void CurrentEmailFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CurrentEmailFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_CurrentEmailInputActionPerformed
+    }//GEN-LAST:event_CurrentEmailFieldActionPerformed
 
-    private void ChangeNewEmailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangeNewEmailButtonActionPerformed
+    private void ChangeEmailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangeEmailButtonActionPerformed
         // TODO add your handling code here:
         JOptionPane.showMessageDialog(this,"Clicked Event Done");
-    }//GEN-LAST:event_ChangeNewEmailButtonActionPerformed
+    }//GEN-LAST:event_ChangeEmailButtonActionPerformed
     
 
     /**
@@ -393,21 +397,22 @@ public class AdminForm_changeEmail extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm().setVisible(true);
+                new AdminRegister().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ChangeNewEmailButton;
-    private javax.swing.JPanel ChangeRoleConfirmButton;
-    private javax.swing.JTextField CurrentEmailInput;
+    private javax.swing.JButton ChangeEmailButton;
+    private javax.swing.JPanel ChangeEmailPanel;
+    private javax.swing.JTextField CurrentEmailField;
     private javax.swing.JLabel CurrentEmailLabel;
-    private javax.swing.JTextField NewEmailInput;
+    private javax.swing.JButton ModifyMenuButton;
+    private javax.swing.JTextField NewEmailField;
     private javax.swing.JLabel NewEmailLabel;
+    private javax.swing.JButton RegisterMenuButton;
+    private javax.swing.JButton TopUpMenuLabel;
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JDialog jDialog3;
