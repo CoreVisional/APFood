@@ -1,7 +1,7 @@
 package com.apu.apfood.gui;
 
-import com.apu.apfood.db.dao.RunnerTaskDao;
 import com.apu.apfood.db.dao.UserDao;
+import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
@@ -21,7 +21,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private Object[][] deliveryHistory;
     private RunnerService rs;
     private UserDao ud;
-    private Map<String, RunnerTaskDao.OrderDetails> deliveryTasks;
+    private Map<String, OrderDetails> deliveryTasks;
     private String[] orderKeys;
     private int orderListPanelIndex = 0;
 
