@@ -9,10 +9,11 @@ import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.RunnerRevenueDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
 import com.apu.apfood.db.dao.UserDao;
+import com.apu.apfood.db.models.FoodDetails;
+import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JRadioButton;
 
 /**
  *
@@ -42,8 +43,8 @@ public class RunnerService {
         todayRevenueJLabel.setText("RM " + runnerRevenueDao.checkDailyRevenue(user));
     }
 
-    public Map<String, RunnerTaskDao.OrderDetails> getDeliveryTask(User user) {
-        Map<String, RunnerTaskDao.OrderDetails> orderMap = runnerTaskDao.getOrderList(user);
+    public Map<String, OrderDetails> getDeliveryTask(User user) {
+        Map<String, OrderDetails> orderMap = runnerTaskDao.getOrderList(user);
         // Print the orderMap
 //        for (Map.Entry<String, RunnerTaskDao.OrderDetails> entry : orderMap.entrySet()) {
 //            String key = entry.getKey();
@@ -65,12 +66,12 @@ public class RunnerService {
         return orderMap;
     }
 
-    public void displayTask(String[] orderKeys, int orderListPanelIndex, Map<String, RunnerTaskDao.OrderDetails> deliveryTasks, javax.swing.JLabel taskCustomerNameJLabel, javax.swing.JLabel taskVendorNameJLabel, javax.swing.JLabel taskOrderIdJLabel, javax.swing.JTextArea taskOrderListJTextArea) {
+    public void displayTask(String[] orderKeys, int orderListPanelIndex, Map<String, OrderDetails> deliveryTasks, javax.swing.JLabel taskCustomerNameJLabel, javax.swing.JLabel taskVendorNameJLabel, javax.swing.JLabel taskOrderIdJLabel, javax.swing.JTextArea taskOrderListJTextArea) {
         UserDao ud = new UserDao();
 
         // Get order details based on chosen key
         String chosenKey = orderKeys[orderListPanelIndex];
-        RunnerTaskDao.OrderDetails orderDetails = deliveryTasks.get(chosenKey);
+        OrderDetails orderDetails = deliveryTasks.get(chosenKey);
         String customerName = ud.getCustomerName(orderDetails.getAccountId());
 
         // Display information
@@ -80,7 +81,7 @@ public class RunnerService {
 
         StringBuilder foodItemsStringBuilder = new StringBuilder();
 
-        for (RunnerTaskDao.FoodDetails foodDetails : orderDetails.getFoodDetailsList()) {
+        for (FoodDetails foodDetails : orderDetails.getFoodDetailsList()) {
             String item = "- " + foodDetails.getFoodName() + " x" + foodDetails.getQuantity() + "\n";
             foodItemsStringBuilder.append(item);
         }

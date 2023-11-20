@@ -22,8 +22,6 @@ public class RunnerRevenueDao extends APFoodDao<User> {
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt";
     private static final String HEADERS = "id| deliveryRunnerID| status\n";
 
-    FileHelper fileHelper = new FileHelper();
-
     public RunnerRevenueDao() {
         super(USER_FILEPATH, HEADERS);
     }
@@ -50,8 +48,38 @@ public class RunnerRevenueDao extends APFoodDao<User> {
 
                 // Check RunnerDelivery.txt for any completed tasks
                 if (rowArray[2].equals("Completed") && rowArray[4].equals(String.valueOf(user.getId()))) {
-                    // Retrieve Order Id and vendor for that userID
-                    earnings += 3;
+                    // Check if the order date is within the past month
+                    // Retrieve OrderId and vendor for that RunnerId
+                    String orderId = rowArray[1];
+                    String vendorName = rowArray[3];
+
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    BufferedReader br2 = new BufferedReader(fr2);
+                    String row2;
+                    br2.readLine();
+                    while ((row2 = br2.readLine()) != null) {
+                        String[] rowArray2 = row2.split("\\| ");
+                        String location = rowArray2[11];
+                        if (rowArray2[1].equals(orderId)) {
+                            switch (location) {
+                                case "Block A":
+                                    earnings += 5.0;
+                                    break;
+                                case "Block B":
+                                    earnings += 3.0;
+                                    break;
+                                case "Block D":
+                                    earnings += 2.0;
+                                    break;
+                                case "Block E":
+                                    earnings += 2.0;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        }
+                    }
                 }
             }
             br.close();
@@ -98,10 +126,24 @@ public class RunnerRevenueDao extends APFoodDao<User> {
                     while ((row2 = br2.readLine()) != null) {
                         String[] rowArray2 = row2.split("\\| ");
                         LocalDate orderDate = LocalDate.parse(rowArray2[5], dateFormatter);
-
+                        String location = rowArray2[11];
                         if (rowArray2[1].equals(orderId) && (orderDate.isAfter(startDateOfPastMonth) || orderDate.isEqual(startDateOfPastMonth))) {
-                            // Increment earnings by 3
-                            earnings += 3;
+                            switch (location) {
+                                case "Block A":
+                                    earnings += 5.0;
+                                    break;
+                                case "Block B":
+                                    earnings += 3.0;
+                                    break;
+                                case "Block D":
+                                    earnings += 2.0;
+                                    break;
+                                case "Block E":
+                                    earnings += 2.0;
+                                    break;
+                                default:
+                                    break;
+                            }
                             break;
                         }
                     }
@@ -146,10 +188,24 @@ public class RunnerRevenueDao extends APFoodDao<User> {
                     while ((row2 = br2.readLine()) != null) {
                         String[] rowArray2 = row2.split("\\| ");
                         LocalDate orderDate = LocalDate.parse(rowArray2[5], dateFormatter);
-
+                        String location = rowArray2[11];
                         if (rowArray2[1].equals(orderId) && orderDate.isEqual(currentDate)) {
-                            // Increment earnings by 3
-                            earnings += 3;
+                            switch (location) {
+                                case "Block A":
+                                    earnings += 5.0;
+                                    break;
+                                case "Block B":
+                                    earnings += 3.0;
+                                    break;
+                                case "Block D":
+                                    earnings += 2.0;
+                                    break;
+                                case "Block E":
+                                    earnings += 2.0;
+                                    break;
+                                default:
+                                    break;
+                            }
                             break;
                         }
                     }

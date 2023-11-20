@@ -4,6 +4,7 @@
  */
 package com.apu.apfood.db.dao;
 
+import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.FileHelper;
 import java.io.BufferedReader;
@@ -497,74 +498,6 @@ public class RunnerTaskDao extends APFoodDao<User> {
             e.printStackTrace();
         }
         return taskDetails;
-    }
-
-    public class OrderDetails {
-
-        private String accountId;
-        private String orderId;
-        private String vendorName;
-
-        private List<FoodDetails> foodDetailsList = new ArrayList<>();
-
-        public void addFoodDetails(String foodName, String foodId, String quantity) {
-            FoodDetails foodDetails = new FoodDetails(foodName, foodId, quantity);
-            foodDetailsList.add(foodDetails);
-        }
-
-        public String getAccountId() {
-            return accountId;
-        }
-
-        public String getOrderId() {
-            return orderId;
-        }
-
-        public String getVendorName() {
-            return vendorName;
-        }
-
-        public List<FoodDetails> getFoodDetailsList() {
-            return foodDetailsList;
-        }
-
-        public void setAccountId(String accountId) {
-            this.accountId = accountId;
-        }
-
-        public void setOrderId(String orderId) {
-            this.orderId = orderId;
-        }
-
-        public void setVendorName(String vendorName) {
-            this.vendorName = vendorName;
-        }
-
-    }
-
-    public class FoodDetails {
-
-        private String foodName;
-        private String foodId;
-        private String quantity;
-
-        public FoodDetails(String foodName, String foodId, String quantity) {
-            this.foodName = foodName;
-            this.foodId = foodId;
-            this.quantity = quantity;
-        }
-
-        public String getFoodName() {
-            return foodName;
-        }
-
-        public String getFoodId() {
-            return foodId;
-        }
-
-        public String getQuantity() {
-            return quantity;
-        }
     }
 
     public static void main(String[] args) {
