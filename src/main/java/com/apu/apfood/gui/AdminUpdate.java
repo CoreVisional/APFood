@@ -3,8 +3,9 @@ package com.apu.apfood.gui;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
+import javax.swing.JComboBox;
 
-public class AdminForm extends javax.swing.JFrame {
+public class AdminUpdate extends javax.swing.JFrame {
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -12,7 +13,7 @@ public class AdminForm extends javax.swing.JFrame {
     /**
      * Creates new form VendorFrame
      */
-    public AdminForm() {
+    public AdminUpdate() {
         initComponents();
         initCustomComponents();
     }
@@ -31,11 +32,14 @@ public class AdminForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jPopupMenu2 = new javax.swing.JPopupMenu();
         sidePanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
+        APFoodLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        RegisterMenuButton = new javax.swing.JButton();
+        ModifyMenuButton = new javax.swing.JButton();
+        TopUpMenuLabel = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -46,6 +50,17 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        UpdatePanel = new javax.swing.JPanel();
+        UpdateLabel = new javax.swing.JLabel();
+        EmailButtonUpdate = new javax.swing.JButton();
+        PasswordButtonUpdate = new javax.swing.JButton();
+        RoleButtonUpdate = new javax.swing.JButton();
+        IDLabel = new javax.swing.JLabel();
+        PasswordLabel = new javax.swing.JLabel();
+        IDUpdate = new javax.swing.JTextField();
+        PasswordUpdate = new javax.swing.JTextField();
+        UpdateChoiceLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -54,29 +69,24 @@ public class AdminForm extends javax.swing.JFrame {
         sidePanel.setBackground(new java.awt.Color(0, 89, 100));
         sidePanel.setPreferredSize(new java.awt.Dimension(250, 900));
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("APFood");
-
-        jSeparator1.setBackground(new java.awt.Color(204, 204, 204));
-        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setBackground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        APFoodLabel.setForeground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        APFoodLabel.setText("APFood");
 
         jPanel3.setForeground(new java.awt.Color(30, 30, 30));
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Home");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.setFocusPainted(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jButton2);
+        RegisterMenuButton.setText("Register");
+        jPanel3.add(RegisterMenuButton);
+
+        ModifyMenuButton.setText("Modify");
+        jPanel3.add(ModifyMenuButton);
+
+        TopUpMenuLabel.setText("Top up credit");
+        jPanel3.add(TopUpMenuLabel);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -85,8 +95,7 @@ public class AdminForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
+                    .addComponent(APFoodLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
         );
@@ -94,12 +103,10 @@ public class AdminForm extends javax.swing.JFrame {
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidePanelLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(APFoodLabel)
+                .addGap(47, 47, 47)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(428, Short.MAX_VALUE))
+                .addContainerGap(460, Short.MAX_VALUE))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -110,7 +117,6 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanel.setPreferredSize(new java.awt.Dimension(1350, 80));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("Full Name");
 
@@ -141,7 +147,7 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1021, Short.MAX_VALUE)
+                .addContainerGap(1088, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel7)
@@ -185,15 +191,110 @@ public class AdminForm extends javax.swing.JFrame {
 
         mainPanel.add(topBarPanel, java.awt.BorderLayout.PAGE_START);
 
+        UpdatePanel.setBackground(new java.awt.Color(0, 102, 102));
+
+        UpdateLabel.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        UpdateLabel.setForeground(new java.awt.Color(255, 255, 255));
+        UpdateLabel.setText("Update User Information");
+
+        EmailButtonUpdate.setText("User Email");
+
+        PasswordButtonUpdate.setText("User Password");
+
+        RoleButtonUpdate.setText("User Role");
+
+        IDLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        IDLabel.setForeground(new java.awt.Color(255, 255, 255));
+        IDLabel.setText("ID:");
+
+        PasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        PasswordLabel.setForeground(new java.awt.Color(255, 255, 255));
+        PasswordLabel.setText("Password:");
+
+        IDUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                IDUpdateActionPerformed(evt);
+            }
+        });
+
+        UpdateChoiceLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        UpdateChoiceLabel.setForeground(new java.awt.Color(255, 255, 255));
+        UpdateChoiceLabel.setText("Select the option:");
+
+        javax.swing.GroupLayout UpdatePanelLayout = new javax.swing.GroupLayout(UpdatePanel);
+        UpdatePanel.setLayout(UpdatePanelLayout);
+        UpdatePanelLayout.setHorizontalGroup(
+            UpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(UpdatePanelLayout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addGroup(UpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(UpdateLabel)
+                    .addComponent(UpdateChoiceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(UpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, UpdatePanelLayout.createSequentialGroup()
+                            .addGap(1, 1, 1)
+                            .addComponent(IDLabel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(IDUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, UpdatePanelLayout.createSequentialGroup()
+                            .addComponent(PasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(PasswordUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(107, Short.MAX_VALUE))
+            .addGroup(UpdatePanelLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(EmailButtonUpdate)
+                .addGap(105, 105, 105)
+                .addComponent(PasswordButtonUpdate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(RoleButtonUpdate)
+                .addGap(54, 54, 54))
+        );
+        UpdatePanelLayout.setVerticalGroup(
+            UpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(UpdatePanelLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(UpdateLabel)
+                .addGap(46, 46, 46)
+                .addGroup(UpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(IDLabel)
+                    .addComponent(IDUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addGroup(UpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(PasswordLabel)
+                    .addComponent(PasswordUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addComponent(UpdateChoiceLabel)
+                .addGap(38, 38, 38)
+                .addGroup(UpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(PasswordButtonUpdate)
+                    .addComponent(RoleButtonUpdate)
+                    .addComponent(EmailButtonUpdate))
+                .addGap(219, 219, 219))
+        );
+
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
         contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1350, Short.MAX_VALUE)
+            .addGroup(contentPanelLayout.createSequentialGroup()
+                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(contentPanelLayout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel8))
+                    .addGroup(contentPanelLayout.createSequentialGroup()
+                        .addGap(430, 430, 430)
+                        .addComponent(UpdatePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(396, Short.MAX_VALUE))
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
+            .addGroup(contentPanelLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel8)
+                .addGap(33, 33, 33)
+                .addComponent(UpdatePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
@@ -204,9 +305,10 @@ public class AdminForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void IDUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IDUpdateActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_IDUpdateActionPerformed
+    
 
     /**
      * @param args the command line arguments
@@ -217,33 +319,53 @@ public class AdminForm extends javax.swing.JFrame {
         try {
             javax.swing.UIManager.setLookAndFeel(new FlatDarculaLaf());
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AdminForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm().setVisible(true);
+                new AdminUpdate().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel APFoodLabel;
+    private javax.swing.JButton EmailButtonUpdate;
+    private javax.swing.JLabel IDLabel;
+    private javax.swing.JTextField IDUpdate;
+    private javax.swing.JButton ModifyMenuButton;
+    private javax.swing.JButton PasswordButtonUpdate;
+    private javax.swing.JLabel PasswordLabel;
+    private javax.swing.JTextField PasswordUpdate;
+    private javax.swing.JButton RegisterMenuButton;
+    private javax.swing.JButton RoleButtonUpdate;
+    private javax.swing.JButton TopUpMenuLabel;
+    private javax.swing.JLabel UpdateChoiceLabel;
+    private javax.swing.JLabel UpdateLabel;
+    private javax.swing.JPanel UpdatePanel;
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JPopupMenu jPopupMenu2;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel sidePanel;
     private javax.swing.JPanel topBarPanel;
     // End of variables declaration//GEN-END:variables
+
+    private static class RoleComboBox extends JComboBox<String> {
+
+        public RoleComboBox(String[] role) {
+        }
+    }
 }

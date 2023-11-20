@@ -1,6 +1,6 @@
 package com.apu.apfood.gui.auth;
 
-import com.apu.apfood.gui.AdminForm;
+import com.apu.apfood.gui.AdminRegister;
 import com.apu.apfood.gui.VendorForm;
 import com.apu.apfood.gui.RunnerForm;
 import com.apu.apfood.gui.CustomerForm;
@@ -229,7 +229,7 @@ public class LoginForm extends javax.swing.JFrame {
         if (userObject.getRole().equals("Admin")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new AdminForm(); // Should pass in userObject
+            new AdminRegister(); // Should pass in userObject
             System.out.println(userObject);
         } else if (userObject.getRole().equals("Customer")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
