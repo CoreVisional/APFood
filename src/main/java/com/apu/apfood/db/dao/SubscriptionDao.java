@@ -18,9 +18,9 @@ import java.time.format.DateTimeFormatter;
  */
 public class SubscriptionDao extends APFoodDao<User> {
 
-    private static final String USER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Subscriptions.txt";
+    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\Subscriptions.txt";
     private static final String HEADERS = "id| userId| subscriptionStartDate| subscriptionEndDate\n";
-    private TransactionDao transactionDao = new TransactionDao();
+    private final TransactionDao transactionDao = new TransactionDao();
 
     public SubscriptionDao() {
         super(USER_FILEPATH, HEADERS);

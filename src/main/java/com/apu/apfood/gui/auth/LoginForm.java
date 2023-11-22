@@ -226,22 +226,22 @@ public class LoginForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Invalid credentials!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (userObject.getRole().equals("Admin")) {
+        if (userObject.getRole().equals("admin")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new AdminForm(userObject); // Should pass in userObject
             System.out.println(userObject);
-        } else if (userObject.getRole().equals("Customer")) {
+        } else if (userObject.getRole().equals("customer")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new CustomerForm(); // Should pass in userObject
             System.out.println(userObject);
-        } else if (userObject.getRole().equals("Runner")) {
+        } else if (userObject.getRole().equals("runner")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new RunnerForm(userObject);
             System.out.println(userObject);
-        } else if (userObject.getRole().equals("Vendor")) {
+        } else if (userObject.getRole().equals("vendor")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new VendorForm(); // Should pass in userObject
@@ -277,25 +277,25 @@ public class LoginForm extends javax.swing.JFrame {
     // Checks if user exists in text file
     public static User checkCredentials(String emailInput, char[] passwordInput) {
         try {
-            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\user.txt");
+            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\Users.txt");
             BufferedReader br = new BufferedReader(fr);
             br.readLine(); // Skip the first line
             String row;
             while ((row = br.readLine()) != null) {
                 String[] rowArray = row.split("\\| ");
-                int userId = Integer.parseInt(rowArray[0]);
-                String name = rowArray[1];
-                String email = rowArray[2];
-                char[] password = rowArray[3].toCharArray();
-                String role = rowArray[4];
+                int userId = Integer.parseInt(rowArray[1]);
+                String name = rowArray[2];
+                String email = rowArray[3];
+                char[] password = rowArray[4].toCharArray();
+                String role = rowArray[5];
                 if (email.equals(emailInput) && Arrays.equals(passwordInput, password)) {
-                    if (role.equals("Admin")) {
+                    if (role.equals("admin")) {
                         return new User(userId, name, email, password, role);
-                    } else if (role.equals("Customer")) {
+                    } else if (role.equals("customer")) {
                         return new User(userId, name, email, password, role);
-                    } else if (role.equals("Runner")) {
+                    } else if (role.equals("runner")) {
                         return new User(userId, name, email, password, role);
-                    } else if (role.equals("Vendor")) {
+                    } else if (role.equals("vendor")) {
                         return new User(userId, name, email, password, role);
                     }
                 }

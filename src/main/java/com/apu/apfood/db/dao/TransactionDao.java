@@ -4,7 +4,6 @@
  */
 package com.apu.apfood.db.dao;
 
-import static com.apu.apfood.db.dao.APFoodDao.BASE_PATH;
 import com.apu.apfood.db.models.User;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,7 +19,7 @@ import java.time.LocalTime;
  */
 public class TransactionDao extends APFoodDao<User> {
 
-    private static final String USER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Transactions.txt";
+    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\Transactions.txt";
     private static final String HEADERS = "id| userId| amount| date| time| remark\n";
 
     public TransactionDao() {

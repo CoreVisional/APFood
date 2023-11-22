@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
-  <NonVisualComponents>
-    <Component class="javax.swing.ButtonGroup" name="runnerAvailabilityButtonGroup">
-    </Component>
-  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Home - APFood"/>
@@ -52,13 +48,13 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabel1" max="32767" attributes="0"/>
                       <Component id="jSeparator1" max="32767" attributes="0"/>
-                      <Component id="jPanel3" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jPanel3" alignment="0" pref="200" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
-                  <Component id="roleLabel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                  <Component id="roleLabel" min="-2" pref="160" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -171,7 +167,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="Full Name"/>
           </Properties>
         </Component>
@@ -1086,12 +1082,12 @@
                           <EmptySpace pref="262" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jLabel19" min="-2" pref="623" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="350" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
                                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="211" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="jLabel19" min="-2" pref="623" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="355" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -1100,9 +1096,9 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                           <Component id="jLabel19" min="-2" pref="85" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="97" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="107" max="-2" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="222" max="32767" attributes="0"/>
                       </Group>

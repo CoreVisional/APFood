@@ -71,7 +71,7 @@ public class RunnerForm extends javax.swing.JFrame {
         guiHelper.buttonPanelSwitcher(deliveryHistoryNavBtn, contentPanel, "RunnerTaskHistory");
         guiHelper.buttonPanelSwitcher(revenueNavBtn, contentPanel, "RunnerRevenue");
 
-        roleLabel.setText(user.getRole());
+        roleLabel.setText("Delivery Runner");
         nameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
 
@@ -91,7 +91,6 @@ public class RunnerForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        runnerAvailabilityButtonGroup = new javax.swing.ButtonGroup();
         sidePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -216,7 +215,7 @@ public class RunnerForm extends javax.swing.JFrame {
 
         roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         roleLabel.setForeground(new java.awt.Color(255, 255, 255));
-        roleLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        roleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         roleLabel.setText("Full Name");
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
@@ -228,11 +227,11 @@ public class RunnerForm extends javax.swing.JFrame {
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jSeparator1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
             .addGroup(sidePanelLayout.createSequentialGroup()
-                .addGap(85, 85, 85)
-                .addComponent(roleLabel)
+                .addGap(45, 45, 45)
+                .addComponent(roleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         sidePanelLayout.setVerticalGroup(
@@ -944,18 +943,18 @@ public class RunnerForm extends javax.swing.JFrame {
                 .addContainerGap(262, Short.MAX_VALUE)
                 .addGroup(runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(350, 350, 350))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(211, 211, 211))))
+                        .addGap(211, 211, 211))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(355, 355, 355))))
         );
         runnerRevenuePanelLayout.setVerticalGroup(
             runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(40, 40, 40)
                 .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(97, 97, 97)
+                .addGap(107, 107, 107)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(222, Short.MAX_VALUE))
         );
@@ -1026,6 +1025,9 @@ public class RunnerForm extends javax.swing.JFrame {
         // Refresh delivery history table
         this.deliveryHistory = rs.getDeliveryHistory();
         tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory);
+        
+        // Reset order list panel index
+        orderListPanelIndex = 0;
     }//GEN-LAST:event_taskAcceptBtnActionPerformed
 
     private void leftPanelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftPanelBtnActionPerformed
@@ -1149,7 +1151,6 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JButton revenueNavBtn;
     private javax.swing.JButton rightPanelBtn;
     private javax.swing.JLabel roleLabel;
-    private javax.swing.ButtonGroup runnerAvailabilityButtonGroup;
     private javax.swing.JPanel runnerHomePanel;
     private javax.swing.JPanel runnerRevenuePanel;
     private javax.swing.JPanel runnerTaskHistoryPanel;
