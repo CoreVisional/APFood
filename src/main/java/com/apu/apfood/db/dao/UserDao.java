@@ -51,7 +51,7 @@ public class UserDao extends APFoodDao<User> {
     public String getCustomerId(String orderId, String vendorName) {
         String customerId = "";
         try {
-            FileReader fr = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+            FileReader fr = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
             BufferedReader br = new BufferedReader(fr);
             String row;
 

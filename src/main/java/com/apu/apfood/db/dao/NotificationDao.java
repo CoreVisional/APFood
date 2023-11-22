@@ -9,7 +9,7 @@ import java.io.File;
  */
 public class NotificationDao extends APFoodDao<User> {
 
-    private static final String USER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Notification.txt";
+    private static final String USER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Notifications.txt";
     private static final String HEADERS = "id| userId| content| status\n";
 
     public NotificationDao() {

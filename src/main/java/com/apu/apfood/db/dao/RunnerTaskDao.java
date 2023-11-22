@@ -70,7 +70,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     
                     
                     // Retrive customer name, date and time
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
                     String row2;
 
@@ -158,7 +158,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     String vendorName = rowArray[4];
 
                     //Read vendor's order history
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
                     String row2;
 
@@ -373,7 +373,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
 
         if (isNoRunnerLeft) {
             // If no runner left send notification to customer
-            notificationDao.writeNotification(userId + "| " + "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]" + "| Not Notified");
+            notificationDao.writeNotification(userId + "| " + "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Push");
 
         }
     }

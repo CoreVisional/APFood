@@ -24,7 +24,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private Map<String, OrderDetails> deliveryTasks;
     private String[] orderKeys;
     private int orderListPanelIndex = 0;
-
+    
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
     GUIHelper guiHelper = new GUIHelper();
