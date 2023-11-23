@@ -12,12 +12,12 @@ import java.io.IOException;
  */
 public class UserSeeder {
     private static final String BASE_PATH = System.getProperty("user.dir");
-    private static final String USER_FILEPATH = BASE_PATH + "/src/main/java/com/apu/apfood/db/datafiles/users.txt";
-    private static final String HEADERS = "id| name| email| password| role\n";
+    private static final String USER_FILEPATH = BASE_PATH + "/src/main/java/com/apu/apfood/db/datafiles/Users.txt";
+    private static final String HEADERS = "id| userId| name| email| password| role\n";
     private static final FileHelper fileHelper = new FileHelper();
 
     private static final String[][] USERS = {
-        {"SYSTEM", "system@system.com", "password", "superadmin"},
+        {"1", "SYSTEM", "system@system.com", "password", "admin"},
     };
 
     public static void seed() {

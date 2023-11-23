@@ -8,14 +8,18 @@ import java.util.List;
 /**
  *
  * @author Alex
- * @param <T>
+ * @param <T> Generic type parameter to be used on models
  */
 public abstract class APFoodDao<T extends BaseModel> {
     
-    private static final String BASE_PATH = System.getProperty("user.dir");
+    protected static final String BASE_PATH = System.getProperty("user.dir");
     protected String filePath;
     protected FileHelper fileHelper;
     protected String fileHeaders;
+    
+    public APFoodDao() {
+        
+    }
 
     public APFoodDao(String filePath, String fileHeaders) {
         this.filePath = BASE_PATH + filePath;
@@ -35,7 +39,13 @@ public abstract class APFoodDao<T extends BaseModel> {
         return fileHelper.readFile(filePath);
     }
     
+    protected String getFullPath(String relativePath) {
+        return BASE_PATH + relativePath;
+    }
+    
     protected abstract String serialize(T entity);
+    
+    protected abstract T deserialize(String[] data);
     
     public abstract void update(T entity);
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.models.OrderDetails;
@@ -13,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +22,6 @@ import java.util.Map;
  */
 public class RunnerTaskDao extends APFoodDao<User> {
 
-    private static final String BASE_PATH = System.getProperty("user.dir");
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerTaskAssignment.txt";
     private static final String HEADERS = "id| orderId| deliveryRunnerId| status| vendorName\n";
 
@@ -38,6 +35,11 @@ public class RunnerTaskDao extends APFoodDao<User> {
     @Override
     protected String serialize(User user) {
         return user.getName() + "| " + user.getEmail() + "| " + new String(user.getPassword()) + user.getRole() + "\n";
+    }
+
+    @Override
+    protected User deserialize(String[] data) {
+        return null;
     }
 
     @Override
@@ -67,10 +69,9 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     String vendorName = values[4];
                     String location = values[5];
                     String feedback = getRunnerFeedback(orderId, vendorName);
-                    
-                    
+
                     // Retrive customer name, date and time
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
                     String row2;
 
@@ -82,6 +83,15 @@ public class RunnerTaskDao extends APFoodDao<User> {
                             String accountId = rowArray2[2];
                             String date = rowArray2[5];
                             String time = rowArray2[6];
+                            
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSS");
+                            LocalTime parsedTime = LocalTime.parse(time, formatter);
+                            int hours = parsedTime.getHour();
+                            int minutes = parsedTime.getMinute();
+                            // Formatting minutes to have leading zeros if necessary
+                            String formattedMinutes = String.format("%02d", minutes);
+                            String formattedTime = hours + ":" + formattedMinutes; // Concatenating hours and formatted minutes
+                            
                             String customerName = userDao.getCustomerName(accountId);
 
                             FileReader fr3 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt");
@@ -96,7 +106,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                                     String deliveryStatus = rowArray3[2];
 
                                     // Populate table row
-                                    String[] row = {deliveryId, orderId, customerName, vendorName, location, date, time, deliveryStatus, feedback};
+                                    String[] row = {deliveryId, orderId, customerName, vendorName, location, date, formattedTime, deliveryStatus, feedback};
                                     rows.add(row);
 
                                 }
@@ -158,7 +168,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     String vendorName = rowArray[4];
 
                     //Read vendor's order history
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
                     String row2;
 
@@ -373,7 +383,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
 
         if (isNoRunnerLeft) {
             // If no runner left send notification to customer
-            notificationDao.writeNotification(userId + "| " + "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]" + "| Not Notified");
+            notificationDao.writeNotification(userId + "| " + "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Push");
 
         }
     }

@@ -9,7 +9,7 @@ import java.io.File;
  */
 public class NotificationDao extends APFoodDao<User> {
 
-    private static final String USER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Notification.txt";
+    private static final String USER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Notifications.txt";
     private static final String HEADERS = "id| userId| content| status\n";
 
     public NotificationDao() {
@@ -20,6 +20,11 @@ public class NotificationDao extends APFoodDao<User> {
     protected String serialize(User user) {
         return user.getName() + "| " + user.getEmail() + "| " + new String(user.getPassword()) + user.getRole() + "\n";
     }
+    
+    @Override
+    protected User deserialize(String[] data) {
+        return null;
+    }
 
     @Override
     public void update(User user) {
@@ -28,5 +33,4 @@ public class NotificationDao extends APFoodDao<User> {
     public void writeNotification(String content) {
         this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, content);
     }
-
 }

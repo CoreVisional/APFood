@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.apu.apfood.services;
 
 import com.apu.apfood.db.dao.NotificationDao;
@@ -119,7 +115,7 @@ public class RunnerService {
         String orderId = inputOrderId.replace("#", "");
         String userId = userDao.getCustomerId(orderId, vendorName);
 
-        notificationDao.writeNotification(userId + "| " + "Delivery ongoing [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified");
+        notificationDao.writeNotification(userId + "| " + "Delivery ongoing [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Informational");
     }
 
     public boolean checkOngoingTask(User user) {
@@ -140,7 +136,7 @@ public class RunnerService {
 
         runnerAvailabilityDao.updateAvailability(user, "Available");
         runnerTaskDao.updateDeliveryStatus(orderId, vendorName);
-        notificationDao.writeNotification(userId + "| " + "Delivery completed [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified");
+        notificationDao.writeNotification(userId + "| " + "Delivery completed [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Informational");
     }
 
     public static void main(String[] args) {

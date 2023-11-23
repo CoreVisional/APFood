@@ -5,6 +5,9 @@ import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.dao.VendorDao;
 import com.apu.apfood.db.models.Menu;
 import com.apu.apfood.db.models.User;
+import com.apu.apfood.db.dao.MenuDao;
+import com.apu.apfood.db.dao.VendorDao;
+import com.apu.apfood.db.models.Menu;
 import com.apu.apfood.db.models.Vendor;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,13 @@ public class VendorService {
     public VendorService() {
         
     }
+    private final VendorDao vendorDao;
+    private final MenuDao menuDao;
+    
+    public VendorService(VendorDao vendorDao, MenuDao menuDao) {
+        this.vendorDao = vendorDao;
+        this.menuDao = menuDao;
+    }
     
     public List<String> getDistinctVendorNames() {
         List<Vendor> allVendors = vendorDao.getAllVendors();
@@ -45,9 +55,7 @@ public class VendorService {
         return vendorName;
     }
     
-    public Menu getMenu(String vendorName)
-    {
-         Menu menu = vendorDao.getMenu(vendorName);
-        return menu;
+    public List<Menu> getVendorMenuItems(String vendorName) {
+        return menuDao.getAllMenuItems(vendorName);
     }
 }

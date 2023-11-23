@@ -1,16 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.models.User;
-import com.apu.apfood.helpers.FileHelper;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -18,7 +12,6 @@ import java.time.format.DateTimeFormatter;
  */
 public class RunnerRevenueDao extends APFoodDao<User> {
 
-    private static final String BASE_PATH = System.getProperty("user.dir");
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt";
     private static final String HEADERS = "id| deliveryRunnerID| status\n";
 
@@ -29,6 +22,11 @@ public class RunnerRevenueDao extends APFoodDao<User> {
     @Override
     protected String serialize(User user) {
         return user.getName() + "| " + user.getEmail() + "| " + new String(user.getPassword()) + user.getRole() + "\n";
+    }
+    
+    @Override
+    protected User deserialize(String[] data) {
+        return null;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class RunnerRevenueDao extends APFoodDao<User> {
                     String orderId = rowArray[1];
                     String vendorName = rowArray[3];
 
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
                     String row2;
                     br2.readLine();
@@ -93,8 +91,6 @@ public class RunnerRevenueDao extends APFoodDao<User> {
 
     public String checkPastMonthRevenue(User user, int months) {
         double earnings = 0;
-        // Define the date format to match the format in your data
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
 
         // Calculate the start date for the past month or past year
         // 1 month/12 months
@@ -118,14 +114,14 @@ public class RunnerRevenueDao extends APFoodDao<User> {
                     String orderId = rowArray[1];
                     String vendorName = rowArray[3];
 
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
                     String row2;
 
                     br2.readLine();
                     while ((row2 = br2.readLine()) != null) {
                         String[] rowArray2 = row2.split("\\| ");
-                        LocalDate orderDate = LocalDate.parse(rowArray2[5], dateFormatter);
+                        LocalDate orderDate = LocalDate.parse(rowArray2[5]);
                         String location = rowArray2[11];
                         if (rowArray2[1].equals(orderId) && (orderDate.isAfter(startDateOfPastMonth) || orderDate.isEqual(startDateOfPastMonth))) {
                             switch (location) {
@@ -159,9 +155,6 @@ public class RunnerRevenueDao extends APFoodDao<User> {
 
     public String checkDailyRevenue(User user) {
         double earnings = 0;
-        // Define the date format to match the format in your data
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
-
         // Calculate the start date for the past month
         LocalDate currentDate = LocalDate.now();
 
@@ -180,14 +173,14 @@ public class RunnerRevenueDao extends APFoodDao<User> {
                     String orderId = rowArray[1];
                     String vendorName = rowArray[3];
 
-                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\OrderHistory.txt");
+                    FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
                     BufferedReader br2 = new BufferedReader(fr2);
                     String row2;
 
                     br2.readLine();
                     while ((row2 = br2.readLine()) != null) {
                         String[] rowArray2 = row2.split("\\| ");
-                        LocalDate orderDate = LocalDate.parse(rowArray2[5], dateFormatter);
+                        LocalDate orderDate = LocalDate.parse(rowArray2[5]);
                         String location = rowArray2[11];
                         if (rowArray2[1].equals(orderId) && orderDate.isEqual(currentDate)) {
                             switch (location) {

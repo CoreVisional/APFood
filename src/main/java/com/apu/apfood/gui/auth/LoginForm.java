@@ -229,7 +229,7 @@ public class LoginForm extends javax.swing.JFrame {
         if (userObject.getRole().equals("admin")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new AdminRegister(); // Should pass in userObject
+            new AdminForm(userObject); // Should pass in userObject
             System.out.println(userObject);
         } else if (userObject.getRole().equals("customer")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -277,13 +277,13 @@ public class LoginForm extends javax.swing.JFrame {
     // Checks if user exists in text file
     public static User checkCredentials(String emailInput, char[] passwordInput) {
         try {
-            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\users.txt");
+            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\Users.txt");
             BufferedReader br = new BufferedReader(fr);
             br.readLine(); // Skip the first line
             String row;
             while ((row = br.readLine()) != null) {
                 String[] rowArray = row.split("\\| ");
-                int userId = Integer.parseInt(rowArray[0]);
+                int userId = Integer.parseInt(rowArray[1]);
                 String name = rowArray[2];
                 String email = rowArray[3];
                 char[] password = rowArray[4].toCharArray();
