@@ -36,7 +36,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
     protected String serialize(User user) {
         return user.getName() + "| " + user.getEmail() + "| " + new String(user.getPassword()) + user.getRole() + "\n";
     }
-    
+
     @Override
     protected User deserialize(String[] data) {
         return null;

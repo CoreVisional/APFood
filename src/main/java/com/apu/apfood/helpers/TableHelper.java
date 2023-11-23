@@ -43,7 +43,7 @@ public class TableHelper {
             model.addRow(rowDataWithIndex);
         }
     }
-    
+
     // Overloaded generic method assuming no index
     public <T> void populateTable(List<T> data, JTable table, Function<T, Object[]> rowMapper) {
         populateTable(data, table, rowMapper, false);

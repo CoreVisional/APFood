@@ -27,7 +27,7 @@ public class UserDao extends APFoodDao<User> {
     protected User deserialize(String[] data) {
         return null;
     }
-    
+
     @Override
     public void update(User user) {
 

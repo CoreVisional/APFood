@@ -1,4 +1,3 @@
-
 package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.models.User;
