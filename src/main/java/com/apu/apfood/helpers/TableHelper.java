@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -14,21 +13,19 @@ import javax.swing.table.DefaultTableModel;
  * @author Alex
  */
 public class TableHelper {
-    
+
     public void centerTableValues(JTable tableName) {
-        
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         tableName.setDefaultRenderer(String.class, centerRenderer);
         tableName.setDefaultRenderer(Integer.class, centerRenderer);
         tableName.setDefaultRenderer(Double.class, centerRenderer);
         tableName.setDefaultRenderer(Object.class, centerRenderer);
     }
-    
+
     // Generic method with index control
     public <T> void populateTable(List<T> data, JTable table, Function<T, Object[]> rowMapper, boolean hasIndex) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        
         model.setRowCount(0);
 
         int index = 1;
@@ -81,5 +78,13 @@ public class TableHelper {
         }
         
         return map;
+    }
+
+    public void refreshTable(javax.swing.JTable jtable, Object[][] deliveryHistory) {
+        DefaultTableModel model = (DefaultTableModel) jtable.getModel();
+        model.setDataVector(deliveryHistory, new String[]{
+            "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
+        });
+        model.fireTableDataChanged();
     }
 }
