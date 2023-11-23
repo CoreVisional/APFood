@@ -1,8 +1,8 @@
 package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.models.Vendor;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -15,26 +15,25 @@ public class VendorDao extends APFoodDao<Vendor> {
     public VendorDao() {
         super(VENDOR_FILEPATH, HEADERS);
     }
-
+    
     public List<Vendor> getAllVendors() {
         List<String[]> rawData = super.getAll();
-        List<Vendor> vendors = new ArrayList<>();
-        
-        for (String[] data : rawData) {
-            int id = Integer.parseInt(data[0].trim());
-            int userId = Integer.parseInt(data[1].trim());
-            String vendorName = data[2].trim();
-
-            Vendor vendor = new Vendor(id, userId, vendorName);
-            vendors.add(vendor);
-        }
-
-        return vendors;
+        return rawData.stream()
+                      .map(this::deserialize)
+                      .collect(Collectors.toList());
     }
     
     @Override
     protected String serialize(Vendor vendor) {
         return "";
+    }
+    
+    @Override
+    protected Vendor deserialize(String[] data) {
+        int id = Integer.parseInt(data[0].trim());
+        int userId = Integer.parseInt(data[1].trim());
+        String vendorName = data[2].trim();
+        return new Vendor(id, userId, vendorName);
     }
     
     @Override
