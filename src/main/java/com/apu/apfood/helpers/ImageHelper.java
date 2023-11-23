@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class ImageHelper {
-        public void setFrameIcon(JFrame frame, String filepath) {
+    public void setFrameIcon(JFrame frame, String filepath) {
         URL resource = getClass().getResource(filepath);
         ImageIcon icon = new ImageIcon(resource);
         Image image = icon.getImage();
