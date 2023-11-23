@@ -1,5 +1,6 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
@@ -12,7 +13,7 @@ public class AdminForm extends javax.swing.JFrame {
     /**
      * Creates new form VendorFrame
      */
-    public AdminForm() {
+    public AdminForm(User user) {
         initComponents();
         initCustomComponents();
     }
@@ -224,7 +225,7 @@ public class AdminForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm().setVisible(true);
+                new AdminForm(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
             }
         });
     }

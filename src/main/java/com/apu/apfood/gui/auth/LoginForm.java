@@ -1,18 +1,20 @@
 package com.apu.apfood.gui.auth;
 
 import com.apu.apfood.gui.AdminForm;
-import com.apu.apfood.gui.CustomerForm;
-import com.apu.apfood.gui.RunnerForm;
 import com.apu.apfood.gui.VendorForm;
+import com.apu.apfood.gui.RunnerForm;
+import com.apu.apfood.gui.CustomerForm;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper; // Add this import statement
-import com.apu.apfood.models.User;
+import com.apu.apfood.db.models.User;
+import com.apu.apfood.services.UserService;
 import java.awt.Font;
 import java.util.Map;
 import javax.swing.UIManager;
 import java.awt.font.TextAttribute;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
@@ -216,28 +218,34 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void signInBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInBtnActionPerformed
         // Get credentials
-        String email = sanitizeEmail(emailInput.getText());
-        String password = passwordInput.getText();
+        String email = UserService.sanitizeEmail(emailInput.getText());
+        char[] password = passwordInput.getPassword();
 
-        Object result = checkCredentials(email, password);
-        if (result instanceof Admin) {
-            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
-            new AdminForm();
-        } else if (result instanceof Customer) {
-            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
-            new CustomerForm();
-        } else if (result instanceof Runner) {
-            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
-            new RunnerForm();
-        } else if (result instanceof Vendor) {
-            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
-            new VendorForm();
-        } else {
+        User userObject = checkCredentials(email, password);
+        if (userObject == null) {
             JOptionPane.showMessageDialog(this, "Invalid credentials!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (userObject.getRole().equals("admin")) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new AdminForm(userObject); // Should pass in userObject
+            System.out.println(userObject);
+        } else if (userObject.getRole().equals("customer")) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new CustomerForm(); // Should pass in userObject
+            System.out.println(userObject);
+        } else if (userObject.getRole().equals("runner")) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new RunnerForm(userObject);
+            System.out.println(userObject);
+        } else if (userObject.getRole().equals("vendor")) {
+            JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new VendorForm(); // Should pass in userObject
+            System.out.println(userObject);
         }
     }//GEN-LAST:event_signInBtnActionPerformed
 
@@ -266,40 +274,30 @@ public class LoginForm extends javax.swing.JFrame {
         });
     }
 
-    public static String sanitizeEmail(String email) {
-        // Remove leading and trailing white spaces
-        email = email.trim();
-
-        email = email.toLowerCase();
-
-        return email;
-    }
-
     // Checks if user exists in text file
-    public static User checkCredentials(String emailInput, String passwordInput) {
+    public static User checkCredentials(String emailInput, char[] passwordInput) {
         try {
-            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\datafiles\\users\\user.txt");
+            FileReader fr = new FileReader("src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\Users.txt");
             BufferedReader br = new BufferedReader(fr);
+            br.readLine(); // Skip the first line
             String row;
             while ((row = br.readLine()) != null) {
                 String[] rowArray = row.split("\\| ");
-                String userId = rowArray[0];
-                String name = rowArray[1];
-                String email = rowArray[2];
-                String password = rowArray[3];
-                String role = rowArray[4];
-
-                if (email.equals(emailInput) && password.equals(passwordInput)) {
-                    if (role.equals("Admin")) {
-                        return new Admin(userId, name, email, password, role);
-                    } else if (role.equals("Customer")) {
-                        return new Customer(userId, name, email, password, role);
-                    } else if (role.equals("Runner")) {
-                        return new Runner(userId, name, email, password, role);
-                    } else if (role.equals("Vendor")) {
-                        return new Vendor(userId, name, email, password, role);
+                int userId = Integer.parseInt(rowArray[1]);
+                String name = rowArray[2];
+                String email = rowArray[3];
+                char[] password = rowArray[4].toCharArray();
+                String role = rowArray[5];
+                if (email.equals(emailInput) && Arrays.equals(passwordInput, password)) {
+                    if (role.equals("admin")) {
+                        return new User(userId, name, email, password, role);
+                    } else if (role.equals("customer")) {
+                        return new User(userId, name, email, password, role);
+                    } else if (role.equals("runner")) {
+                        return new User(userId, name, email, password, role);
+                    } else if (role.equals("vendor")) {
+                        return new User(userId, name, email, password, role);
                     }
-
                 }
             }
             br.close();
