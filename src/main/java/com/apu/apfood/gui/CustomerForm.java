@@ -16,8 +16,7 @@ import javax.swing.JOptionPane;
 
 public class CustomerForm extends javax.swing.JFrame {
 
-    VendorDao vendorDao = new VendorDao();
-    VendorService vendorService = new VendorService(vendorDao);
+    VendorService vendorService = new VendorService();
     
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
