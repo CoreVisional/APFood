@@ -16,14 +16,20 @@ import java.util.List;
  * @author Alex
  */
 public class FileHelper {
-    public int generateID(String filename, File file) {
 
+    public int generateID(String filename, File file) {
+        
+        if (!file.exists()) {
+            return 1;
+        }
+        
         int id = 1;
+
         try (BufferedReader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] fields = line.split("| ");
+                String[] fields = line.split("\\| ");
                 int currId = Integer.parseInt(fields[0].trim());
                 if (currId >= id) {
                     id = currId + 1;
@@ -34,12 +40,14 @@ public class FileHelper {
         }
         return id;
     }
-        
+    
     public void writeFile(String filename, File file, String headers, String... varargs) {
-        
+
         int id = generateID(filename, file);
-        
-        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8, StandardOpenOption.APPEND)) {
+
+        // Create file if it does not exist with StandardOpenOption.CREATE.
+        // Leaving the StandardOpenOption.CREATE option with only StandardOpenOption.APPEND will result in file not found exception.
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             if (file.length() == 0) {
                 writer.write(headers);
             }
