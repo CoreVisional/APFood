@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -17,6 +18,7 @@ public class TableHelper {
     public void centerTableValues(JTable tableName) {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         tableName.setDefaultRenderer(String.class, centerRenderer);
         tableName.setDefaultRenderer(Integer.class, centerRenderer);
         tableName.setDefaultRenderer(Double.class, centerRenderer);
