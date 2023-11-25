@@ -44,14 +44,14 @@ public class TableHelper {
         }
     }
 
-    // For nested list array
+    // For 2D static array
     public void refreshTable(javax.swing.JTable jtable, Object[][] payload, String[] tableHeaders) {
         DefaultTableModel model = (DefaultTableModel) jtable.getModel();
         model.setDataVector(payload, tableHeaders);
         model.fireTableDataChanged();
     }
 
-    // For 2d static array
+    // For list of array
     public void refreshTable(javax.swing.JTable jtable, List<String[]> payload, String[] tableHeaders) {
 
         Object[][] customerCreditDetails = new Object[payload.size()][2];
