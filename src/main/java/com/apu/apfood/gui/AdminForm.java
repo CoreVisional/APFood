@@ -1,21 +1,48 @@
 package com.apu.apfood.gui;
 
 import com.apu.apfood.db.models.User;
+import com.apu.apfood.exceptions.CustomValidationException;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
+import com.apu.apfood.helpers.TableHelper;
+import com.apu.apfood.services.UserService;
 import com.formdev.flatlaf.FlatDarculaLaf;
+import java.awt.Dimension;
+import javax.swing.JOptionPane;
+import javax.swing.table.JTableHeader;
 
 public class AdminForm extends javax.swing.JFrame {
 
+    private UserService userService = new UserService();
+    private Object[][] customerBalance;
+    
+    
     // Instantiate helpers classes
-    ImageHelper imageHelper = new ImageHelper();
+    private final ImageHelper imageHelper = new ImageHelper();
+    private final GUIHelper guiHelper = new GUIHelper();
+    private final TableHelper tableHelper = new TableHelper();
 
     /**
      * Creates new form VendorFrame
      */
     public AdminForm(User user) {
+        this.customerBalance = userService.getCustomerBalance();
         initComponents();
         initCustomComponents();
+
+
+        nameJLabel.setText(user.getName());
+        emailJLabel.setText(user.getEmail());
+
+        // Enable side buttons for switching panels
+        guiHelper.buttonPanelSwitcher(homeNavBtn, contentPanel, "adminHome");
+        guiHelper.buttonPanelSwitcher(registrationNavBtn, contentPanel, "adminRegistration");
+        guiHelper.buttonPanelSwitcher(topUpCreditNavBtn, contentPanel, "adminTopUp");
+
+        guiHelper.buttonPanelSwitcher(customerRoleSelectBtn, registrationFormPanel, "othersForm");
+        guiHelper.buttonPanelSwitcher(runnerRoleSelectBtn, registrationFormPanel, "othersForm");
+        guiHelper.buttonPanelSwitcher(adminRoleSelectBtn, registrationFormPanel, "othersForm");
+        guiHelper.buttonPanelSwitcher(vendorRoleSelectBtn, registrationFormPanel, "vendorForm");
     }
 
     private void initCustomComponents() {
@@ -32,21 +59,73 @@ public class AdminForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         sidePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        homeNavBtn = new javax.swing.JButton();
+        registrationNavBtn = new javax.swing.JButton();
+        topUpCreditNavBtn = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        nameJLabel = new javax.swing.JLabel();
+        emailJLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
+        adminHomePanel = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        adminRegistrationPanel = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        customerRoleSelectBtn = new javax.swing.JButton();
+        vendorRoleSelectBtn = new javax.swing.JButton();
+        runnerRoleSelectBtn = new javax.swing.JButton();
+        adminRoleSelectBtn = new javax.swing.JButton();
+        registrationFormPanel = new javax.swing.JPanel();
+        othersRegistrationPanel = new javax.swing.JPanel();
+        othersPasswordTextField = new javax.swing.JTextField();
+        othersEmailTextField = new javax.swing.JTextField();
+        othersNameTextField = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        selectedUserRoleLabel1 = new javax.swing.JTextField();
+        othersCreateUserBtn = new javax.swing.JButton();
+        vendorRegistrationPanel = new javax.swing.JPanel();
+        passwordTextField = new javax.swing.JTextField();
+        emailTextField = new javax.swing.JTextField();
+        vendorNameTextField = new javax.swing.JTextField();
+        nameTextField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        selectedUserRoleLabel = new javax.swing.JTextField();
+        vendorCreateUserBtn = new javax.swing.JButton();
+        adminTopUpCreditPanel = new javax.swing.JPanel();
+        topUpPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        customerCreditBalanceJTable = new javax.swing.JTable();
+        jLabel14 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        creditNameTextField = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        creditUserIdTextField = new javax.swing.JTextField();
+        creditBalanceTextField = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        creditTopUpTextField = new javax.swing.JTextField();
+        creditConfirmBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -68,16 +147,49 @@ public class AdminForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Home");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.setFocusPainted(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        homeNavBtn.setText("Home");
+        homeNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        homeNavBtn.setFocusPainted(false);
+        homeNavBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                homeNavBtnActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton2);
+        jPanel3.add(homeNavBtn);
+
+        registrationNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        registrationNavBtn.setText("Register User");
+        registrationNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        registrationNavBtn.setFocusPainted(false);
+        registrationNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registrationNavBtnActionPerformed(evt);
+            }
+        });
+        jPanel3.add(registrationNavBtn);
+
+        topUpCreditNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        topUpCreditNavBtn.setText("Top Up Credit");
+        topUpCreditNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        topUpCreditNavBtn.setFocusPainted(false);
+        topUpCreditNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                topUpCreditNavBtnActionPerformed(evt);
+            }
+        });
+        jPanel3.add(topUpCreditNavBtn);
+
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
+        jButton5.setText("Home");
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton5.setFocusPainted(false);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton5);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -110,15 +222,15 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanel.setBackground(new java.awt.Color(255, 255, 255));
         topBarPanel.setPreferredSize(new java.awt.Dimension(1350, 80));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText("Full Name");
+        nameJLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        nameJLabel.setForeground(new java.awt.Color(0, 0, 0));
+        nameJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nameJLabel.setText("Full Name");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("TP0xxxxxx@mail.apu.edu.my");
+        emailJLabel.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        emailJLabel.setForeground(new java.awt.Color(102, 102, 102));
+        emailJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        emailJLabel.setText("TP0xxxxxx@mail.apu.edu.my");
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
@@ -142,7 +254,7 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1021, Short.MAX_VALUE)
+                .addContainerGap(1027, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel7)
@@ -152,8 +264,8 @@ public class AdminForm extends javax.swing.JFrame {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(emailJLabel)
+                    .addComponent(nameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
@@ -171,9 +283,9 @@ public class AdminForm extends javax.swing.JFrame {
                                     .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(topBarPanelLayout.createSequentialGroup()
-                                            .addComponent(jLabel2)
+                                            .addComponent(nameJLabel)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel3)))
+                                            .addComponent(emailJLabel)))
                                     .addComponent(jLabel7))
                                 .addGap(2, 2, 2))))
                     .addGroup(topBarPanelLayout.createSequentialGroup()
@@ -186,16 +298,544 @@ public class AdminForm extends javax.swing.JFrame {
 
         mainPanel.add(topBarPanel, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
-        contentPanel.setLayout(contentPanelLayout);
-        contentPanelLayout.setHorizontalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1350, Short.MAX_VALUE)
+        contentPanel.setLayout(new java.awt.CardLayout());
+
+        jLabel13.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel13.setText("Top Up Credit");
+        jLabel13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout adminHomePanelLayout = new javax.swing.GroupLayout(adminHomePanel);
+        adminHomePanel.setLayout(adminHomePanelLayout);
+        adminHomePanelLayout.setHorizontalGroup(
+            adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
+                .addContainerGap(375, Short.MAX_VALUE)
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(352, 352, 352))
         );
-        contentPanelLayout.setVerticalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
+        adminHomePanelLayout.setVerticalGroup(
+            adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminHomePanelLayout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(681, Short.MAX_VALUE))
         );
+
+        contentPanel.add(adminHomePanel, "adminHome");
+
+        jLabel15.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel15.setText("Registration Page");
+        jLabel15.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Select a user role");
+
+        customerRoleSelectBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        customerRoleSelectBtn.setText("Customer");
+        customerRoleSelectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customerRoleSelectBtnActionPerformed(evt);
+            }
+        });
+
+        vendorRoleSelectBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        vendorRoleSelectBtn.setText("Vendor");
+        vendorRoleSelectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vendorRoleSelectBtnActionPerformed(evt);
+            }
+        });
+
+        runnerRoleSelectBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        runnerRoleSelectBtn.setText("Runner");
+        runnerRoleSelectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runnerRoleSelectBtnActionPerformed(evt);
+            }
+        });
+
+        adminRoleSelectBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        adminRoleSelectBtn.setText("Admin");
+        adminRoleSelectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminRoleSelectBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(customerRoleSelectBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(vendorRoleSelectBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(runnerRoleSelectBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(adminRoleSelectBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(24, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(customerRoleSelectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(vendorRoleSelectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(runnerRoleSelectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
+                .addComponent(adminRoleSelectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
+        );
+
+        registrationFormPanel.setLayout(new java.awt.CardLayout());
+
+        othersRegistrationPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        othersPasswordTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        othersPasswordTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                othersPasswordTextFieldActionPerformed(evt);
+            }
+        });
+
+        othersEmailTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        othersEmailTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                othersEmailTextFieldActionPerformed(evt);
+            }
+        });
+
+        othersNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel12.setText("Name");
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel16.setText("Password");
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel17.setText("Email");
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel19.setText("Enter account details here");
+
+        selectedUserRoleLabel1.setBackground(new java.awt.Color(60, 63, 65));
+        selectedUserRoleLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        selectedUserRoleLabel1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        selectedUserRoleLabel1.setText("No role selected");
+        selectedUserRoleLabel1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectedUserRoleLabel1ActionPerformed(evt);
+            }
+        });
+
+        othersCreateUserBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        othersCreateUserBtn.setText("Create User");
+        othersCreateUserBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                othersCreateUserBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout othersRegistrationPanelLayout = new javax.swing.GroupLayout(othersRegistrationPanel);
+        othersRegistrationPanel.setLayout(othersRegistrationPanelLayout);
+        othersRegistrationPanelLayout.setHorizontalGroup(
+            othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(othersRegistrationPanelLayout.createSequentialGroup()
+                .addGap(210, 210, 210)
+                .addGroup(othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(othersRegistrationPanelLayout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addGroup(othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(othersCreateUserBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(othersRegistrationPanelLayout.createSequentialGroup()
+                                .addGroup(othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(othersNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(othersPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(othersEmailTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addContainerGap(231, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, othersRegistrationPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(selectedUserRoleLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        othersRegistrationPanelLayout.setVerticalGroup(
+            othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, othersRegistrationPanelLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(jLabel19)
+                .addGap(59, 59, 59)
+                .addGroup(othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(othersNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addGap(18, 18, 18)
+                .addGroup(othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(othersEmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17))
+                .addGap(18, 18, 18)
+                .addGroup(othersRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(othersPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                .addComponent(othersCreateUserBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(9, 9, 9)
+                .addComponent(selectedUserRoleLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        registrationFormPanel.add(othersRegistrationPanel, "othersForm");
+
+        vendorRegistrationPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        passwordTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        passwordTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordTextFieldActionPerformed(evt);
+            }
+        });
+
+        emailTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        emailTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emailTextFieldActionPerformed(evt);
+            }
+        });
+
+        vendorNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        nameTextField.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel3.setText("Name");
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel8.setText("Password");
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel9.setText("Email");
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel10.setText("Vendor Name");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("Enter account details here");
+
+        selectedUserRoleLabel.setBackground(new java.awt.Color(60, 63, 65));
+        selectedUserRoleLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        selectedUserRoleLabel.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        selectedUserRoleLabel.setText("No role selected");
+        selectedUserRoleLabel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectedUserRoleLabelActionPerformed(evt);
+            }
+        });
+
+        vendorCreateUserBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        vendorCreateUserBtn.setText("Create User");
+        vendorCreateUserBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vendorCreateUserBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout vendorRegistrationPanelLayout = new javax.swing.GroupLayout(vendorRegistrationPanel);
+        vendorRegistrationPanel.setLayout(vendorRegistrationPanelLayout);
+        vendorRegistrationPanelLayout.setHorizontalGroup(
+            vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(vendorRegistrationPanelLayout.createSequentialGroup()
+                .addGap(210, 210, 210)
+                .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(vendorRegistrationPanelLayout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(vendorCreateUserBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(vendorRegistrationPanelLayout.createSequentialGroup()
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(vendorNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(vendorRegistrationPanelLayout.createSequentialGroup()
+                                    .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(emailTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))))))))
+                .addContainerGap(231, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, vendorRegistrationPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(selectedUserRoleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        vendorRegistrationPanelLayout.setVerticalGroup(
+            vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, vendorRegistrationPanelLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(jLabel11)
+                .addGap(59, 59, 59)
+                .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(18, 18, 18)
+                .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addGap(18, 18, 18)
+                .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(vendorNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(vendorRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectedUserRoleLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, vendorRegistrationPanelLayout.createSequentialGroup()
+                        .addComponent(vendorCreateUserBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17))))
+        );
+
+        registrationFormPanel.add(vendorRegistrationPanel, "vendorForm");
+
+        javax.swing.GroupLayout adminRegistrationPanelLayout = new javax.swing.GroupLayout(adminRegistrationPanel);
+        adminRegistrationPanel.setLayout(adminRegistrationPanelLayout);
+        adminRegistrationPanelLayout.setHorizontalGroup(
+            adminRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminRegistrationPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(352, 352, 352))
+            .addGroup(adminRegistrationPanelLayout.createSequentialGroup()
+                .addGap(106, 106, 106)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51)
+                .addComponent(registrationFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(79, Short.MAX_VALUE))
+        );
+        adminRegistrationPanelLayout.setVerticalGroup(
+            adminRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminRegistrationPanelLayout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
+                .addGroup(adminRegistrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(registrationFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(161, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(adminRegistrationPanel, "adminRegistration");
+
+        topUpPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        customerCreditBalanceJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.customerBalance,
+            new String [] {
+                "Customer ID", "Customer Name", "Current Balance"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        customerCreditBalanceJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        customerCreditBalanceJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        customerCreditBalanceJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        customerCreditBalanceJTable.setShowGrid(true);
+        JTableHeader header = customerCreditBalanceJTable.getTableHeader();
+        header.setPreferredSize(new Dimension(20, 40));
+        customerCreditBalanceJTable.setRowHeight(40);
+        tableHelper.centerTableValues(customerCreditBalanceJTable);
+        customerCreditBalanceJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                customerCreditBalanceJTableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(customerCreditBalanceJTable);
+
+        javax.swing.GroupLayout topUpPanelLayout = new javax.swing.GroupLayout(topUpPanel);
+        topUpPanel.setLayout(topUpPanelLayout);
+        topUpPanelLayout.setHorizontalGroup(
+            topUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topUpPanelLayout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
+        );
+        topUpPanelLayout.setVerticalGroup(
+            topUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topUpPanelLayout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(40, Short.MAX_VALUE))
+        );
+
+        jLabel14.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel14.setText("Top Up Credit");
+        jLabel14.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel18.setText("Current Balance:");
+
+        jLabel20.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel20.setText("Name:");
+
+        creditNameTextField.setEditable(false);
+        creditNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        creditNameTextField.setEnabled(false);
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel21.setText("User ID:");
+
+        creditUserIdTextField.setEditable(false);
+        creditUserIdTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        creditUserIdTextField.setEnabled(false);
+
+        creditBalanceTextField.setEditable(false);
+        creditBalanceTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        creditBalanceTextField.setEnabled(false);
+
+        jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel22.setText("Top Up:");
+
+        creditTopUpTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        creditConfirmBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        creditConfirmBtn.setText("Confirm");
+        creditConfirmBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                creditConfirmBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(creditConfirmBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(creditUserIdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                            .addComponent(creditNameTextField)
+                            .addComponent(creditBalanceTextField)
+                            .addComponent(creditTopUpTextField))))
+                .addGap(23, 23, 23))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(creditUserIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(creditNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel20))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(creditBalanceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(creditTopUpTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addComponent(creditConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout adminTopUpCreditPanelLayout = new javax.swing.GroupLayout(adminTopUpCreditPanel);
+        adminTopUpCreditPanel.setLayout(adminTopUpCreditPanelLayout);
+        adminTopUpCreditPanelLayout.setHorizontalGroup(
+            adminTopUpCreditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(352, 352, 352))
+            .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
+                .addGap(137, 137, 137)
+                .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        adminTopUpCreditPanelLayout.setVerticalGroup(
+            adminTopUpCreditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(adminTopUpCreditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
+                        .addGap(101, 101, 101)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(139, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(adminTopUpCreditPanel, "adminTopUp");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -205,9 +845,177 @@ public class AdminForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_homeNavBtnActionPerformed
+
+    private void registrationNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrationNavBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_registrationNavBtnActionPerformed
+
+    private void topUpCreditNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topUpCreditNavBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_topUpCreditNavBtnActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void emailTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_emailTextFieldActionPerformed
+
+    private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordTextFieldActionPerformed
+
+    private void othersPasswordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_othersPasswordTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_othersPasswordTextFieldActionPerformed
+
+    private void othersEmailTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_othersEmailTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_othersEmailTextFieldActionPerformed
+
+    private void vendorRoleSelectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vendorRoleSelectBtnActionPerformed
+        // TODO add your handling code here:
+        selectedUserRoleLabel.setText("vendor");
+    }//GEN-LAST:event_vendorRoleSelectBtnActionPerformed
+
+    private void selectedUserRoleLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectedUserRoleLabelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectedUserRoleLabelActionPerformed
+
+    private void customerRoleSelectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerRoleSelectBtnActionPerformed
+        // TODO add your handling code here:
+        selectedUserRoleLabel1.setText("customer");
+    }//GEN-LAST:event_customerRoleSelectBtnActionPerformed
+
+    private void runnerRoleSelectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runnerRoleSelectBtnActionPerformed
+        // TODO add your handling code here:
+        selectedUserRoleLabel1.setText("runner");
+    }//GEN-LAST:event_runnerRoleSelectBtnActionPerformed
+
+    private void adminRoleSelectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminRoleSelectBtnActionPerformed
+        // TODO add your handling code here:
+        selectedUserRoleLabel1.setText("admin");
+    }//GEN-LAST:event_adminRoleSelectBtnActionPerformed
+
+    private void selectedUserRoleLabel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectedUserRoleLabel1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectedUserRoleLabel1ActionPerformed
+
+    private void othersCreateUserBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_othersCreateUserBtnActionPerformed
+        String name = othersNameTextField.getText();
+        String password = othersPasswordTextField.getText();
+        String email = othersEmailTextField.getText();
+        String role = selectedUserRoleLabel1.getText();
+
+        try {
+            User userToCreate = new User(name, email, password.toCharArray(), role);
+            userService.checkCredentials(name, password, email, role);
+            userService.addUser(userToCreate);
+
+            // If everything succeeded, show a success message
+            JOptionPane.showMessageDialog(this, "User created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            othersNameTextField.setText("");
+            othersPasswordTextField.setText("");
+            othersEmailTextField.setText("");
+        } catch (CustomValidationException e) {
+            // Display error message
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+
+    }//GEN-LAST:event_othersCreateUserBtnActionPerformed
+
+    private void vendorCreateUserBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vendorCreateUserBtnActionPerformed
+        String name = nameTextField.getText();
+        String password = passwordTextField.getText();
+        String email = emailTextField.getText();
+        String vendorName = vendorNameTextField.getText();
+        String role = selectedUserRoleLabel.getText();
+
+        try {
+            User userToCreate = new User(name, email, password.toCharArray(), role);
+            boolean vendorExists = userService.checkCredentials(name, password, email, role, vendorName);
+            if (vendorExists) {
+                int choice = JOptionPane.showConfirmDialog(this, "Vendor already exists. Do you want to join as another owner?", "Join Vendor", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    userService.addUser(userToCreate);
+                    // Write VendorUsers.txt
+                    userService.mapUserToVendor(name, vendorName);
+
+                    // If everything succeeded, show a success message
+                    JOptionPane.showMessageDialog(this, "User created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    nameTextField.setText("");
+                    passwordTextField.setText("");
+                    emailTextField.setText("");
+                    vendorNameTextField.setText("");
+                }
+            } else {
+                int choice = JOptionPane.showConfirmDialog(this, "Vendor doesn't exist. Do you want to create a new vendor stall?", "Create Vendor", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    userService.addUser(userToCreate);
+                    // Create vendor files
+
+                    // Write VendorUsers.txt
+                    userService.mapUserToVendor(name, vendorName);
+
+                    // If everything succeeded, show a success message
+                    JOptionPane.showMessageDialog(this, "User created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    nameTextField.setText("");
+                    passwordTextField.setText("");
+                    emailTextField.setText("");
+                    vendorNameTextField.setText("");
+                }
+            }
+
+        } catch (CustomValidationException e) {
+            // Display error message
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_vendorCreateUserBtnActionPerformed
+
+    private void customerCreditBalanceJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customerCreditBalanceJTableMouseClicked
+        // Retrieve row number
+        int row = customerCreditBalanceJTable.getSelectedRow();
+
+        // Retrieve customer id, customer name, current balance
+        String customerId = (String) customerCreditBalanceJTable.getModel().getValueAt(row, 0);
+        String customerName = (String) customerCreditBalanceJTable.getModel().getValueAt(row, 1);
+        String currentBalance = (String) customerCreditBalanceJTable.getModel().getValueAt(row, 2);
+
+        creditUserIdTextField.setText(customerId);
+        creditNameTextField.setText(customerName);
+        creditBalanceTextField.setText(currentBalance);
+    }//GEN-LAST:event_customerCreditBalanceJTableMouseClicked
+
+    private void creditConfirmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditConfirmBtnActionPerformed
+        String customerId = creditUserIdTextField.getText();
+        String customerName = creditNameTextField.getText();
+        String currentBalance = creditBalanceTextField.getText();
+        String topUpText = creditTopUpTextField.getText();
+
+        // Check if any of the fields are empty
+        if (customerId.isEmpty() || customerName.isEmpty() || currentBalance.isEmpty() || topUpText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                double topUpAmount = Double.parseDouble(topUpText);
+
+                userService.addTopUpTransaction(customerId, topUpText, "Top up");
+                tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
+                double value = Double.parseDouble(currentBalance) + topUpAmount;
+                creditBalanceTextField.setText(String.valueOf(value));
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_creditConfirmBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,26 +1033,78 @@ public class AdminForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
+                new AdminForm(new User(5, "Jane Doe", "asd@asd.com", "qweqweqwe".toCharArray(), "admin")).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel adminHomePanel;
+    private javax.swing.JPanel adminRegistrationPanel;
+    private javax.swing.JButton adminRoleSelectBtn;
+    private javax.swing.JPanel adminTopUpCreditPanel;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JTextField creditBalanceTextField;
+    private javax.swing.JButton creditConfirmBtn;
+    private javax.swing.JTextField creditNameTextField;
+    private javax.swing.JTextField creditTopUpTextField;
+    private javax.swing.JTextField creditUserIdTextField;
+    private javax.swing.JTable customerCreditBalanceJTable;
+    private javax.swing.JButton customerRoleSelectBtn;
+    private javax.swing.JLabel emailJLabel;
+    private javax.swing.JTextField emailTextField;
+    private javax.swing.JButton homeNavBtn;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JLabel nameJLabel;
+    private javax.swing.JTextField nameTextField;
+    private javax.swing.JButton othersCreateUserBtn;
+    private javax.swing.JTextField othersEmailTextField;
+    private javax.swing.JTextField othersNameTextField;
+    private javax.swing.JTextField othersPasswordTextField;
+    private javax.swing.JPanel othersRegistrationPanel;
+    private javax.swing.JTextField passwordTextField;
+    private javax.swing.JPanel registrationFormPanel;
+    private javax.swing.JButton registrationNavBtn;
+    private javax.swing.JButton runnerRoleSelectBtn;
+    private javax.swing.JTextField selectedUserRoleLabel;
+    private javax.swing.JTextField selectedUserRoleLabel1;
     private javax.swing.JPanel sidePanel;
     private javax.swing.JPanel topBarPanel;
+    private javax.swing.JButton topUpCreditNavBtn;
+    private javax.swing.JPanel topUpPanel;
+    private javax.swing.JButton vendorCreateUserBtn;
+    private javax.swing.JTextField vendorNameTextField;
+    private javax.swing.JPanel vendorRegistrationPanel;
+    private javax.swing.JButton vendorRoleSelectBtn;
     // End of variables declaration//GEN-END:variables
 }

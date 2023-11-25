@@ -35,11 +35,31 @@ public class TableHelper {
         }
     }
 
-    public void refreshTable(javax.swing.JTable jtable, Object[][] deliveryHistory) {
+    public void populateTable(List<String[]> data, JTable tableName, boolean isWithoutIndex) {
+        DefaultTableModel model = (DefaultTableModel) tableName.getModel();
+        model.setRowCount(0);
+
+        for (String[] row : data) {
+            model.addRow(row);
+        }
+    }
+
+    // For nested list array
+    public void refreshTable(javax.swing.JTable jtable, Object[][] payload, String[] tableHeaders) {
         DefaultTableModel model = (DefaultTableModel) jtable.getModel();
-        model.setDataVector(deliveryHistory, new String[]{
-            "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
-        });
+        model.setDataVector(payload, tableHeaders);
+        model.fireTableDataChanged();
+    }
+
+    // For 2d static array
+    public void refreshTable(javax.swing.JTable jtable, List<String[]> payload, String[] tableHeaders) {
+
+        Object[][] customerCreditDetails = new Object[payload.size()][2];
+        for (int i = 0; i < payload.size(); i++) {
+            customerCreditDetails[i] = payload.get(i);
+        }
+        DefaultTableModel model = (DefaultTableModel) jtable.getModel();
+        model.setDataVector(customerCreditDetails, tableHeaders);
         model.fireTableDataChanged();
     }
 }
