@@ -25,11 +25,6 @@ public class NotificationDao extends APFoodDao<User> {
     public void update(User user) {
     }
 
-    // Gonna remove this
-    public void writeNotification(String content) {
-        this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, content);
-    }
-
     public void writeNotification(String userId, String content, String status, String type) {
         String notification = userId + "| " + content + "| " + status + "| " + type;
         this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, notification);

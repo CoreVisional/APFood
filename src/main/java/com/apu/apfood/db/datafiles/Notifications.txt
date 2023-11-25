@@ -14,24 +14,6 @@ id| userId| content| status| type
 13| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified| Informational
 14| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
 15| 9| Credit top up [user id: 9]| Unnotified| Transactional
-16| 1| Credit top up [user id: 1]| Unnotified| Transactional
-17| 8| Credit top up [user id: 8]| Unnotified| Transactional
-18| 7| Credit top up [user id: 7]| Unnotified| Transactional
-19| 7| Credit top up [user id: 7]| Unnotified| Transactional
-20| 7| Credit top up [user id: 7]| Unnotified| Transactional
-21| 7| Credit top up [user id: 7]| Unnotified| Transactional
-22| 9| Credit top up [user id: 9]| Unnotified| Transactional
-23| 1| Credit top up [user id: 1]| Unnotified| Transactional
-24| 1| Credit top up [user id: 1]| Unnotified| Transactional
-25| 1| Credit top up [user id: 1]| Unnotified| Transactional
-26| 7| Credit top up [user id: 7]| Unnotified| Transactional
-27| 7| Credit top up [user id: 7]| Unnotified| Transactional
-28| 7| Credit top up [user id: 7]| Unnotified| Transactional
-29| 7| Credit top up [user id: 7]| Unnotified| Transactional
-30| 7| Credit top up [user id: 7]| Unnotified| Transactional
-31| 7| Credit top up [user id: 7]| Unnotified| Transactional
-32| 7| Credit top up [user id: 7]| Unnotified| Transactional
-33| 7| Credit top up [user id: 7]| Unnotified| Transactional
-34| 8| Credit top up [user id: 8]| Unnotified| Transactional
-35| 8| Credit top up [user id: 8]| Unnotified| Transactional
-36| 8| Credit top up [user id: 8]| Unnotified| Transactional
+16| 1| Delivery runner not found [order id: 1, vendor name: Modesto]| Unnotified| Push
+17| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+18| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational

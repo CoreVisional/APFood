@@ -381,9 +381,12 @@ public class RunnerTaskDao extends APFoodDao<User> {
         }
 
         if (isNoRunnerLeft) {
+            
+            String content = "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]";
+            String status = "Unnotified";
+            String type = "Push";
             // If no runner left send notification to customer
-            notificationDao.writeNotification(userId + "| " + "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]" + "| Unnotified| Push");
-
+            notificationDao.writeNotification(userId, content, status, type);
         }
     }
 
