@@ -15,6 +15,9 @@ public class AdminForm extends javax.swing.JFrame {
 
     private UserService userService = new UserService();
     private Object[][] customerBalance;
+    private Object[][] runnerAvailabilityList;
+    private Object[][] allRegisteredUsers;
+    private Object[][] allVendors;
     
     
     // Instantiate helpers classes
@@ -27,9 +30,13 @@ public class AdminForm extends javax.swing.JFrame {
      */
     public AdminForm(User user) {
         this.customerBalance = userService.getCustomerBalance();
+        this.runnerAvailabilityList = userService.getAllRunnerAvailability();
+        this.allRegisteredUsers = userService.getAllRegisteredUsers();
+        this.allVendors = userService.getAllVendorNames();
+        
         initComponents();
         initCustomComponents();
-
+        
 
         nameJLabel.setText(user.getName());
         emailJLabel.setText(user.getEmail());
@@ -67,7 +74,6 @@ public class AdminForm extends javax.swing.JFrame {
         homeNavBtn = new javax.swing.JButton();
         registrationNavBtn = new javax.swing.JButton();
         topUpCreditNavBtn = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         nameJLabel = new javax.swing.JLabel();
@@ -80,6 +86,15 @@ public class AdminForm extends javax.swing.JFrame {
         contentPanel = new javax.swing.JPanel();
         adminHomePanel = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        allUsersJTable = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        allVendorsJTable = new javax.swing.JTable();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        runnerAvailabilityJTable = new javax.swing.JTable();
+        jLabel25 = new javax.swing.JLabel();
         adminRegistrationPanel = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -179,17 +194,6 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
         jPanel3.add(topUpCreditNavBtn);
-
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Home");
-        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton5.setFocusPainted(false);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jButton5);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -304,24 +308,176 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setText("Top Up Credit");
+        jLabel13.setText("Home");
         jLabel13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        allUsersJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.allRegisteredUsers,
+            new String [] {
+                "ID", "Name", "Email", "Role"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        allUsersJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        allUsersJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        allUsersJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        allUsersJTable.setShowGrid(true);
+        JTableHeader allUsersJTableHeader = allUsersJTable.getTableHeader();
+        allUsersJTableHeader.setPreferredSize(new Dimension(20, 40));
+        allUsersJTable.setRowHeight(40);
+        tableHelper.centerTableValues(allUsersJTable);
+        allUsersJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                allUsersJTableMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(allUsersJTable);
+
+        allVendorsJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.allVendors,
+            new String [] {
+                "Vendor Name"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        allVendorsJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        allVendorsJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        allVendorsJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        allVendorsJTable.setShowGrid(true);
+        JTableHeader allVendorsJTableHeader = allVendorsJTable.getTableHeader();
+        allVendorsJTableHeader.setPreferredSize(new Dimension(20, 40));
+        allVendorsJTable.setRowHeight(40);
+        tableHelper.centerTableValues(allVendorsJTable);
+        allVendorsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                allVendorsJTableMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(allVendorsJTable);
+
+        jLabel23.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel23.setText("Registered Vendors");
+
+        jLabel24.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel24.setText("Registered Users");
+
+        runnerAvailabilityJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.runnerAvailabilityList,
+            new String [] {
+                "Name", "Delivery Runner Id", "Status"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        runnerAvailabilityJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        runnerAvailabilityJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        runnerAvailabilityJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        runnerAvailabilityJTable.setShowGrid(true);
+        JTableHeader runnerAvailabilityJTableHeader = runnerAvailabilityJTable.getTableHeader();
+        runnerAvailabilityJTableHeader.setPreferredSize(new Dimension(20, 40));
+        runnerAvailabilityJTable.setRowHeight(40);
+        tableHelper.centerTableValues(runnerAvailabilityJTable);
+        runnerAvailabilityJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                runnerAvailabilityJTableMouseClicked(evt);
+            }
+        });
+        jScrollPane6.setViewportView(runnerAvailabilityJTable);
+
+        jLabel25.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel25.setText("Runner Availability");
 
         javax.swing.GroupLayout adminHomePanelLayout = new javax.swing.GroupLayout(adminHomePanel);
         adminHomePanel.setLayout(adminHomePanelLayout);
         adminHomePanelLayout.setHorizontalGroup(
             adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminHomePanelLayout.createSequentialGroup()
+                .addGap(83, 83, 83)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
+                        .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(51, 51, 51))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(205, 205, 205))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
-                .addContainerGap(375, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(352, 352, 352))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
+                .addGap(246, 246, 246)
+                .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(202, 202, 202))
         );
         adminHomePanelLayout.setVerticalGroup(
             adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminHomePanelLayout.createSequentialGroup()
                 .addGap(54, 54, 54)
                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(681, Short.MAX_VALUE))
+                .addGap(91, 91, 91)
+                .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel24)
+                    .addComponent(jLabel25))
+                .addGap(29, 29, 29)
+                .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(adminHomePanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel23)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
 
         contentPanel.add(adminHomePanel, "adminHome");
@@ -857,10 +1013,6 @@ public class AdminForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_topUpCreditNavBtnActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
     private void emailTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_emailTextFieldActionPerformed
@@ -915,6 +1067,10 @@ public class AdminForm extends javax.swing.JFrame {
             User userToCreate = new User(name, email, password.toCharArray(), role);
             userService.checkCredentials(name, password, email, role);
             userService.addUser(userToCreate);
+            
+            if (role.equals("runner")) {
+                userService.addNewRunnerAvailability(name);
+            }
 
             // If everything succeeded, show a success message
             JOptionPane.showMessageDialog(this, "User created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -945,7 +1101,7 @@ public class AdminForm extends javax.swing.JFrame {
                 if (choice == JOptionPane.YES_OPTION) {
                     userService.addUser(userToCreate);
                     // Write VendorUsers.txt
-                    userService.mapUserToVendor(name, vendorName);
+                    userService.registerUserToVendor(name, vendorName);
 
                     // If everything succeeded, show a success message
                     JOptionPane.showMessageDialog(this, "User created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -959,9 +1115,9 @@ public class AdminForm extends javax.swing.JFrame {
                 if (choice == JOptionPane.YES_OPTION) {
                     userService.addUser(userToCreate);
                     // Create vendor files
-
+                    userService.createVendorFolder(vendorName);
                     // Write VendorUsers.txt
-                    userService.mapUserToVendor(name, vendorName);
+                    userService.registerUserToVendor(name, vendorName);
 
                     // If everything succeeded, show a success message
                     JOptionPane.showMessageDialog(this, "User created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -1017,6 +1173,18 @@ public class AdminForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_creditConfirmBtnActionPerformed
 
+    private void allUsersJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allUsersJTableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_allUsersJTableMouseClicked
+
+    private void allVendorsJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allVendorsJTableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_allVendorsJTableMouseClicked
+
+    private void runnerAvailabilityJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_runnerAvailabilityJTableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_runnerAvailabilityJTableMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -1043,6 +1211,8 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel adminRegistrationPanel;
     private javax.swing.JButton adminRoleSelectBtn;
     private javax.swing.JPanel adminTopUpCreditPanel;
+    private javax.swing.JTable allUsersJTable;
+    private javax.swing.JTable allVendorsJTable;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JTextField creditBalanceTextField;
@@ -1055,7 +1225,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel emailJLabel;
     private javax.swing.JTextField emailTextField;
     private javax.swing.JButton homeNavBtn;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1071,6 +1240,9 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1082,6 +1254,9 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
@@ -1095,6 +1270,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JTextField passwordTextField;
     private javax.swing.JPanel registrationFormPanel;
     private javax.swing.JButton registrationNavBtn;
+    private javax.swing.JTable runnerAvailabilityJTable;
     private javax.swing.JButton runnerRoleSelectBtn;
     private javax.swing.JTextField selectedUserRoleLabel;
     private javax.swing.JTextField selectedUserRoleLabel1;

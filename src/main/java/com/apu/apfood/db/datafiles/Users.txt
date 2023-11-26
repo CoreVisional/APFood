@@ -8,3 +8,4 @@ id| userId| name| email| password| role
 7| 7| Smy Smith| qwe@qwe.com| qweqweqwe| customer
 8| 8| Gil Bin| qwe@qwe.com| qweqweqwe| customer
 9| 9| Jilbert Gustin| qwe@qwe.com| qweqweqwe| customer
+10| 10| Jane Doe| asd@asd.com| qweqweqwe| admin

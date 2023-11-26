@@ -72,7 +72,7 @@ public class RunnerService {
         // Get order details based on chosen key
         String chosenKey = orderKeys[orderListPanelIndex];
         OrderDetails orderDetails = deliveryTasks.get(chosenKey);
-        String customerName = ud.getCustomerName(orderDetails.getAccountId());
+        String customerName = ud.getUserName(orderDetails.getAccountId());
 
         // Display information
         taskCustomerNameJLabel.setText(customerName);
@@ -110,14 +110,14 @@ public class RunnerService {
         // Remove # from order id
         String orderId = inputOrderId.replace("#", "");
 
-        String userId = userDao.getCustomerId(orderId, vendorName);
+        String userId = userDao.getUserId(orderId, vendorName);
         runnerTaskDao.notifyNoRunner(orderId, vendorName, userId);
     }
 
     public void notifyDeliveryOngoing(String inputOrderId, String vendorName) {
         // Remove # from order id
         String orderId = inputOrderId.replace("#", "");
-        String userId = userDao.getCustomerId(orderId, vendorName);
+        String userId = userDao.getUserId(orderId, vendorName);
 
         notificationDao.writeNotification(userId, "Delivery ongoing [order id: " + orderId + ", vendor name: " + vendorName + "]", "Unnotified", "Informational");
     }
@@ -136,7 +136,7 @@ public class RunnerService {
 
     public void finishTask(User user, String inputOrderId, String vendorName) {
         String orderId = inputOrderId.replace("#", "");
-        String userId = userDao.getCustomerId(orderId, vendorName);
+        String userId = userDao.getUserId(orderId, vendorName);
 
         runnerAvailabilityDao.updateAvailability(user, "Available");
         runnerTaskDao.updateDeliveryStatus(orderId, vendorName);

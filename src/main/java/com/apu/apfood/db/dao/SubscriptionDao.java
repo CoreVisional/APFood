@@ -41,7 +41,7 @@ public class SubscriptionDao extends APFoodDao<User> {
         LocalDate subscriptionEndDate = subscriptionStartDate.plusMonths(1);
         String subscriptionDeductionAmount = "-4";
 
-        fileHelper.writeFile(filePath, new File(filePath), HEADERS, userId + "| " + subscriptionStartDate + "| " + subscriptionEndDate);
+        fileHelper.writeFile(filePath, new File(filePath), HEADERS, true, userId + "| " + subscriptionStartDate + "| " + subscriptionEndDate);
         transactionDao.writeTransaction(userId, subscriptionDeductionAmount, "Subscription");
 
     }

@@ -1,11 +1,11 @@
 package com.apu.apfood.services;
 
 import com.apu.apfood.db.dao.NotificationDao;
+import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.TransactionDao;
 import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.exceptions.CustomValidationException;
-import java.util.List;
 
 /**
  *
@@ -14,6 +14,7 @@ import java.util.List;
 public class UserService {
 
     private final UserDao userDao = new UserDao();
+    private final RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
     private final TransactionDao transactionDao = new TransactionDao();
     private final NotificationDao notificationDao = new NotificationDao();
 
@@ -24,7 +25,19 @@ public class UserService {
         userDao.add(user);
     }
 
-    public void checkCredentials(String name, String password, String role, String email) throws CustomValidationException {
+    public Object[][] getAllRegisteredUsers() {
+        return userDao.getAllUsers();
+    }
+
+    public Object[][] getAllRunnerAvailability() {
+        return runnerAvailabilityDao.getAllRunnerAvailability();
+    }
+    
+    public Object[][] getAllVendorNames() {
+        return userDao.getAllVendor();
+    }
+
+    public void checkCredentials(String name, String password, String email, String role) throws CustomValidationException {
         try {
             if (role.equals("No role selected")) {
                 throw new CustomValidationException("Select a user role");
@@ -57,22 +70,26 @@ public class UserService {
         return false;
     }
 
-    public void mapUserToVendor(String customerName, String inputVendorName) {
+    public void registerUserToVendor(String customerName, String inputVendorName) {
         userDao.addVendorUser(customerName, inputVendorName);
     }
 
-    public void createVendorFolder() {
-        // Create another vendor, create a folder with Menu, Orders, and Reviews.txt
-
+    public void createVendorFolder(String vendorName) {
+        userDao.createNewVendorFolder(vendorName);
     }
     
-    public Object[][]  getCustomerBalance() {
+    public void addNewRunnerAvailability(String name) {
+        String userId = userDao.getUserId(name);
+        this.runnerAvailabilityDao.addNewRunnerAvailability(userId);
+    }
+
+    public Object[][] getCustomerBalance() {
         return userDao.getCustomerCreditDetails();
     }
-    
-    public void addTopUpTransaction(String userId, String amount ,String remark) {
+
+    public void addTopUpTransaction(String userId, String amount, String remark) {
         transactionDao.writeTransaction(userId, amount, remark);
-        notificationDao.writeNotification(userId, "Credit top up [user id: "+ userId + "]", "Unnotified", "Transactional");
+        notificationDao.writeNotification(userId, "Credit top up [user id: " + userId + "]", "Unnotified", "Transactional");
     }
 
     public static String sanitizeEmail(String email) {
@@ -83,5 +100,10 @@ public class UserService {
     public static void main(String[] args) {
         UserService us = new UserService();
         us.addUser(new User(5, "Jane Doe", "asd@asd.com", "qweqweqwe".toCharArray(), "admin"));
+        for (Object[] value: us.getAllVendorNames()) {
+            for(Object row: value) {
+                System.out.println(row);
+            }
+        }
     }
 }

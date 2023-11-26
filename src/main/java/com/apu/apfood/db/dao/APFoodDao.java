@@ -34,7 +34,7 @@ public abstract class APFoodDao<T extends BaseModel> {
     public List<String[]> getAll() {
         return fileHelper.readFile(filePath);
     }
-    
+
     protected abstract String serialize(T entity);
     
     public abstract void update(T entity);
