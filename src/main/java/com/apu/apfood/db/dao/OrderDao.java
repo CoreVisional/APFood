@@ -1,8 +1,18 @@
 package com.apu.apfood.db.dao;
 
+import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Order;
+import com.apu.apfood.db.models.OrderDetails;
+import com.apu.apfood.helpers.FileHelper;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -12,9 +22,10 @@ public class OrderDao extends APFoodDao<Order> {
     
     private static final String ORDER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/vendors/";   
     private static final String HEADERS = "id| orderId| userId| menuId| quantity| orderDate| orderTime| remarks| mode| orderStatus| hasDiscount| deliveryLocation\n";
-    
+    private FileHelper fileHelper = new FileHelper();
+
     public OrderDao() {
-        
+        super(ORDER_FILEPATH, HEADERS);
     }
     
     public OrderDao(String vendorName) {
@@ -56,7 +67,19 @@ public class OrderDao extends APFoodDao<Order> {
     
     @Override
     protected Order deserialize(String[] data) {
-        return null;
+        int orderId = Integer.parseInt(data[1].trim());
+        int userId = Integer.parseInt(data[2].trim());
+        int menuId = Integer.parseInt(data[3].trim());
+        int quantity = Integer.parseInt(data[4].trim());
+        LocalDate orderDate = LocalDate.parse(data[5].trim());
+        LocalTime orderTime = LocalTime.parse(data[6].trim());
+        String remarks = data[7].trim();
+        String mode = data[8].trim();
+        OrderStatus orderStatus = OrderStatus.valueOf(data[9].trim().toUpperCase());
+        boolean hasDiscount = Boolean.parseBoolean(data[10]);
+        String deliveryLocation = data[11].trim();
+
+        return new Order(orderId, userId, menuId, quantity, orderDate, orderTime, remarks, mode, orderStatus, hasDiscount, deliveryLocation);
     }
     
     @Override
@@ -98,4 +121,45 @@ public class OrderDao extends APFoodDao<Order> {
 
         return maxOrderId + 1;
     }
+    
+    public List<Order> getOrderListfromVendor (String vendorName)
+    {
+        this.filePath = getFullPath(ORDER_FILEPATH + vendorName + "/Orders.txt");
+        List<String[]> rawData = super.getAll();
+        List<Order> orders = rawData.stream()
+                                  .map(this::deserialize)
+                                  .collect(Collectors.toList());
+
+        return orders;
+        
+    }
+    
+    public boolean updateOrderStatus(int orderId, OrderStatus orderStatus, String vendorName)
+    {
+        boolean success = false;
+        this.filePath = getFullPath(ORDER_FILEPATH + vendorName + "/Orders.txt");
+        List<String[]> rawData = super.getAll();
+        List<Order> orders = rawData.stream()
+                                  .map(this::deserialize)
+                                  .collect(Collectors.toList());
+        try {
+            // Open the file with WRITE mode, which truncates the file to size 0
+            Files.newBufferedWriter(Path.of(filePath), StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
+        String[] lines = new String[orders.size()];
+        for (int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
+            if(order.getOrderId() == orderId)
+            {
+                order.setOrderStatus(orderStatus);
+                success = true;
+            }
+            String serializedData = serialize(order);
+            fileHelper.writeFile(filePath, new File(filePath),HEADERS, serializedData);
+        }
+        return success;
+    }
+    
 }

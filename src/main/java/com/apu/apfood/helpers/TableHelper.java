@@ -1,5 +1,6 @@
 package com.apu.apfood.helpers;
 
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,9 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -96,8 +100,37 @@ public class TableHelper {
         //model.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
 
     }
-
-    public void refreshTable(javax.swing.JTable jtable, Object[][] deliveryHistory) {
+    
+    public void SetupTableSorter(JTable table)
+    {
+        centerTableValues(table);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+        table.setRowSorter(sorter);
+    }
+    
+    public void adjustColumnsToScalable(int[] scalableColumns, JTable table)
+    {
+        for (int column : scalableColumns)
+        {
+            table.getColumnModel().getColumn(column).setCellRenderer(new MultiLineCellRenderer());
+            for (int row = 0; row < table.getRowCount(); row++) 
+            {
+                int rowHeight = calculateRowHeight(table, row, column);
+                table.setRowHeight(row, rowHeight);
+            }
+        }
+      
+        table.setFillsViewportHeight(true);
+        // Set the row height based on the content
+        for (int row = 0; row < table.getRowCount(); row++) {
+            for (int column : scalableColumns)
+            {
+                int rowHeight = calculateRowHeight(table, row, column);
+                table.setRowHeight(row, rowHeight);
+            }
+            
+        }
+    }
 
     // For 2D static array
     public void refreshTable(javax.swing.JTable jtable, Object[][] payload, String[] tableHeaders) {
@@ -115,5 +148,27 @@ public class TableHelper {
         DefaultTableModel model = (DefaultTableModel) jtable.getModel();
         model.setDataVector(customerCreditDetails, tableHeaders);
         model.fireTableDataChanged();
+    }
+    
+    static class MultiLineCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            // Let the default renderer prepare the component
+            JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            // If the value contains newline characters, use HTML to display them
+            if (value != null && value.toString().contains("\n")) {
+                label.setText("<html>" + value.toString().replaceAll("\n", "<br/>") + "</html>");
+            }
+
+            return label;
+        }
+    }
+    
+    private static int calculateRowHeight(JTable table, int row, int column) {
+        TableCellRenderer cellRenderer = table.getCellRenderer(row, column);
+        Component comp = table.prepareRenderer(cellRenderer, row, column);
+        return Math.max(comp.getPreferredSize().height, table.getRowHeight(row));
     }
 }

@@ -9,11 +9,20 @@ public class FoodDetails {
     private String foodName;
     private String foodId;
     private String quantity;
+    
+    private String remark="";
 
     public FoodDetails(String foodName, String foodId, String quantity) {
         this.foodName = foodName;
         this.foodId = foodId;
         this.quantity = quantity;
+    }
+    
+        public FoodDetails(String foodName, String foodId, String quantity, String remark) {
+        this.foodName = foodName;
+        this.foodId = foodId;
+        this.quantity = quantity;
+        this.remark = remark;
     }
 
     public String getFoodName() {
@@ -26,5 +35,9 @@ public class FoodDetails {
 
     public String getQuantity() {
         return quantity;
+    }
+    
+    public String getRemark() {
+        return remark;
     }
 }

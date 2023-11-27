@@ -2,7 +2,10 @@ package com.apu.apfood.gui;
 
 import com.apu.apfood.db.dao.MenuDao;
 import com.apu.apfood.db.dao.UserDao;
+import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Menu;
+import com.apu.apfood.db.models.Order;
+import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
@@ -10,6 +13,8 @@ import com.apu.apfood.helpers.TableHelper;
 import com.apu.apfood.services.VendorService;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import java.awt.CardLayout;
+import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +22,12 @@ import java.util.Map;
 import java.util.function.Function;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -31,6 +40,7 @@ public class VendorForm extends javax.swing.JFrame {
     private MenuDao md;
     private String vendorName;
     private final Map<String, Integer> menuItemIdMap = new HashMap<>();
+    private Map<Integer, OrderDetails> ordersMap = new HashMap<>();
     
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -52,12 +62,12 @@ public class VendorForm extends javax.swing.JFrame {
         // Enable side buttons for switching panels
         guiHelper.panelSwitcher(homeNavBtn, contentPanel, "homePanel");
         guiHelper.panelSwitcher(menuBtn, contentPanel, "menuPanel");
-        guiHelper.panelSwitcher(ordersBtn, contentPanel, "ordersBtn");
+        guiHelper.panelSwitcher(ordersBtn, contentPanel, "ordersPanel");
         
         nameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
         vendorLabel.setText(vendorName);
-        
+        menuLabel.setText(vendorName + " Menu");
         
     }
 
@@ -68,26 +78,22 @@ public class VendorForm extends javax.swing.JFrame {
         GUIHelper.JFrameSetup(this);
         
         populateMenuTable();
+        populateIncomingOrdersTable();
+        populateOrdersInProgressTable();
     }
 
     public void populateMenuTable() {
-        List<Menu> menuItems = vs.getVendorMenuItems(vendorName);
-        menuItemIdMap.clear(); // Clear previous entries
-
-        Function<Menu, Object[]> rowMapper = menu -> {
-            menuItemIdMap.put(menu.getMenuName(), menu.getId());
-            return new Object[] { menu.getMenuName(), menu.getMenuType(), menu.getPrice() };
-        };
-
-        tableHelper.populateTable(menuItems, menuTable, rowMapper, true);
-        tableHelper.centerTableValues(menuTable);
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(menuTable.getModel());
-        menuTable.setRowSorter(sorter);
-        String[] types = {"food", "drink"};
-        JComboBox combo = new JComboBox<String>(types);
-        TableColumn col = menuTable.getColumnModel().getColumn(2);
-        col.setCellEditor(new DefaultCellEditor(combo));
-        
+        vs.populateMenuTable(menuTable);
+    }
+    
+    public void populateIncomingOrdersTable()
+    {
+        vs.populateOrderTable(incomingOrdersTable, OrderStatus.PENDING);
+    }
+    
+    public void populateOrdersInProgressTable()
+    {
+        vs.populateOrderTable(ordersInProgressTable, OrderStatus.IN_PROGRESS);
     }
     
     /**
@@ -128,8 +134,19 @@ public class VendorForm extends javax.swing.JFrame {
         refreshBtn = new javax.swing.JButton();
         AddBtn = new javax.swing.JButton();
         removeBtn = new javax.swing.JButton();
-        vendorlabel = new javax.swing.JLabel();
-        ordersPanel = new javax.swing.JPanel();
+        menuLabel = new javax.swing.JLabel();
+        cancelBtn = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        incomingOrdersTable = new javax.swing.JTable();
+        declineBtn = new javax.swing.JButton();
+        ordersRefreshBtn = new javax.swing.JButton();
+        acceptBtn = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        ordersInProgressTable = new javax.swing.JTable();
+        readyBtn = new javax.swing.JButton();
+        declineBtn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -242,7 +259,7 @@ public class VendorForm extends javax.swing.JFrame {
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1027, Short.MAX_VALUE)
+                .addContainerGap(1032, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
                 .addComponent(jLabel7)
@@ -294,6 +311,8 @@ public class VendorForm extends javax.swing.JFrame {
         homePanel.add(vendorLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 120, -1, -1));
 
         contentPanel.add(homePanel, "homePanel");
+
+        menuPanel.setPreferredSize(new java.awt.Dimension(648, 136));
 
         menuTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -351,7 +370,8 @@ public class VendorForm extends javax.swing.JFrame {
             }
         });
 
-        vendorlabel.setText("jLabel3");
+        menuLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        menuLabel.setText("(vendorName) Menu");
 
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
@@ -360,7 +380,6 @@ public class VendorForm extends javax.swing.JFrame {
             .addGroup(menuPanelLayout.createSequentialGroup()
                 .addGap(164, 164, 164)
                 .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(vendorlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1014, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -372,15 +391,16 @@ public class VendorForm extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(refreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(48, 48, 48)
-                            .addComponent(saveAllBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(saveAllBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(menuLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(172, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuPanelLayout.createSequentialGroup()
-                .addGap(53, 53, 53)
-                .addComponent(vendorlabel)
-                .addGap(18, 18, 18)
+                .addGap(59, 59, 59)
+                .addComponent(menuLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -390,23 +410,151 @@ public class VendorForm extends javax.swing.JFrame {
                     .addComponent(refreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         contentPanel.add(menuPanel, "menuPanel");
 
-        javax.swing.GroupLayout ordersPanelLayout = new javax.swing.GroupLayout(ordersPanel);
-        ordersPanel.setLayout(ordersPanelLayout);
-        ordersPanelLayout.setHorizontalGroup(
-            ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1350, Short.MAX_VALUE)
+        cancelBtn.setMinimumSize(new java.awt.Dimension(648, 136));
+        cancelBtn.setPreferredSize(new java.awt.Dimension(648, 136));
+
+        incomingOrdersTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "OrderID", "Customer Name", "Items", "Quantity", "Remarks", "Date", "Time", "Mode"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, true, true, true, true, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(incomingOrdersTable);
+
+        declineBtn.setText("Decline");
+        declineBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                declineBtnActionPerformed(evt);
+            }
+        });
+
+        ordersRefreshBtn.setText("Refresh");
+        ordersRefreshBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ordersRefreshBtnActionPerformed(evt);
+            }
+        });
+
+        acceptBtn.setText("Accept");
+        acceptBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel3.setText("Orders in Progress");
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel8.setText("Incoming Orders");
+
+        ordersInProgressTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "OrderID", "Customer Name", "Items", "Quantity", "Remarks", "Date", "Time", "Mode"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, true, true, true, true, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(ordersInProgressTable);
+
+        readyBtn.setText("Ready");
+        readyBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                readyBtnActionPerformed(evt);
+            }
+        });
+
+        declineBtn1.setText("Cancel");
+        declineBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                declineBtn1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout cancelBtnLayout = new javax.swing.GroupLayout(cancelBtn);
+        cancelBtn.setLayout(cancelBtnLayout);
+        cancelBtnLayout.setHorizontalGroup(
+            cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cancelBtnLayout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(cancelBtnLayout.createSequentialGroup()
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ordersRefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cancelBtnLayout.createSequentialGroup()
+                        .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(cancelBtnLayout.createSequentialGroup()
+                                .addComponent(readyBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(declineBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(cancelBtnLayout.createSequentialGroup()
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(acceptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(declineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(100, 100, 100)))
+                .addGap(65, 65, 65))
         );
-        ordersPanelLayout.setVerticalGroup(
-            ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
+        cancelBtnLayout.setVerticalGroup(
+            cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cancelBtnLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel8)
+                    .addComponent(ordersRefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(acceptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(declineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(readyBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(declineBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
-        contentPanel.add(ordersPanel, "ordersPanel");
+        contentPanel.add(cancelBtn, "ordersPanel");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -448,6 +596,40 @@ public class VendorForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_removeBtnActionPerformed
 
+    private void ordersRefreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ordersRefreshBtnActionPerformed
+        // TODO add your handling code here:
+        populateIncomingOrdersTable();
+        populateOrdersInProgressTable();
+    }//GEN-LAST:event_ordersRefreshBtnActionPerformed
+
+    private void declineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineBtnActionPerformed
+        // TODO add your handling code here:
+        vs.updateOrderStatus(incomingOrdersTable, OrderStatus.DECLINED);
+        populateIncomingOrdersTable();
+        populateOrdersInProgressTable();
+    }//GEN-LAST:event_declineBtnActionPerformed
+
+    private void acceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptBtnActionPerformed
+        // TODO add your handling code here:
+        vs.updateOrderStatus(incomingOrdersTable, OrderStatus.IN_PROGRESS);
+        populateIncomingOrdersTable();
+        populateOrdersInProgressTable();
+    }//GEN-LAST:event_acceptBtnActionPerformed
+
+    private void readyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readyBtnActionPerformed
+        // TODO add your handling code here:
+        vs.updateOrderStatus(ordersInProgressTable, OrderStatus.ACCEPTED);
+        populateIncomingOrdersTable();
+        populateOrdersInProgressTable();
+    }//GEN-LAST:event_readyBtnActionPerformed
+
+    private void declineBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineBtn1ActionPerformed
+        // TODO add your handling code here:
+        vs.updateOrderStatus(ordersInProgressTable, OrderStatus.DECLINED);
+        populateIncomingOrdersTable();
+        populateOrdersInProgressTable();
+    }//GEN-LAST:event_declineBtn1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -475,31 +657,44 @@ public class VendorForm extends javax.swing.JFrame {
             }
         });
     }
-
+  
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddBtn;
+    private javax.swing.JButton acceptBtn;
+    private javax.swing.JPanel cancelBtn;
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JButton declineBtn;
+    private javax.swing.JButton declineBtn1;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JButton homeNavBtn;
     private javax.swing.JPanel homePanel;
+    private javax.swing.JTable incomingOrdersTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton menuBtn;
+    private javax.swing.JLabel menuLabel;
     private javax.swing.JPanel menuPanel;
     private javax.swing.JTable menuTable;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JButton orderHistoryBtn;
     private javax.swing.JButton ordersBtn;
-    private javax.swing.JPanel ordersPanel;
+    private javax.swing.JTable ordersInProgressTable;
+    private javax.swing.JButton ordersRefreshBtn;
+    private javax.swing.JButton readyBtn;
     private javax.swing.JButton refreshBtn;
     private javax.swing.JButton removeBtn;
     private javax.swing.JButton revenueDashboardBtn;
@@ -507,6 +702,5 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JPanel sidePanel;
     private javax.swing.JPanel topBarPanel;
     private javax.swing.JLabel vendorLabel;
-    private javax.swing.JLabel vendorlabel;
     // End of variables declaration//GEN-END:variables
 }
