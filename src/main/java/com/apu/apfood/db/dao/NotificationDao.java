@@ -9,8 +9,8 @@ import java.io.File;
  */
 public class NotificationDao extends APFoodDao<User> {
 
-    private static final String USER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Notifications.txt";
-    private static final String HEADERS = "id| userId| content| status\n";
+    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\Notifications.txt";
+    private static final String HEADERS = "id| userId| content| status| type\n";
 
     public NotificationDao() {
         super(USER_FILEPATH, HEADERS);
@@ -30,7 +30,8 @@ public class NotificationDao extends APFoodDao<User> {
     public void update(User user) {
     }
 
-    public void writeNotification(String content) {
-        this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, content);
+    public void writeNotification(String userId, String content, String status, String type) {
+        String notification = userId + "| " + content + "| " + status + "| " + type;
+        this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, true, notification);
     }
 }

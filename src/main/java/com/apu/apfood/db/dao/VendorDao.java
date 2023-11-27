@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
  * @author Alex
  */
 public class VendorDao extends APFoodDao<Vendor> {
-    private static final String VENDOR_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Vendors.txt";
-    private static final String HEADERS = "id| userId| vendor_name\n";
+    private static final String VENDOR_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/VendorUsers.txt";
+    private static final String HEADERS = "id| userId| vendor\n";
     
     public VendorDao() {
         super(VENDOR_FILEPATH, HEADERS);
@@ -67,5 +67,5 @@ public class VendorDao extends APFoodDao<Vendor> {
     @Override
     public void update(Vendor vendor) {
         
-    }    
+    }
 }

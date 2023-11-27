@@ -54,7 +54,7 @@ public class UserSeeder {
 
     private static void createUser(String[] user) {
         String data = user[0] + "| " + user[1] + "| " + user[2] + "| " + user[3] + "\n";
-        fileHelper.writeFile(USER_FILEPATH, new File(USER_FILEPATH), HEADERS, data);
+        fileHelper.writeFile(USER_FILEPATH, new File(USER_FILEPATH), HEADERS,true, data);
     }
 
     private static void createUsers() {

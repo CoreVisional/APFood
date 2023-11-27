@@ -38,7 +38,7 @@ public abstract class APFoodDao<T extends BaseModel> {
     public List<String[]> getAll() {
         return fileHelper.readFile(filePath);
     }
-    
+
     protected String getFullPath(String relativePath) {
         return BASE_PATH + relativePath;
     }

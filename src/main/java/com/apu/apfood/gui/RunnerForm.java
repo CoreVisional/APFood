@@ -24,7 +24,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private Map<String, OrderDetails> deliveryTasks;
     private String[] orderKeys;
     private int orderListPanelIndex = 0;
-    
+
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
     GUIHelper guiHelper = new GUIHelper();
@@ -74,7 +74,6 @@ public class RunnerForm extends javax.swing.JFrame {
         roleLabel.setText("Delivery Runner");
         nameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
-
     }
 
     private void initCustomComponents() {
@@ -723,13 +722,13 @@ public class RunnerForm extends javax.swing.JFrame {
 
         JTableHeader header = deliveryHistoryJTable.getTableHeader();
         header.setPreferredSize(new Dimension(20, 40));
-        tableHelper.centerTableValues(deliveryHistoryJTable);
         deliveryHistoryJTable.setRowHeight(40);
         deliveryHistoryJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
         deliveryHistoryJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         deliveryHistoryJTable.setShowGrid(true);
         deliveryHistoryJTable.getTableHeader().setResizingAllowed(false);
         deliveryHistoryJTable.getTableHeader().setReorderingAllowed(false);
+        tableHelper.centerTableValues(deliveryHistoryJTable);
         jScrollPane1.setViewportView(deliveryHistoryJTable);
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -1022,8 +1021,10 @@ public class RunnerForm extends javax.swing.JFrame {
 
         // Refresh delivery history table
         this.deliveryHistory = rs.getDeliveryHistory();
-        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory);
-        
+        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
+                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
+                });
+
         // Reset order list panel index
         orderListPanelIndex = 0;
     }//GEN-LAST:event_taskAcceptBtnActionPerformed
@@ -1066,7 +1067,9 @@ public class RunnerForm extends javax.swing.JFrame {
 
         // Refresh delivery history table
         this.deliveryHistory = rs.getDeliveryHistory();
-        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory);
+        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory, 
+                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
+        });
 
         // Refresh revenue values
         rs.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);

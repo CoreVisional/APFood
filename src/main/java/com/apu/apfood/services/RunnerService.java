@@ -32,7 +32,7 @@ public class RunnerService {
         return runnerTaskDao.getDeliveryHistory(this.runner);
     }
 
-    public void setRevenueValues(User user, javax.swing.JLabel totalRevenueJLabel, javax.swing.JLabel monthlyRevenueJLabel, javax.swing.JLabel yearlyRevenueJLabel,javax.swing.JLabel todayRevenueJLabel) {
+    public void setRevenueValues(User user, javax.swing.JLabel totalRevenueJLabel, javax.swing.JLabel monthlyRevenueJLabel, javax.swing.JLabel yearlyRevenueJLabel, javax.swing.JLabel todayRevenueJLabel) {
         totalRevenueJLabel.setText("RM " + runnerRevenueDao.checkTotalRevenue(user));
         monthlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 1));
         yearlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 12));
@@ -68,7 +68,7 @@ public class RunnerService {
         // Get order details based on chosen key
         String chosenKey = orderKeys[orderListPanelIndex];
         OrderDetails orderDetails = deliveryTasks.get(chosenKey);
-        String customerName = ud.getCustomerName(orderDetails.getAccountId());
+        String customerName = ud.getUserName(orderDetails.getAccountId());
 
         // Display information
         taskCustomerNameJLabel.setText(customerName);
@@ -105,17 +105,17 @@ public class RunnerService {
     public void notifyIfNoVendor(String inputOrderId, String vendorName) {
         // Remove # from order id
         String orderId = inputOrderId.replace("#", "");
-        
-        String userId = userDao.getCustomerId(orderId, vendorName);
+
+        String userId = userDao.getUserId(orderId, vendorName);
         runnerTaskDao.notifyNoRunner(orderId, vendorName, userId);
     }
 
     public void notifyDeliveryOngoing(String inputOrderId, String vendorName) {
         // Remove # from order id
         String orderId = inputOrderId.replace("#", "");
-        String userId = userDao.getCustomerId(orderId, vendorName);
+        String userId = userDao.getUserId(orderId, vendorName);
 
-        notificationDao.writeNotification(userId + "| " + "Delivery ongoing [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Informational");
+        notificationDao.writeNotification(userId, "Delivery ongoing [order id: " + orderId + ", vendor name: " + vendorName + "]", "Unnotified", "Informational");
     }
 
     public boolean checkOngoingTask(User user) {
@@ -132,11 +132,11 @@ public class RunnerService {
 
     public void finishTask(User user, String inputOrderId, String vendorName) {
         String orderId = inputOrderId.replace("#", "");
-        String userId = userDao.getCustomerId(orderId, vendorName);
+        String userId = userDao.getUserId(orderId, vendorName);
 
         runnerAvailabilityDao.updateAvailability(user, "Available");
         runnerTaskDao.updateDeliveryStatus(orderId, vendorName);
-        notificationDao.writeNotification(userId + "| " + "Delivery completed [order id: " + orderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Informational");
+        notificationDao.writeNotification(userId, "Delivery completed [order id: " + orderId + ", vendor name: " + vendorName + "]", "Unnotified", "Informational");
     }
 
     public static void main(String[] args) {

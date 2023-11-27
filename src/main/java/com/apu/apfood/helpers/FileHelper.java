@@ -41,7 +41,8 @@ public class FileHelper {
         return id;
     }
     
-    public void writeFile(String filename, File file, String headers, String... varargs) {
+
+    public void writeFile(String filename, File file, String headers, boolean hasNewLine, String... varargs) {
 
         int id = generateID(filename, file);
 
@@ -50,18 +51,29 @@ public class FileHelper {
         try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             if (file.length() == 0) {
                 writer.write(headers);
+                if (hasNewLine) {
+                    writer.newLine();
+                }
             }
+
             for (String line : varargs) {
                 writer.write(id + "| " + line);
+                if (hasNewLine) {
+                    writer.newLine();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace(System.out);
         }
     }
-    
+
+    public void writeFile(String filename, File file, String headers, String... varargs) {
+        writeFile(filename, file, headers, false, varargs);
+    }
+
     public List<String[]> readFile(String filename) {
         List<String[]> dataList = new ArrayList();
-        
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             reader.readLine(); // Skip header
@@ -72,7 +84,7 @@ public class FileHelper {
         } catch (IOException e) {
             e.printStackTrace(System.out);
         }
-        
+
         return dataList;
     }
 }

@@ -18,7 +18,8 @@ import java.util.List;
 public class RunnerAvailabilityDao extends APFoodDao<User> {
 
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerAvailability.txt";
-    private static final String HEADERS = "id| deliveryRunnerID| status\n";
+    private static final String HEADERS = "id| deliveryRunnerId| status\n";
+    private final UserDao userDao = new UserDao();
 
     FileHelper fileHelper = new FileHelper();
 
@@ -40,6 +41,44 @@ public class RunnerAvailabilityDao extends APFoodDao<User> {
     public void update(User user) {
     }
 
+    public Object[][] getAllRunnerAvailability() {
+        // Declare 2D array
+        Object[][] runnerAvailability;
+
+        // Create an empty list to store matching rows
+        List<String[]> rows = new ArrayList<>();
+
+        try {
+            FileReader fr = new FileReader(filePath);
+            BufferedReader br = new BufferedReader(fr);
+            br.readLine();
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\\| ");
+
+                // Retrieve orderid, vendor name, delivery location
+                String id = values[0];
+                String runnerId = values[1];
+                String status = values[2];
+                String runnerName = userDao.getUserName(runnerId);
+                // Populate table row
+                String[] row = {runnerName, runnerId, status};
+                rows.add(row);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Convert the list of matching rows to a 2D array
+        runnerAvailability = new Object[rows.size()][3];
+        for (int i = 0; i < rows.size(); i++) {
+            runnerAvailability[i] = rows.get(i);
+        }
+
+        return runnerAvailability;
+    }
+
     public String getAvailability(User user) {
         try {
             FileReader fr = new FileReader(filePath);
@@ -59,8 +98,8 @@ public class RunnerAvailabilityDao extends APFoodDao<User> {
         return null;
     }
 
-    public void addNewRunnerAvailability(User user) {
-        fileHelper.writeFile(filePath, new File(filePath), HEADERS, String.valueOf(user.getId()) + "| Available");
+    public void addNewRunnerAvailability(String userId) {
+        fileHelper.writeFile(filePath, new File(filePath), HEADERS, true, userId + "| Available");
     }
 
     public void updateAvailability(User user, String newAvailability) {
@@ -70,8 +109,8 @@ public class RunnerAvailabilityDao extends APFoodDao<User> {
         try {
             FileReader fr = new FileReader(filePath);
             BufferedReader br = new BufferedReader(fr);
-            updatedLines.add( br.readLine()); // Add header row
-            
+            updatedLines.add(br.readLine()); // Add header row
+
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split("\\| ");
@@ -99,7 +138,5 @@ public class RunnerAvailabilityDao extends APFoodDao<User> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-//        String[] updatedLinesArray = updatedLines.toArray(new String[0]);
     }
 }

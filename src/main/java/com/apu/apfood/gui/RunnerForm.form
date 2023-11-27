@@ -1022,7 +1022,7 @@
                             <LineBorder/>
                           </Border>
                         </Property>
-                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="int[] columnWidths = {20, 20, 100, 50, 50, 50, 50, 50, 350}; // Set your desired widths&#xa;TableColumnModel columnModel = deliveryHistoryJTable.getColumnModel();&#xa;&#xa;for (int i = 0; i &lt; columnWidths.length; i++) {&#xa;    TableColumn column = columnModel.getColumn(i);&#xa;    column.setPreferredWidth(columnWidths[i]);&#xa;}&#xa;&#xa;&#xa;JTableHeader header = deliveryHistoryJTable.getTableHeader();&#xa;header.setPreferredSize(new Dimension(20, 40));&#xa;tableHelper.centerTableValues(deliveryHistoryJTable);">
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="int[] columnWidths = {20, 20, 100, 50, 50, 50, 50, 50, 350}; // Set your desired widths&#xa;TableColumnModel columnModel = deliveryHistoryJTable.getColumnModel();&#xa;&#xa;for (int i = 0; i &lt; columnWidths.length; i++) {&#xa;    TableColumn column = columnModel.getColumn(i);&#xa;    column.setPreferredWidth(columnWidths[i]);&#xa;}&#xa;&#xa;&#xa;JTableHeader header = deliveryHistoryJTable.getTableHeader();&#xa;header.setPreferredSize(new Dimension(20, 40));">
                           <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    this.deliveryHistory,&#xa;    new String [] {&#xa;        &quot;Delivery ID&quot;, &quot;Order ID&quot;, &quot;Customer Name&quot;, &quot;Vendor&quot;, &quot;Location&quot;, &quot;Date&quot;, &quot;Time&quot;, &quot;DeliveryStatus&quot;, &quot;Feedback&quot;&#xa;    }&#xa;)&#xa;{&#xa;    Class[] types = new Class [] {&#xa;        java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,  java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class&#xa;    };&#xa;    boolean[] canEdit = new boolean [] {&#xa;        false, false, false, false, false, false, false, false, false&#xa;    };&#xa;&#xa;    public Class getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }&#xa;&#xa;    public boolean isCellEditable(int rowIndex, int columnIndex) {&#xa;        return canEdit [columnIndex];&#xa;    }&#xa;}" type="code"/>
                         </Property>
                         <Property name="rowHeight" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
@@ -1037,6 +1037,9 @@
                           <TableHeader reorderingAllowed="false" resizingAllowed="false"/>
                         </Property>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="tableHelper.centerTableValues(deliveryHistoryJTable);"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>

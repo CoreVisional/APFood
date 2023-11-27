@@ -23,7 +23,7 @@ import java.util.Map;
 public class RunnerTaskDao extends APFoodDao<User> {
 
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerTaskAssignment.txt";
-    private static final String HEADERS = "id| orderId| deliveryRunnerId| status| vendorName\n";
+    private static final String HEADERS = "id| orderId| deliverRunnerId| status| vendor| location\n";
 
     private UserDao userDao = new UserDao();
     private NotificationDao notificationDao = new NotificationDao();
@@ -83,7 +83,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                             String accountId = rowArray2[2];
                             String date = rowArray2[5];
                             String time = rowArray2[6];
-                            
+
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSS");
                             LocalTime parsedTime = LocalTime.parse(time, formatter);
                             int hours = parsedTime.getHour();
@@ -91,8 +91,8 @@ public class RunnerTaskDao extends APFoodDao<User> {
                             // Formatting minutes to have leading zeros if necessary
                             String formattedMinutes = String.format("%02d", minutes);
                             String formattedTime = hours + ":" + formattedMinutes; // Concatenating hours and formatted minutes
-                            
-                            String customerName = userDao.getCustomerName(accountId);
+
+                            String customerName = userDao.getUserName(accountId);
 
                             FileReader fr3 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt");
                             BufferedReader br3 = new BufferedReader(fr3);
@@ -382,16 +382,19 @@ public class RunnerTaskDao extends APFoodDao<User> {
         }
 
         if (isNoRunnerLeft) {
-            // If no runner left send notification to customer
-            notificationDao.writeNotification(userId + "| " + "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Push");
 
+            String content = "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]";
+            String status = "Unnotified";
+            String type = "Push";
+            // If no runner left send notification to customer
+            notificationDao.writeNotification(userId, content, status, type);
         }
     }
 
     public void addRunnerDeliveryRecord(String orderId, String vendorName, String userId) {
         String runnerDeliveryFilePath = BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt";
         FileHelper fileHelper = new FileHelper();
-        fileHelper.writeFile(runnerDeliveryFilePath, new File(runnerDeliveryFilePath), HEADERS, orderId + "| Ongoing| " + vendorName + "| " + userId);
+        fileHelper.writeFile(runnerDeliveryFilePath, new File(runnerDeliveryFilePath), "id| orderId| status| vendor| deliveryRunnerId", true, orderId + "| Ongoing| " + vendorName + "| " + userId);
     }
 
     public void updateDeliveryStatus(String inputOrderId, String inputVendorName) {
@@ -433,7 +436,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
             // Write the updated lines to the file
             for (String updatedLine : updatedLines) {
                 bw.write(updatedLine);
-                bw.newLine(); // Add a newline character to separate lines
+                bw.newLine();
             }
 
             // Close the BufferedWriter to save the changes
@@ -492,8 +495,8 @@ public class RunnerTaskDao extends APFoodDao<User> {
                         String[] rowArray2 = row2.split("\\| ");
                         if (rowArray2[1].equals(orderId) && rowArray2[4].equals(vendorName)) {
                             String location = rowArray2[5];
-                            String customerId = userDao.getCustomerId(orderId, vendorName);
-                            String customerName = userDao.getCustomerName(customerId);
+                            String customerId = userDao.getUserId(orderId, vendorName);
+                            String customerName = userDao.getUserName(customerId);
 
                             taskDetails.add(location);
                             taskDetails.add(orderId);
