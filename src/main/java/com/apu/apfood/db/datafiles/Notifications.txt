@@ -13,3 +13,4 @@ id| userId| content| status| type
 12| 1| Delivery completed [order id: 1, vendor name: Modesto]| Not Notified| Informational
 13| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified| Informational
 14| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
+15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified| Informational

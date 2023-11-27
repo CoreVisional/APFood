@@ -81,6 +81,21 @@ public class TableHelper {
         
         return map;
     }
+    
+    public void addRowinTable(JTable jtable, List<String> row)
+    {
+        DefaultTableModel model = (DefaultTableModel) jtable.getModel();
+        int id = model.getRowCount()+1;
+        Object[] obj = new Object[row.size()+1];
+        obj[0] = String.valueOf(id);
+        for (int i = 1; i <= row.size(); i++)
+        {
+            obj[i] = row.get(i-1);
+        }
+        model.addRow(obj); 
+        //model.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
+
+    }
 
     public void refreshTable(javax.swing.JTable jtable, Object[][] deliveryHistory) {
         DefaultTableModel model = (DefaultTableModel) jtable.getModel();

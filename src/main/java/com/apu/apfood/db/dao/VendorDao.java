@@ -49,29 +49,7 @@ public class VendorDao extends APFoodDao<Vendor> {
         return vendorName;
     }
     
-    public Menu getMenu(String vendorName)
-    {
-        Menu menu = new Menu();
-        try 
-        {
-            String filePath = "/src/main/java/com/apu/apfood/db/datafiles/vendors/" + vendorName + "//Menu.txt";
-            FileReader fileReader = new FileReader(filePath);
-            BufferedReader br = new BufferedReader(fileReader);
-            br.readLine(); // Skip first row
-            String row;
-
-            while ((row = br.readLine()) != null) 
-            {
-                String[] rowArray = row.split("\\| ");
-                menu.addFood(rowArray[1],rowArray[2],Double.valueOf(rowArray[3]));
-
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return menu;
-    }
+    
     
     @Override
     protected String serialize(Vendor vendor) {

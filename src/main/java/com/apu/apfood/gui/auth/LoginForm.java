@@ -1,6 +1,6 @@
 package com.apu.apfood.gui.auth;
 
-import com.apu.apfood.gui.AdminRegister;
+import com.apu.apfood.gui.AdminForm;
 import com.apu.apfood.gui.VendorForm;
 import com.apu.apfood.gui.RunnerForm;
 import com.apu.apfood.gui.CustomerForm;
