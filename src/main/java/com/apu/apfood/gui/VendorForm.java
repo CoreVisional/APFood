@@ -63,6 +63,8 @@ public class VendorForm extends javax.swing.JFrame {
         guiHelper.panelSwitcher(homeNavBtn, contentPanel, "homePanel");
         guiHelper.panelSwitcher(menuBtn, contentPanel, "menuPanel");
         guiHelper.panelSwitcher(ordersBtn, contentPanel, "ordersPanel");
+        guiHelper.panelSwitcher(orderHistoryBtn, contentPanel, "orderHistoryPanel");
+        guiHelper.panelSwitcher(revenueDashboardBtn, contentPanel, "revenueDashboardPanel");
         
         nameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
@@ -80,6 +82,8 @@ public class VendorForm extends javax.swing.JFrame {
         populateMenuTable();
         populateIncomingOrdersTable();
         populateOrdersInProgressTable();
+        populateOrderHistoryTable();
+        populateRevenueDashboard();
     }
 
     public void populateMenuTable() {
@@ -94,6 +98,16 @@ public class VendorForm extends javax.swing.JFrame {
     public void populateOrdersInProgressTable()
     {
         vs.populateOrderTable(ordersInProgressTable, OrderStatus.IN_PROGRESS);
+    }
+    
+    public void populateOrderHistoryTable()
+    {
+        vs.populateOrderHistoryTable(orderHistoryTable);
+    }
+    
+    public void populateRevenueDashboard()
+    {
+        vs.populateRevenueDashboard(yearRevenueLabel, monthRevenueLabel, dayRevenueLabel, menuTable);
     }
     
     /**
@@ -135,7 +149,7 @@ public class VendorForm extends javax.swing.JFrame {
         AddBtn = new javax.swing.JButton();
         removeBtn = new javax.swing.JButton();
         menuLabel = new javax.swing.JLabel();
-        cancelBtn = new javax.swing.JPanel();
+        ordersPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         incomingOrdersTable = new javax.swing.JTable();
         declineBtn = new javax.swing.JButton();
@@ -147,6 +161,17 @@ public class VendorForm extends javax.swing.JFrame {
         ordersInProgressTable = new javax.swing.JTable();
         readyBtn = new javax.swing.JButton();
         declineBtn1 = new javax.swing.JButton();
+        orderHistoryPanel = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        orderHistoryTable = new javax.swing.JTable();
+        orderHistoryRefreshBtn1 = new javax.swing.JButton();
+        revenueDashboardPanel = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        monthRevenueLabel = new javax.swing.JLabel();
+        dayRevenueLabel = new javax.swing.JLabel();
+        yearRevenueLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -415,8 +440,8 @@ public class VendorForm extends javax.swing.JFrame {
 
         contentPanel.add(menuPanel, "menuPanel");
 
-        cancelBtn.setMinimumSize(new java.awt.Dimension(648, 136));
-        cancelBtn.setPreferredSize(new java.awt.Dimension(648, 136));
+        ordersPanel.setMinimumSize(new java.awt.Dimension(648, 136));
+        ordersPanel.setPreferredSize(new java.awt.Dimension(648, 136));
 
         incomingOrdersTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -501,25 +526,25 @@ public class VendorForm extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout cancelBtnLayout = new javax.swing.GroupLayout(cancelBtn);
-        cancelBtn.setLayout(cancelBtnLayout);
-        cancelBtnLayout.setHorizontalGroup(
-            cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cancelBtnLayout.createSequentialGroup()
+        javax.swing.GroupLayout ordersPanelLayout = new javax.swing.GroupLayout(ordersPanel);
+        ordersPanel.setLayout(ordersPanelLayout);
+        ordersPanelLayout.setHorizontalGroup(
+            ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ordersPanelLayout.createSequentialGroup()
                 .addGap(41, 41, 41)
-                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(cancelBtnLayout.createSequentialGroup()
+                .addGroup(ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ordersPanelLayout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(ordersRefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cancelBtnLayout.createSequentialGroup()
-                        .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(cancelBtnLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ordersPanelLayout.createSequentialGroup()
+                        .addGroup(ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(ordersPanelLayout.createSequentialGroup()
                                 .addComponent(readyBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(declineBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(cancelBtnLayout.createSequentialGroup()
+                            .addGroup(ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(ordersPanelLayout.createSequentialGroup()
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(acceptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -530,31 +555,155 @@ public class VendorForm extends javax.swing.JFrame {
                         .addGap(100, 100, 100)))
                 .addGap(65, 65, 65))
         );
-        cancelBtnLayout.setVerticalGroup(
-            cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cancelBtnLayout.createSequentialGroup()
+        ordersPanelLayout.setVerticalGroup(
+            ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ordersPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel8)
                     .addComponent(ordersRefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(acceptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(declineBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(cancelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(ordersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(readyBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(declineBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(75, Short.MAX_VALUE))
         );
 
-        contentPanel.add(cancelBtn, "ordersPanel");
+        contentPanel.add(ordersPanel, "ordersPanel");
+
+        orderHistoryTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "OrderId", "Customer Name", "Items", "Quantity", "Remark", "Date", "Time", "Mode", "Rating", "Feedback"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true, true, true, true, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(orderHistoryTable);
+
+        orderHistoryRefreshBtn1.setText("Refresh");
+        orderHistoryRefreshBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                orderHistoryRefreshBtn1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout orderHistoryPanelLayout = new javax.swing.GroupLayout(orderHistoryPanel);
+        orderHistoryPanel.setLayout(orderHistoryPanelLayout);
+        orderHistoryPanelLayout.setHorizontalGroup(
+            orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(orderHistoryPanelLayout.createSequentialGroup()
+                .addContainerGap(75, Short.MAX_VALUE)
+                .addGroup(orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderHistoryPanelLayout.createSequentialGroup()
+                        .addComponent(orderHistoryRefreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderHistoryPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(96, 96, 96))))
+        );
+        orderHistoryPanelLayout.setVerticalGroup(
+            orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(orderHistoryPanelLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(orderHistoryRefreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(189, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(orderHistoryPanel, "orderHistoryPanel");
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel9.setText("Revenue for this Year:");
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel10.setText("Revenue for today:");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel11.setText("Revenue for this Month:");
+
+        monthRevenueLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        monthRevenueLabel.setText("0.0");
+
+        dayRevenueLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        dayRevenueLabel.setText("0.0");
+
+        yearRevenueLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        yearRevenueLabel.setText("0.0");
+
+        javax.swing.GroupLayout revenueDashboardPanelLayout = new javax.swing.GroupLayout(revenueDashboardPanel);
+        revenueDashboardPanel.setLayout(revenueDashboardPanelLayout);
+        revenueDashboardPanelLayout.setHorizontalGroup(
+            revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                        .addGap(124, 124, 124)
+                        .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(yearRevenueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(monthRevenueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                        .addGap(124, 124, 124)
+                        .addComponent(dayRevenueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(1088, Short.MAX_VALUE))
+            .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                    .addGap(61, 61, 61)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(1114, Short.MAX_VALUE)))
+            .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                    .addGap(61, 61, 61)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(1082, Short.MAX_VALUE)))
+        );
+        revenueDashboardPanelLayout.setVerticalGroup(
+            revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                .addGap(131, 131, 131)
+                .addComponent(yearRevenueLabel)
+                .addGap(114, 114, 114)
+                .addComponent(monthRevenueLabel)
+                .addGap(42, 42, 42)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addComponent(dayRevenueLabel)
+                .addContainerGap(374, Short.MAX_VALUE))
+            .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                    .addGap(54, 54, 54)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(727, Short.MAX_VALUE)))
+            .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                    .addGap(190, 190, 190)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(591, Short.MAX_VALUE)))
+        );
+
+        contentPanel.add(revenueDashboardPanel, "revenueDashboardPanel");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -630,6 +779,14 @@ public class VendorForm extends javax.swing.JFrame {
         populateOrdersInProgressTable();
     }//GEN-LAST:event_declineBtn1ActionPerformed
 
+    private void orderHistoryRefreshBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orderHistoryRefreshBtn1ActionPerformed
+        // TODO add your handling code here:
+        populateOrderHistoryTable();
+    }//GEN-LAST:event_orderHistoryRefreshBtn1ActionPerformed
+
+   
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -662,8 +819,8 @@ public class VendorForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddBtn;
     private javax.swing.JButton acceptBtn;
-    private javax.swing.JPanel cancelBtn;
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JLabel dayRevenueLabel;
     private javax.swing.JButton declineBtn;
     private javax.swing.JButton declineBtn1;
     private javax.swing.JLabel emailLabel;
@@ -671,6 +828,8 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JPanel homePanel;
     private javax.swing.JTable incomingOrdersTable;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -678,10 +837,12 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
@@ -689,18 +850,25 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JLabel menuLabel;
     private javax.swing.JPanel menuPanel;
     private javax.swing.JTable menuTable;
+    private javax.swing.JLabel monthRevenueLabel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JButton orderHistoryBtn;
+    private javax.swing.JPanel orderHistoryPanel;
+    private javax.swing.JButton orderHistoryRefreshBtn1;
+    private javax.swing.JTable orderHistoryTable;
     private javax.swing.JButton ordersBtn;
     private javax.swing.JTable ordersInProgressTable;
+    private javax.swing.JPanel ordersPanel;
     private javax.swing.JButton ordersRefreshBtn;
     private javax.swing.JButton readyBtn;
     private javax.swing.JButton refreshBtn;
     private javax.swing.JButton removeBtn;
     private javax.swing.JButton revenueDashboardBtn;
+    private javax.swing.JPanel revenueDashboardPanel;
     private javax.swing.JButton saveAllBtn;
     private javax.swing.JPanel sidePanel;
     private javax.swing.JPanel topBarPanel;
     private javax.swing.JLabel vendorLabel;
+    private javax.swing.JLabel yearRevenueLabel;
     // End of variables declaration//GEN-END:variables
 }

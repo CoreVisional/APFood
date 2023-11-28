@@ -1,5 +1,6 @@
 package com.apu.apfood.db.dao;
 
+import com.apu.apfood.db.enums.TaskStatus;
 import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.FileHelper;
@@ -513,6 +514,13 @@ public class RunnerTaskDao extends APFoodDao<User> {
         return taskDetails;
     }
 
+    public void writeVendorTaskAssignment(int orderId, int runnerId, String vendorName, String deliveryLocation)
+    {
+        String task  = orderId + "| " + runnerId + "| " + TaskStatus.PENDING.toString() + "| " + vendorName + "| " + deliveryLocation;
+        this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, true, task);
+    }
+    
+    
     public static void main(String[] args) {
         RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
         runnerTaskDao.getOrderList(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner"));

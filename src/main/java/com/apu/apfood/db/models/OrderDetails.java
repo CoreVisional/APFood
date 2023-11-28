@@ -20,6 +20,7 @@ public class OrderDetails {
     private String mode;
     private String orderDate;
     private String orderTime;
+    private String deliveryLocation;
 
     private List<FoodDetails> foodDetailsList = new ArrayList<>();
 
@@ -80,6 +81,11 @@ public class OrderDetails {
         return list;
     }
     
+    public String getDeliveryLocation()
+    {
+        return deliveryLocation;
+    }
+    
     public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
@@ -122,5 +128,9 @@ public class OrderDetails {
 
     public void setOrderTime(String orderTime) {
         this.orderTime = orderTime;
+    }
+    public void setDeliveryLocation(String deliveryLocation)
+    {
+        this.deliveryLocation = deliveryLocation;
     }
 }
