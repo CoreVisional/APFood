@@ -7,6 +7,7 @@ import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
 import com.apu.apfood.services.UserService;
 import com.formdev.flatlaf.FlatDarculaLaf;
+import javax.swing.JComboBox;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;
 import javax.swing.table.JTableHeader;
@@ -42,14 +43,14 @@ public class AdminForm extends javax.swing.JFrame {
         emailJLabel.setText(user.getEmail());
 
         // Enable side buttons for switching panels
-        guiHelper.buttonPanelSwitcher(homeNavBtn, contentPanel, "adminHome");
-        guiHelper.buttonPanelSwitcher(registrationNavBtn, contentPanel, "adminRegistration");
-        guiHelper.buttonPanelSwitcher(topUpCreditNavBtn, contentPanel, "adminTopUp");
+        guiHelper.panelSwitcher(homeNavBtn, contentPanel, "adminHome");
+        guiHelper.panelSwitcher(registrationNavBtn, contentPanel, "adminRegistration");
+        guiHelper.panelSwitcher(topUpCreditNavBtn, contentPanel, "adminTopUp");
 
-        guiHelper.buttonPanelSwitcher(customerRoleSelectBtn, registrationFormPanel, "othersForm");
-        guiHelper.buttonPanelSwitcher(runnerRoleSelectBtn, registrationFormPanel, "othersForm");
-        guiHelper.buttonPanelSwitcher(adminRoleSelectBtn, registrationFormPanel, "othersForm");
-        guiHelper.buttonPanelSwitcher(vendorRoleSelectBtn, registrationFormPanel, "vendorForm");
+        guiHelper.panelSwitcher(customerRoleSelectBtn, registrationFormPanel, "othersForm");
+        guiHelper.panelSwitcher(runnerRoleSelectBtn, registrationFormPanel, "othersForm");
+        guiHelper.panelSwitcher(adminRoleSelectBtn, registrationFormPanel, "othersForm");
+        guiHelper.panelSwitcher(vendorRoleSelectBtn, registrationFormPanel, "vendorForm");
     }
 
     private void initCustomComponents() {
@@ -68,10 +69,11 @@ public class AdminForm extends javax.swing.JFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         sidePanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
+        APFoodLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         homeNavBtn = new javax.swing.JButton();
+        ModifyMenuButton = new javax.swing.JButton();
+        TopUpMenuLabel = new javax.swing.JButton();
         registrationNavBtn = new javax.swing.JButton();
         topUpCreditNavBtn = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
@@ -149,29 +151,29 @@ public class AdminForm extends javax.swing.JFrame {
         sidePanel.setBackground(new java.awt.Color(0, 89, 100));
         sidePanel.setPreferredSize(new java.awt.Dimension(250, 900));
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("APFood");
-
-        jSeparator1.setBackground(new java.awt.Color(204, 204, 204));
-        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setBackground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        APFoodLabel.setForeground(new java.awt.Color(255, 255, 255));
+        APFoodLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        APFoodLabel.setText("APFood");
 
         jPanel3.setForeground(new java.awt.Color(30, 30, 30));
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
-        homeNavBtn.setText("Home");
-        homeNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        homeNavBtn.setFocusPainted(false);
-        homeNavBtn.addActionListener(new java.awt.event.ActionListener() {
+        homeNavBtn.setText("Register");
+        jPanel3.add(homeNavBtn);
+
+        ModifyMenuButton.setText("Modify");
+        jPanel3.add(ModifyMenuButton);
+
+        TopUpMenuLabel.setText("Top up credit");
+        TopUpMenuLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 homeNavBtnActionPerformed(evt);
             }
         });
-        jPanel3.add(homeNavBtn);
+        jPanel3.add(TopUpMenuLabel);
 
         registrationNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         registrationNavBtn.setText("Register User");
@@ -202,8 +204,7 @@ public class AdminForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
+                    .addComponent(APFoodLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
         );
@@ -211,12 +212,10 @@ public class AdminForm extends javax.swing.JFrame {
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidePanelLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(APFoodLabel)
+                .addGap(47, 47, 47)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(428, Short.MAX_VALUE))
+                .addContainerGap(1999, Short.MAX_VALUE))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -227,7 +226,6 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanel.setPreferredSize(new java.awt.Dimension(1350, 80));
 
         nameJLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        nameJLabel.setForeground(new java.awt.Color(0, 0, 0));
         nameJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         nameJLabel.setText("Full Name");
 
@@ -1194,7 +1192,7 @@ public class AdminForm extends javax.swing.JFrame {
         try {
             javax.swing.UIManager.setLookAndFeel(new FlatDarculaLaf());
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CustomerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            //java.util.logging.Logger.getLogger(AdminForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -1207,6 +1205,9 @@ public class AdminForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel APFoodLabel;
+    private javax.swing.JButton ModifyMenuButton;
+    private javax.swing.JButton TopUpMenuLabel;
     private javax.swing.JPanel adminHomePanel;
     private javax.swing.JPanel adminRegistrationPanel;
     private javax.swing.JButton adminRoleSelectBtn;
@@ -1225,7 +1226,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel emailJLabel;
     private javax.swing.JTextField emailTextField;
     private javax.swing.JButton homeNavBtn;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1257,7 +1257,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel nameJLabel;
@@ -1283,4 +1282,10 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel vendorRegistrationPanel;
     private javax.swing.JButton vendorRoleSelectBtn;
     // End of variables declaration//GEN-END:variables
+
+    private static class RoleComboBox extends JComboBox<String> {
+
+        public RoleComboBox(String[] role) {
+        }
+    }
 }

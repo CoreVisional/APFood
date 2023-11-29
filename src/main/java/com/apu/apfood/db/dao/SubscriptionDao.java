@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.models.User;
@@ -29,6 +25,11 @@ public class SubscriptionDao extends APFoodDao<User> {
     @Override
     protected String serialize(User user) {
         return user.getName() + "| " + user.getEmail() + "| " + new String(user.getPassword()) + user.getRole() + "\n";
+    }
+    
+    @Override
+    protected User deserialize(String[] data) {
+        return null;
     }
 
     @Override

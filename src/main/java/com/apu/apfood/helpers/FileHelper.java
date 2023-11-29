@@ -18,11 +18,11 @@ import java.util.List;
 public class FileHelper {
 
     public int generateID(String filename, File file) {
-
+        
         if (!file.exists()) {
             return 1;
         }
-
+        
         int id = 1;
 
         try (BufferedReader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
@@ -40,6 +40,7 @@ public class FileHelper {
         }
         return id;
     }
+    
 
     public void writeFile(String filename, File file, String headers, boolean hasNewLine, String... varargs) {
 

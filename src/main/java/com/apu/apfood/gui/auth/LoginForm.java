@@ -244,7 +244,7 @@ public class LoginForm extends javax.swing.JFrame {
         } else if (userObject.getRole().equals("vendor")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new VendorForm(); // Should pass in userObject
+            new VendorForm(userObject); // Should pass in userObject
             System.out.println(userObject);
         }
     }//GEN-LAST:event_signInBtnActionPerformed
