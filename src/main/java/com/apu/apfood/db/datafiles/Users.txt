@@ -9,3 +9,4 @@ id| userId| name| email| password| role
 8| 8| Gil Bin| qwe@qwe.com| qweqweqwe| customer
 9| 9| Jilbert Gustin| qwe@qwe.com| qweqweqwe| customer
 10| 10| Jane Doe| asd@asd.com| qweqweqwe| admin
+11| 11| asd| asdasdasd@asd.com| asdasda| vendor

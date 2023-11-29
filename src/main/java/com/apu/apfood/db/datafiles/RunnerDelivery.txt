@@ -6,3 +6,4 @@ id| orderId| status| vendor| deliveryRunnerId
 4| 2| Completed| Modesto| 5
 5| 1| Completed| Modesto| 5
 6| 1| Completed| Modesto| 5
+7| 2| Completed| Modesto| 5

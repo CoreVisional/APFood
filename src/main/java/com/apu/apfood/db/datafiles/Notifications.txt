@@ -6,3 +6,5 @@ id| userId| content| status| type
 5| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
 6| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
 7| 2| Delivery runner not found [order id: 2, vendor name: Modesto]| Unnotified| Push
+8| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
+9| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
