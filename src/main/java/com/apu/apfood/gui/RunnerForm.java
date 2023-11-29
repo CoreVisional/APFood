@@ -1,5 +1,6 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.db.dao.RunnerRevenueDao;
 import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
@@ -10,6 +11,7 @@ import com.apu.apfood.services.RunnerService;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.List;
 import java.util.Map;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -24,6 +26,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private Map<String, OrderDetails> deliveryTasks;
     private String[] orderKeys;
     private int orderListPanelIndex = 0;
+    private RunnerRevenueDao runnerRevenueDao = new RunnerRevenueDao();
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -44,14 +47,18 @@ public class RunnerForm extends javax.swing.JFrame {
         initCustomComponents();
 
         // Set revenue values
-        rs.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
+        this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
 
         // Delivery Task 
         if (rs.checkOngoingTask(user)) {
             // If runner has ongoing task display a new card
             CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
             card.show(runnerTaskPanel, "RunnerOngoingTask");
-            rs.displayOngoingTaskDetails(user, ongCustomerNameJLabel, ongLocationJLabel, ongOrderIdJLabel, ongVendorNameJLabel);
+            List<String> taskDetails = rs.displayOngoingTaskDetails(user);
+            ongLocationJLabel.setText(taskDetails.get(0));
+            ongOrderIdJLabel.setText("#" + taskDetails.get(1));
+            ongVendorNameJLabel.setText(taskDetails.get(2));
+            ongCustomerNameJLabel.setText(taskDetails.get(3));
         } else {
             this.deliveryTasks = rs.getDeliveryTask(user);
             this.orderKeys = rs.getOrderKeys(user);
@@ -1019,7 +1026,11 @@ public class RunnerForm extends javax.swing.JFrame {
         // Show a panel where runner needs to click to finish the task.
         CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
         card.show(runnerTaskPanel, "RunnerOngoingTask");
-        rs.displayOngoingTaskDetails(user, ongCustomerNameJLabel, ongLocationJLabel, ongOrderIdJLabel, ongVendorNameJLabel);
+        List<String> taskDetails = rs.displayOngoingTaskDetails(user);
+        ongLocationJLabel.setText(taskDetails.get(0));
+        ongOrderIdJLabel.setText("#" + taskDetails.get(1));
+        ongVendorNameJLabel.setText(taskDetails.get(2));
+        ongCustomerNameJLabel.setText(taskDetails.get(3));
 
         // Refresh delivery history table
         this.deliveryHistory = rs.getDeliveryHistory();
@@ -1069,12 +1080,12 @@ public class RunnerForm extends javax.swing.JFrame {
 
         // Refresh delivery history table
         this.deliveryHistory = rs.getDeliveryHistory();
-        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory, 
+        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
                 new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
-        });
+                });
 
         // Refresh revenue values
-        rs.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
+        this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
     }//GEN-LAST:event_taskFinishBtnActionPerformed
 
     /**
@@ -1172,4 +1183,11 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JLabel yearlyRevenueJLabel;
     private javax.swing.JLabel yearlyRevenueJLabel1;
     // End of variables declaration//GEN-END:variables
+
+    private void setRevenueValues(User user, javax.swing.JLabel totalRevenueJLabel, javax.swing.JLabel monthlyRevenueJLabel, javax.swing.JLabel yearlyRevenueJLabel, javax.swing.JLabel todayRevenueJLabel) {
+        totalRevenueJLabel.setText("RM " + runnerRevenueDao.checkTotalRevenue(user));
+        monthlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 1));
+        yearlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 12));
+        todayRevenueJLabel.setText("RM " + runnerRevenueDao.checkDailyRevenue(user));
+    }
 }

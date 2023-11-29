@@ -2,6 +2,6 @@ id| orderId| deliverRunnerId| status| vendor| location
 1| 1| 5| Accepted| Modesto| Block B
 2| 1| 6| Declined| Modesto| Block B
 3| 1| 7| Declined| Modesto| Block B
-4| 2| 5| Pending| Modesto| Block C
+4| 2| 5| Declined| Modesto| Block C
 5| 2| 6| Declined| Modesto| Block C
 6| 2| 7| Declined| Modesto| Block C

@@ -36,12 +36,7 @@ public class RunnerService {
         return runnerTaskDao.getDeliveryHistory(this.runner);
     }
 
-    public void setRevenueValues(User user, javax.swing.JLabel totalRevenueJLabel, javax.swing.JLabel monthlyRevenueJLabel, javax.swing.JLabel yearlyRevenueJLabel, javax.swing.JLabel todayRevenueJLabel) {
-        totalRevenueJLabel.setText("RM " + runnerRevenueDao.checkTotalRevenue(user));
-        monthlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 1));
-        yearlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 12));
-        todayRevenueJLabel.setText("RM " + runnerRevenueDao.checkDailyRevenue(user));
-    }
+
 
     public Map<String, OrderDetails> getDeliveryTask(User user) {
         Map<String, OrderDetails> orderMap = runnerTaskDao.getOrderList(user);
@@ -126,12 +121,9 @@ public class RunnerService {
         return runnerTaskDao.checkRunnerHandlingTask(String.valueOf(user.getId()));
     }
 
-    public void displayOngoingTaskDetails(User user, javax.swing.JLabel ongCustomerNameJLabel, javax.swing.JLabel ongLocationJLabel, javax.swing.JLabel ongOrderIdJLabel, javax.swing.JLabel ongVendorNameJLabel) {
-        List<String> taskDetails = runnerTaskDao.getTaskDetails(String.valueOf(user.getId()));
-        ongLocationJLabel.setText(taskDetails.get(0));
-        ongOrderIdJLabel.setText("#" + taskDetails.get(1));
-        ongVendorNameJLabel.setText(taskDetails.get(2));
-        ongCustomerNameJLabel.setText(taskDetails.get(3));
+    public List<String> displayOngoingTaskDetails(User user) {
+        return runnerTaskDao.getTaskDetails(String.valueOf(user.getId()));
+        
     }
 
     public void finishTask(User user, String inputOrderId, String vendorName) {
@@ -139,6 +131,7 @@ public class RunnerService {
         String userId = userDao.getUserId(orderId, vendorName);
 
         runnerAvailabilityDao.updateAvailability(user, "Available");
+        // Change "Ongoing" to "Completed"
         runnerTaskDao.updateDeliveryStatus(orderId, vendorName);
         notificationDao.writeNotification(userId, "Delivery completed [order id: " + orderId + ", vendor name: " + vendorName + "]", "Unnotified", "Informational");
     }
