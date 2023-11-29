@@ -27,7 +27,7 @@ public class NotificationDao extends APFoodDao<Notification> {
 
     @Override
     protected String serialize(Notification notification) {
-        return  notification.getId() + "| " + 
+        return  notification.getUserId() + "| " +
                 notification.getContent() + "| " + 
                 notification.getNotificationStatus().toString() + "| " + 
                 notification.getNotificationType().toString() + "\n";

@@ -10,6 +10,7 @@ import com.apu.apfood.db.dao.MenuDao;
 import com.apu.apfood.db.dao.OrderDao;
 import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
+import com.apu.apfood.db.dao.TransactionDao;
 import com.apu.apfood.db.dao.VendorDao;
 import com.apu.apfood.db.enums.NotificationStatus;
 import com.apu.apfood.db.enums.NotificationType;
@@ -55,6 +56,7 @@ public class VendorService {
     private MenuDao menuDao = new MenuDao();
     private OrderDao orderDao = new OrderDao();
     private FeedbackDao feedbackDao = new FeedbackDao();
+    private TransactionDao transactionDao = new TransactionDao();
     private RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
     private RunnerAvailabilityDao runnerAvailabilityDao= new RunnerAvailabilityDao();
     private String vendorName;
@@ -262,15 +264,15 @@ public class VendorService {
         year.setText(String.format("%.2f",yearRevenue));
         month.setText(String.format("%.2f",monthRevenue));
         day.setText(String.format("%.2f",dayRevenue));
-        
+      
     }
     
     public void populateNotificationsTable(JTable notificationsTable, int userId)
     {
         List<Notification> notificationList = notificationDao.getNotificationList();
-        // Filter notification with userId
+        // Filter notification with the correct userId and if it is unnotified
         notificationList = notificationList.stream()
-                .filter(notification -> notification.getUserId() == userId)
+                .filter(notification -> notification.getUserId() == userId && notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED)
                 .collect(Collectors.toList());
         Function<Notification, Object[]> rowMapper = notification -> {
             return new Object[]     
@@ -330,7 +332,7 @@ public class VendorService {
                 if (success == true)
                 {
                     String userId = userDao.getUserId(String.valueOf(table.getValueAt(selectedRow, 1)));
-                    String content = "Your order is " + orderStatus.toString();
+                    String content = "Your order is " + orderStatus.toString() + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
                     notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
                     if (orderStatus == OrderStatus.ACCEPTED)
                     {
@@ -339,9 +341,14 @@ public class VendorService {
                         {
                             int runnerId = Integer.parseInt(String.valueOf(row[1]));
                             runnerTaskDao.writeVendorTaskAssignment(orderId, runnerId, vendorName, orderDetail.getDeliveryLocation());
-                            
                            
                         }
+                    }
+                    else if (orderStatus == OrderStatus.DECLINED)
+                    {
+                        //If order is cancelled refund customer
+                        double totalPrice = getRevenueFromOrderDetails(orderDetail);
+                        transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Refund for [orderid: " + String.valueOf(orderId) + "]");
                     }
                 }
         } else {
