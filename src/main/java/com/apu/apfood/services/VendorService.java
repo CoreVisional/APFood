@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ public class VendorService {
         return orderDao.getOrderListfromVendor(vendorName);
     }
     
-     public static List<Menu> convertJTableToMenuList(JTable table) {
+     public List<Menu> convertJTableToMenuList(JTable table) {
         List<Menu> menuList = new ArrayList<>();
 
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -142,7 +143,8 @@ public class VendorService {
                 // If orderMap already contains an entry for this orderId, update the existing entry
                 OrderDetails existingOrderDetails = orderMap.get(orderId);
                 String foodName = menuDao.getFoodName(vendorName, order.getMenuId());
-                existingOrderDetails.addFoodDetails(foodName, String.valueOf(order.getMenuId()), String.valueOf(order.getQuantity()), order.getRemarks());
+                double price = menuDao.getFoodPrice(vendorName, order.getMenuId());
+                existingOrderDetails.addFoodDetails(foodName, String.valueOf(order.getMenuId()), String.valueOf(order.getQuantity()), order.getRemarks(), price);
             } else {
                 // If orderMap doesn't contain an entry for this orderId, add a new entry
                 OrderDetails orderDetails = new OrderDetails();
@@ -153,7 +155,8 @@ public class VendorService {
                 orderDetails.setOrderTime(order.getOrderTime().toString());
                 orderDetails.setDeliveryLocation(order.getDeliveryLocation());
                 String foodName = menuDao.getFoodName(vendorName, order.getMenuId());
-                orderDetails.addFoodDetails(foodName, String.valueOf(order.getMenuId()), String.valueOf(order.getQuantity()), order.getRemarks());
+                double price = menuDao.getFoodPrice(vendorName, order.getMenuId());
+                orderDetails.addFoodDetails(foodName, String.valueOf(order.getMenuId()), String.valueOf(order.getQuantity()), order.getRemarks(), price);
                 orderMap.put(orderId, orderDetails);
 
             }
@@ -261,10 +264,40 @@ public class VendorService {
             }
         }
         
+        //Set the revenue labels' text accordingly 
         year.setText(String.format("%.2f",yearRevenue));
         month.setText(String.format("%.2f",monthRevenue));
         day.setText(String.format("%.2f",dayRevenue));
       
+        
+        
+    }
+    
+    public void populateRevenueOrdersTable(JTable revenueOrdersTable, LocalDate beforeDate, LocalDate afterDate)
+    {
+        List<Order> orderList = orderDao.getOrderListfromVendor(vendorName);
+        orderList = orderList.stream()
+                .filter(order -> order.getOrderDate().isAfter(beforeDate) && order.getOrderDate().isBefore(afterDate) && order.getOrderStatus() == OrderStatus.ACCEPTED)
+                .collect(Collectors.toList());
+        RefreshOrderMap(orderList);
+        Function<OrderDetails, Object[]> rowMapper = orderDetails -> {
+            return new Object[]
+            {
+                orderDetails.getOrderId(),
+                orderDetails.getCustomerName(),
+                orderDetails.getFoodNameList(),
+                orderDetails.getFoodQuantityList(),
+                orderDetails.getFoodPriceList(),
+                orderDetails.getOrderDate(),
+                orderDetails.getOrderTime(),
+                getRevenueFromOrderDetails(orderDetails)
+            };
+        };
+        tableHelper.populateTable(new ArrayList<>(ordersMap.values()), revenueOrdersTable, rowMapper, false);
+        tableHelper.SetupTableSorter(revenueOrdersTable);
+        int[] scalableColumns = {2, 3, 4};
+        tableHelper.adjustColumnsToScalable(scalableColumns, revenueOrdersTable);
+        
     }
     
     public void populateNotificationsTable(JTable notificationsTable, int userId)
@@ -310,10 +343,16 @@ public class VendorService {
         ordersMap.clear(); // Clear previous entries
         ordersMap = cleanOrderList(orderList);
     }
-    
     public void RefreshOrderMap()
     {
         List<Order> orderList = getVendorOrderList(vendorName);
+        orderList = orderList.stream()
+                .collect(Collectors.toList());
+        ordersMap.clear(); // Clear previous entries
+        ordersMap = cleanOrderList(orderList);
+    }
+    public void RefreshOrderMap(List<Order> orderList)
+    {
         orderList = orderList.stream()
                 .collect(Collectors.toList());
         ordersMap.clear(); // Clear previous entries
@@ -368,19 +407,22 @@ public class VendorService {
         }
     }
     
-    /*
-    private Object[] mergeOrders(Object[] order1, Order order2) {
-        Object orderId = order1[0];
-        Object userId = order1[1];
-        String menuItems = order1[2] + "\n" + menuDao.getFoodName(vendorName, order2.getMenuId());
-        String quantity = order1[3] + "\n" + String.valueOf(order2.getQuantity());
-        Object dateAndTime = order1[4];
-        Object remarks = order1[5];
-        Object mode = order[6];
-        
-        
+    public void populateDateComboBoxes(JComboBox<Integer> yearComboBox,
+                                              JComboBox<Integer> monthComboBox,
+                                              JComboBox<Integer> dayComboBox) {
+        // Populate year combo box with a range of years
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int year = currentYear; year >= 1970; year--) {
+            yearComboBox.addItem(year);
+        }
 
-        return new Object[]{orderId, userId, menuItems, quantity, dateAndTime, remarks, mode};
+        // Populate month combo box
+        for (int month = 1; month<=12; month++) {
+            monthComboBox.addItem(month);
+        }
+        // Populate day combo box
+        for (int day = 1; day <= 31; day++) {
+            dayComboBox.addItem(day);
+        }
     }
-*/
 }

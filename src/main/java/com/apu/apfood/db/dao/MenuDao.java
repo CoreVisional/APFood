@@ -100,6 +100,29 @@ public class MenuDao extends APFoodDao<Menu> {
         return foodName;
     }
     
+    public double getFoodPrice(String vendorName, int id)
+    {
+        double foodPrice = 0.0;
+        this.filePath = getFullPath(MENU_FILEPATH + vendorName + "/Menu.txt");
+        try {
+            FileReader fileReader = new FileReader(filePath);
+            BufferedReader br = new BufferedReader(fileReader);
+            br.readLine(); // Skip first row
+            String row;
+
+            while ((row = br.readLine()) != null) {
+                String[] rowArray = row.split("\\| ");
+                int menuId = Integer.parseInt(rowArray[0]);
+                if (menuId == id) {
+                    foodPrice = Double.parseDouble(rowArray[3]);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return foodPrice;
+    }
+    
     @Override
     protected String serialize(Menu menu) {
         return "";

@@ -15,6 +15,7 @@ import com.apu.apfood.services.VendorService;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,8 +71,11 @@ public class VendorForm extends javax.swing.JFrame {
         
         nameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
-        vendorLabel.setText(vendorName);
+        vendorLabel.setText(vendorName + " Vendor");
         menuLabel.setText(vendorName + " Menu");
+        
+        vs.populateDateComboBoxes(yearBeforeCmbBox, monthBeforeCmbBox, dayBeforeCmbBox);
+        vs.populateDateComboBoxes(yearAfterCmbBox, monthAfterCmbBox, dayAfterCmbBox);
         
     }
 
@@ -87,6 +91,8 @@ public class VendorForm extends javax.swing.JFrame {
         populateOrderHistoryTable();
         populateRevenueDashboard();
         populateNotificationsTable();
+        
+        setupHomePage();
     }
 
     public void populateMenuTable() {
@@ -116,6 +122,44 @@ public class VendorForm extends javax.swing.JFrame {
     public void populateNotificationsTable()
     {
         vs.populateNotificationsTable(notificationsTable, user.getId());
+    }
+    
+    public void setupHomePage()
+    {
+        ordersLabel.setText("Incoming Orders: " + incomingOrdersTable.getRowCount());
+        notificationsLabel.setText("Unread Notifications: " + notificationsTable.getRowCount());
+    }
+    
+    public void populateRevenueOrdersTable()
+    {
+        try {
+        int yearBefore = (int) yearBeforeCmbBox.getSelectedItem();
+        int monthBefore = (int) monthBeforeCmbBox.getSelectedItem();
+        int dayBefore = (int) dayBeforeCmbBox.getSelectedItem();
+        LocalDate beforeDate = LocalDate.of(yearBefore, monthBefore, dayBefore);
+        
+        int yearAfter = (int) yearAfterCmbBox.getSelectedItem();
+        int monthAfter = (int) monthAfterCmbBox.getSelectedItem();
+        int dayAfter = (int) dayAfterCmbBox.getSelectedItem();
+        LocalDate afterDate = LocalDate.of(yearAfter, monthAfter, dayAfter);
+        vs.populateRevenueOrdersTable(revenueOrdersTable, beforeDate, afterDate);
+        // Loop through each row and add up the values in the price column
+        double totalPrice = 0.0;
+        for (int row = 0; row < revenueOrdersTable.getRowCount(); row++) {
+            try {
+                Object value = revenueOrdersTable.getValueAt(row, 7);
+                if (value != null) {
+                    totalPrice += Double.parseDouble(value.toString());
+                }
+            } catch (NumberFormatException e) {
+                // Handle the case where the value in the column cannot be parsed as a double
+                e.printStackTrace(); // Print the stack trace for now, handle it appropriately in your application
+            }
+        }
+        totalRevenueLabel.setText("Total Revenue: " + totalPrice);
+        } catch (Exception ex) {
+            //Nothing
+        }
     }
     
     /**
@@ -148,7 +192,9 @@ public class VendorForm extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
         homePanel = new javax.swing.JPanel();
+        notificationsLabel = new javax.swing.JLabel();
         vendorLabel = new javax.swing.JLabel();
+        ordersLabel = new javax.swing.JLabel();
         menuPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         menuTable = new javax.swing.JTable();
@@ -182,7 +228,16 @@ public class VendorForm extends javax.swing.JFrame {
         dayRevenueLabel = new javax.swing.JLabel();
         yearRevenueLabel = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        orderHistoryTable1 = new javax.swing.JTable();
+        revenueOrdersTable = new javax.swing.JTable();
+        monthBeforeCmbBox = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
+        yearBeforeCmbBox = new javax.swing.JComboBox<>();
+        dayBeforeCmbBox = new javax.swing.JComboBox<>();
+        yearAfterCmbBox = new javax.swing.JComboBox<>();
+        monthAfterCmbBox = new javax.swing.JComboBox<>();
+        dayAfterCmbBox = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
+        totalRevenueLabel = new javax.swing.JLabel();
         notificationsPanel = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         notificationsTable = new javax.swing.JTable();
@@ -352,8 +407,17 @@ public class VendorForm extends javax.swing.JFrame {
 
         homePanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        notificationsLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        notificationsLabel.setText("jLabel2");
+        homePanel.add(notificationsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 300, 320, 40));
+
+        vendorLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         vendorLabel.setText("jLabel2");
-        homePanel.add(vendorLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 120, -1, -1));
+        homePanel.add(vendorLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 110, 320, 40));
+
+        ordersLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        ordersLabel.setText("jLabel2");
+        homePanel.add(ordersLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 230, 320, 40));
 
         contentPanel.add(homePanel, "homePanel");
 
@@ -670,41 +734,109 @@ public class VendorForm extends javax.swing.JFrame {
         yearRevenueLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         yearRevenueLabel.setText("0.0");
 
-        orderHistoryTable1.setModel(new javax.swing.table.DefaultTableModel(
+        revenueOrdersTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "OrderId", "Customer Name", "Items", "Quantity", "Remark", "Date", "Time", "Mode", "Rating", "Feedback"
+                "OrderId", "Customer Name", "Items", "Quantity", "Price", "Date", "Time", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane5.setViewportView(orderHistoryTable1);
+        jScrollPane5.setViewportView(revenueOrdersTable);
+
+        monthBeforeCmbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                monthBeforeCmbBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel12.setText("Dates in YYYY/MM/DD:");
+
+        yearBeforeCmbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yearBeforeCmbBoxActionPerformed(evt);
+            }
+        });
+
+        dayBeforeCmbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dayBeforeCmbBoxActionPerformed(evt);
+            }
+        });
+
+        yearAfterCmbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yearAfterCmbBoxActionPerformed(evt);
+            }
+        });
+
+        monthAfterCmbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                monthAfterCmbBoxActionPerformed(evt);
+            }
+        });
+
+        dayAfterCmbBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dayAfterCmbBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel13.setText("--->");
+
+        totalRevenueLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        totalRevenueLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalRevenueLabel.setText("jLabel14");
 
         javax.swing.GroupLayout revenueDashboardPanelLayout = new javax.swing.GroupLayout(revenueDashboardPanel);
         revenueDashboardPanel.setLayout(revenueDashboardPanelLayout);
         revenueDashboardPanelLayout.setHorizontalGroup(
             revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
-                .addGap(55, 55, 55)
-                .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                    .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(monthRevenueLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(yearRevenueLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
-                    .addComponent(dayRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(90, 90, 90))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, revenueDashboardPanelLayout.createSequentialGroup()
+                .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(totalRevenueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                            .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(monthRevenueLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(yearRevenueLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
+                            .addComponent(dayRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                        .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
+                                    .addComponent(yearBeforeCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(monthBeforeCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(dayBeforeCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel13)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(yearAfterCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(monthAfterCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(dayAfterCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(91, 91, 91))
         );
         revenueDashboardPanelLayout.setVerticalGroup(
             revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -724,10 +856,25 @@ public class VendorForm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(yearRevenueLabel))
                     .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
-                        .addGap(71, 71, 71)
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(monthBeforeCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(yearBeforeCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dayBeforeCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(monthAfterCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(yearAfterCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dayAfterCmbBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13))
+                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(206, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
+                .addComponent(totalRevenueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(110, Short.MAX_VALUE))
         );
+
+        jLabel12.getAccessibleContext().setAccessibleName("Dates in YYYY/MM/DD:");
 
         contentPanel.add(revenueDashboardPanel, "revenueDashboardPanel");
 
@@ -806,6 +953,7 @@ public class VendorForm extends javax.swing.JFrame {
 
     private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
         // TODO add your handling code here:
+        setupHomePage();
     }//GEN-LAST:event_homeNavBtnActionPerformed
 
     private void refreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshBtnActionPerformed
@@ -888,6 +1036,36 @@ public class VendorForm extends javax.swing.JFrame {
         populateNotificationsTable();
     }//GEN-LAST:event_notificationsRefreshBtnActionPerformed
 
+    private void yearBeforeCmbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yearBeforeCmbBoxActionPerformed
+        // TODO add your handling code here:
+        populateRevenueOrdersTable();
+    }//GEN-LAST:event_yearBeforeCmbBoxActionPerformed
+
+    private void monthBeforeCmbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthBeforeCmbBoxActionPerformed
+        // TODO add your handling code here:
+        populateRevenueOrdersTable();
+    }//GEN-LAST:event_monthBeforeCmbBoxActionPerformed
+
+    private void dayBeforeCmbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dayBeforeCmbBoxActionPerformed
+        // TODO add your handling code here:
+        populateRevenueOrdersTable();
+    }//GEN-LAST:event_dayBeforeCmbBoxActionPerformed
+
+    private void yearAfterCmbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yearAfterCmbBoxActionPerformed
+        // TODO add your handling code here:
+        populateRevenueOrdersTable();
+    }//GEN-LAST:event_yearAfterCmbBoxActionPerformed
+
+    private void monthAfterCmbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthAfterCmbBoxActionPerformed
+        // TODO add your handling code here:
+        populateRevenueOrdersTable();
+    }//GEN-LAST:event_monthAfterCmbBoxActionPerformed
+
+    private void dayAfterCmbBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dayAfterCmbBoxActionPerformed
+        // TODO add your handling code here:
+        populateRevenueOrdersTable();
+    }//GEN-LAST:event_dayAfterCmbBoxActionPerformed
+
    
     
     
@@ -924,6 +1102,8 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JButton AddBtn;
     private javax.swing.JButton acceptBtn;
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JComboBox<Integer> dayAfterCmbBox;
+    private javax.swing.JComboBox<Integer> dayBeforeCmbBox;
     private javax.swing.JLabel dayRevenueLabel;
     private javax.swing.JButton declineBtn;
     private javax.swing.JButton declineBtn1;
@@ -934,6 +1114,8 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -956,9 +1138,12 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JLabel menuLabel;
     private javax.swing.JPanel menuPanel;
     private javax.swing.JTable menuTable;
+    private javax.swing.JComboBox<Integer> monthAfterCmbBox;
+    private javax.swing.JComboBox<Integer> monthBeforeCmbBox;
     private javax.swing.JLabel monthRevenueLabel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JButton notificationsBtn;
+    private javax.swing.JLabel notificationsLabel;
     private javax.swing.JPanel notificationsPanel;
     private javax.swing.JButton notificationsRefreshBtn;
     private javax.swing.JTable notificationsTable;
@@ -966,9 +1151,9 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JPanel orderHistoryPanel;
     private javax.swing.JButton orderHistoryRefreshBtn1;
     private javax.swing.JTable orderHistoryTable;
-    private javax.swing.JTable orderHistoryTable1;
     private javax.swing.JButton ordersBtn;
     private javax.swing.JTable ordersInProgressTable;
+    private javax.swing.JLabel ordersLabel;
     private javax.swing.JPanel ordersPanel;
     private javax.swing.JButton ordersRefreshBtn;
     private javax.swing.JButton readNotificationBtn;
@@ -977,10 +1162,14 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JButton removeBtn;
     private javax.swing.JButton revenueDashboardBtn;
     private javax.swing.JPanel revenueDashboardPanel;
+    private javax.swing.JTable revenueOrdersTable;
     private javax.swing.JButton saveAllBtn;
     private javax.swing.JPanel sidePanel;
     private javax.swing.JPanel topBarPanel;
+    private javax.swing.JLabel totalRevenueLabel;
     private javax.swing.JLabel vendorLabel;
+    private javax.swing.JComboBox<Integer> yearAfterCmbBox;
+    private javax.swing.JComboBox<Integer> yearBeforeCmbBox;
     private javax.swing.JLabel yearRevenueLabel;
     // End of variables declaration//GEN-END:variables
 }

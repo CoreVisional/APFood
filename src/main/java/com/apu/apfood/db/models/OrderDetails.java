@@ -1,5 +1,6 @@
 package com.apu.apfood.db.models;
 
+import com.apu.apfood.db.dao.MenuDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,11 +30,13 @@ public class OrderDetails {
         foodDetailsList.add(foodDetails);
     }
     
-    public void addFoodDetails (String foodName, String foodId, String quantity, String remark)
+    public void addFoodDetails (String foodName, String foodId, String quantity, String remark, double price)
     {
-        FoodDetails foodDetails = new FoodDetails(foodName, foodId, quantity, remark);
+        FoodDetails foodDetails = new FoodDetails(foodName, foodId, quantity, remark, price);
         foodDetailsList.add(foodDetails);
     }
+    
+    
 
     public String getAccountId() {
         return accountId;
@@ -77,6 +80,16 @@ public class OrderDetails {
         for (FoodDetails foodDetails : foodDetailsList)
         {
             list += foodDetails.getRemark() + "\n";
+        }
+        return list;
+    }
+    
+    public String getFoodPriceList()
+    {
+        String list = "";
+        for (FoodDetails foodDetails : foodDetailsList)
+        {
+            list += foodDetails.getPrice() + "\n";
         }
         return list;
     }
