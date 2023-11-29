@@ -17,6 +17,7 @@ import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Feedback;
 import com.apu.apfood.db.models.FoodDetails;
 import com.apu.apfood.db.models.Menu;
+import com.apu.apfood.db.models.Notification;
 import com.apu.apfood.db.models.Order;
 import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.Vendor;
@@ -243,14 +244,12 @@ public class VendorService {
             LocalDate currentDate = LocalDate.now();
             
             // Check if the date and time is under a year ago
-            LocalDate oneYearAgo = currentDate.minus(1, ChronoUnit.YEARS);
-            if (orderDate.isAfter(oneYearAgo)) {
+            if (orderDate.getYear() == currentDate.getYear()) {
                 yearRevenue += getRevenueFromOrderDetails(orderDetail);
             }
 
             // Check if the date and time is under a month ago
-            LocalDate oneMonthAgo = currentDate.minus(1, ChronoUnit.MONTHS);
-            if (orderDate.isAfter(oneMonthAgo)) {
+            if (orderDate.getMonth() == currentDate.getMonth()) {
                 monthRevenue += getRevenueFromOrderDetails(orderDetail);
             }
 
@@ -265,6 +264,28 @@ public class VendorService {
         day.setText(String.format("%.2f",dayRevenue));
         
     }
+    
+    public void populateNotificationsTable(JTable notificationsTable, int userId)
+    {
+        List<Notification> notificationList = notificationDao.getNotificationList();
+        // Filter notification with userId
+        notificationList = notificationList.stream()
+                .filter(notification -> notification.getUserId() == userId)
+                .collect(Collectors.toList());
+        Function<Notification, Object[]> rowMapper = notification -> {
+            return new Object[]     
+            { 
+                notification.getId(),
+                notification.getContent(),
+                notification.getNotificationType(),
+                notification.getNotificationStatus()
+            };
+        };
+        
+        tableHelper.populateTable(notificationList, notificationsTable, rowMapper, false);
+        tableHelper.SetupTableSorter(notificationsTable);
+    }
+    
     
     public double getRevenueFromOrderDetails(OrderDetails orderDetail)
     {
@@ -299,6 +320,7 @@ public class VendorService {
     
     public void updateOrderStatus(JTable table, OrderStatus orderStatus)
     {
+        RefreshOrderMap();
         boolean success = false;
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
@@ -326,6 +348,17 @@ public class VendorService {
             JOptionPane.showMessageDialog(null, "Please select a row in the table", "No Row Selected", JOptionPane.WARNING_MESSAGE);
         }
         
+    }
+    
+    public void updateNotificationStatus(JTable table, NotificationStatus notificationStatus)
+    {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            int id = Integer.parseInt(String.valueOf(table.getValueAt(selectedRow, 0)));
+            notificationDao.updateNotificationStatus(id, notificationStatus);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row in the table", "No Row Selected", JOptionPane.WARNING_MESSAGE);
+        }
     }
     
     /*

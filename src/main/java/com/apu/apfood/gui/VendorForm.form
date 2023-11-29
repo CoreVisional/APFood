@@ -62,8 +62,8 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jSeparator1" min="-2" pref="17" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jPanel3" min="-2" pref="365" max="-2" attributes="0"/>
-                  <EmptySpace pref="428" max="32767" attributes="0"/>
+                  <Component id="jPanel3" min="-2" pref="517" max="-2" attributes="0"/>
+                  <EmptySpace pref="276" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -104,7 +104,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
             <Property name="columns" type="int" value="1"/>
-            <Property name="rows" type="int" value="5"/>
+            <Property name="rows" type="int" value="6"/>
             <Property name="verticalGap" type="int" value="30"/>
           </Layout>
           <SubComponents>
@@ -154,6 +154,14 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Revenue Dashboard"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="notificationsBtn">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Notifications"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -579,12 +587,12 @@
                           <Table columnCount="8" rowCount="4">
                             <Column editable="false" title="OrderID" type="java.lang.Object"/>
                             <Column editable="false" title="Customer Name" type="java.lang.Object"/>
-                            <Column editable="true" title="Items" type="java.lang.Object"/>
-                            <Column editable="true" title="Quantity" type="java.lang.Object"/>
-                            <Column editable="true" title="Remarks" type="java.lang.Object"/>
-                            <Column editable="true" title="Date" type="java.lang.Object"/>
-                            <Column editable="true" title="Time" type="java.lang.Object"/>
-                            <Column editable="true" title="Mode" type="java.lang.Object"/>
+                            <Column editable="false" title="Items" type="java.lang.Object"/>
+                            <Column editable="false" title="Quantity" type="java.lang.Object"/>
+                            <Column editable="false" title="Remarks" type="java.lang.Object"/>
+                            <Column editable="false" title="Date" type="java.lang.Object"/>
+                            <Column editable="false" title="Time" type="java.lang.Object"/>
+                            <Column editable="false" title="Mode" type="java.lang.Object"/>
                           </Table>
                         </Property>
                       </Properties>
@@ -641,12 +649,12 @@
                           <Table columnCount="8" rowCount="4">
                             <Column editable="false" title="OrderID" type="java.lang.Object"/>
                             <Column editable="false" title="Customer Name" type="java.lang.Object"/>
-                            <Column editable="true" title="Items" type="java.lang.Object"/>
-                            <Column editable="true" title="Quantity" type="java.lang.Object"/>
-                            <Column editable="true" title="Remarks" type="java.lang.Object"/>
-                            <Column editable="true" title="Date" type="java.lang.Object"/>
-                            <Column editable="true" title="Time" type="java.lang.Object"/>
-                            <Column editable="true" title="Mode" type="java.lang.Object"/>
+                            <Column editable="false" title="Items" type="java.lang.Object"/>
+                            <Column editable="false" title="Quantity" type="java.lang.Object"/>
+                            <Column editable="false" title="Remarks" type="java.lang.Object"/>
+                            <Column editable="false" title="Date" type="java.lang.Object"/>
+                            <Column editable="false" title="Time" type="java.lang.Object"/>
+                            <Column editable="false" title="Mode" type="java.lang.Object"/>
                           </Table>
                         </Property>
                       </Properties>
@@ -721,10 +729,10 @@
                             <Column editable="false" title="Customer Name" type="java.lang.Object"/>
                             <Column editable="false" title="Items" type="java.lang.Object"/>
                             <Column editable="false" title="Quantity" type="java.lang.Object"/>
-                            <Column editable="true" title="Remark" type="java.lang.Object"/>
-                            <Column editable="true" title="Date" type="java.lang.Object"/>
-                            <Column editable="true" title="Time" type="java.lang.Object"/>
-                            <Column editable="true" title="Mode" type="java.lang.Object"/>
+                            <Column editable="false" title="Remark" type="java.lang.Object"/>
+                            <Column editable="false" title="Date" type="java.lang.Object"/>
+                            <Column editable="false" title="Time" type="java.lang.Object"/>
+                            <Column editable="false" title="Mode" type="java.lang.Object"/>
                             <Column editable="false" title="Rating" type="java.lang.Object"/>
                             <Column editable="false" title="Feedback" type="java.lang.Object"/>
                           </Table>
@@ -753,49 +761,48 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel10" min="-2" pref="175" max="-2" attributes="0"/>
-                                      <Component id="jLabel11" min="-2" pref="207" max="-2" attributes="0"/>
-                                      <Component id="jLabel9" alignment="0" min="-2" pref="203" max="-2" attributes="0"/>
-                                  </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jLabel10" min="-2" pref="175" max="-2" attributes="0"/>
+                              <Component id="jLabel11" pref="207" max="32767" attributes="0"/>
+                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="monthRevenueLabel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="yearRevenueLabel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jLabel9" alignment="0" pref="203" max="32767" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="118" pref="118" max="-2" attributes="0"/>
-                                  <Component id="monthRevenueLabel" min="-2" pref="43" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="117" max="-2" attributes="0"/>
-                                  <Component id="dayRevenueLabel" min="-2" pref="43" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="118" max="-2" attributes="0"/>
-                                  <Component id="yearRevenueLabel" min="-2" pref="43" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="dayRevenueLabel" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="1088" max="32767" attributes="0"/>
+                          <EmptySpace pref="68" max="32767" attributes="0"/>
+                          <Component id="jScrollPane5" min="-2" pref="930" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
-                          <Component id="jLabel10" min="-2" pref="39" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
-                          <Component id="dayRevenueLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jLabel11" min="-2" pref="39" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                          <Component id="monthRevenueLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                          <Component id="jLabel9" min="-2" pref="39" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
-                          <Component id="yearRevenueLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="422" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
+                                  <Component id="jLabel10" min="-2" pref="39" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="dayRevenueLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jLabel11" min="-2" pref="39" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="monthRevenueLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jLabel9" min="-2" pref="39" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="yearRevenueLabel" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane5" min="-2" pref="543" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="206" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -848,6 +855,122 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="0.0"/>
                   </Properties>
+                </Component>
+                <Container class="javax.swing.JScrollPane" name="jScrollPane5">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTable" name="orderHistoryTable1">
+                      <Properties>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                          <Table columnCount="10" rowCount="1">
+                            <Column editable="false" title="OrderId" type="java.lang.Object"/>
+                            <Column editable="false" title="Customer Name" type="java.lang.Object"/>
+                            <Column editable="false" title="Items" type="java.lang.Object"/>
+                            <Column editable="false" title="Quantity" type="java.lang.Object"/>
+                            <Column editable="false" title="Remark" type="java.lang.Object"/>
+                            <Column editable="false" title="Date" type="java.lang.Object"/>
+                            <Column editable="false" title="Time" type="java.lang.Object"/>
+                            <Column editable="false" title="Mode" type="java.lang.Object"/>
+                            <Column editable="false" title="Rating" type="java.lang.Object"/>
+                            <Column editable="false" title="Feedback" type="java.lang.Object"/>
+                          </Table>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="notificationsPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="notificationsPanel"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="1018" max="32767" attributes="0"/>
+                          <Component id="readNotificationBtn" min="-2" pref="122" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="210" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="210" max="-2" attributes="0"/>
+                              <Component id="jScrollPane6" min="-2" pref="930" max="-2" attributes="0"/>
+                              <EmptySpace pref="210" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace pref="1173" max="32767" attributes="0"/>
+                              <Component id="notificationsRefreshBtn" min="-2" pref="122" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="713" max="32767" attributes="0"/>
+                          <Component id="readNotificationBtn" min="-2" pref="45" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="138" max="-2" attributes="0"/>
+                              <Component id="jScrollPane6" min="-2" pref="543" max="-2" attributes="0"/>
+                              <EmptySpace pref="139" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                              <Component id="notificationsRefreshBtn" min="-2" pref="45" max="-2" attributes="0"/>
+                              <EmptySpace pref="712" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Container class="javax.swing.JScrollPane" name="jScrollPane6">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTable" name="notificationsTable">
+                      <Properties>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                          <Table columnCount="4" rowCount="1">
+                            <Column editable="false" title="Id" type="java.lang.Object"/>
+                            <Column editable="false" title="Content" type="java.lang.Object"/>
+                            <Column editable="false" title="Type" type="java.lang.Object"/>
+                            <Column editable="false" title="Status" type="java.lang.Object"/>
+                          </Table>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JButton" name="readNotificationBtn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Read"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="readNotificationBtnActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="notificationsRefreshBtn">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Refresh"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="notificationsRefreshBtnActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
