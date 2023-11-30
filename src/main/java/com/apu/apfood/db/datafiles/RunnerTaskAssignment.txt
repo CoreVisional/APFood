@@ -1,22 +1,3 @@
 id| orderId| deliverRunnerId| status| vendor| location
-1| 1| 5| Pending| Modesto| Block B
-2| 1| 6| Declined| Modesto| Block B
-3| 1| 7| Declined| Modesto| Block B
-4| 2| 5| Accepted| Modesto| Block C
-5| 2| 6| Declined| Modesto| Block C
-6| 2| 7| Declined| Modesto| Block C
-7| 1| 1| Pending| Picante| Block A
-8| 1| 5| Pending| Picante| Block A
-9| 1| 12| Pending| Picante| Block A
-10| 1| 1| Pending| Picante| Block A
-11| 1| 5| Pending| Picante| Block A
-12| 1| 12| Pending| Picante| Block A
-13| 1| 1| Pending| Picante| Block A
-14| 1| 5| Pending| Picante| Block A
-15| 1| 12| Pending| Picante| Block A
-16| 2| 1| Pending| Picante| Block B
-17| 2| 5| Pending| Picante| Block B
-18| 2| 12| Pending| Picante| Block B
-19| 5| 1| Pending| Picante| Block E
-20| 5| 5| Pending| Picante| Block E
-21| 5| 12| Pending| Picante| Block E
+1| 1| 5| Accepted| Modesto| Block B
+2| 1| 5| Accepted| Picante| Block B

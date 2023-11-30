@@ -1,8 +1,4 @@
 id| userId| vendor
 1| 2| Picante
-2| 3| Picante
-3| 4| Picante
-4| 8| Big Ribs
-5| 9| Big Ribs
-6| 6| Modesto
-7| 7| Modesto
+2| 6| Modesto
+3| 7| Modesto

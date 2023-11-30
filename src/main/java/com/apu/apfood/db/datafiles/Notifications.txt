@@ -8,3 +8,31 @@ id| userId| content| status| type
 7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
 8| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
 9| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
+10| 1| Credit top up [user id: 1]| Unnotified| Transactional
+11| 12| Credit top up [user id: 12]| Unnotified| Transactional
+12| 12| Credit top up [user id: 12]| Unnotified| Transactional
+13| 12| Credit top up [user id: 12]| Unnotified| Transactional
+14| 12| Credit top up [user id: 12]| Unnotified| Transactional
+15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+16| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+17| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+18| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+19| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+20| | Delivery completed [order id: jLabel24, vendor name: jLabel24]| Unnotified| Informational
+21| | Delivery completed [order id: jLabel24, vendor name: jLabel24]| Unnotified| Informational
+22| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+23| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+24| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+25| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+26| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+27| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+28| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+29| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+30| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+31| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+32| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+33| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+34| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+35| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+36| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+37| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational

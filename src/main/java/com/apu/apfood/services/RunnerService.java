@@ -119,7 +119,6 @@ public class RunnerService {
 
     public List<String> displayOngoingTaskDetails(User user) {
         return runnerTaskDao.getTaskDetails(String.valueOf(user.getId()));
-        
     }
 
     public void finishTask(User user, String inputOrderId, String vendorName) {

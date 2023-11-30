@@ -167,6 +167,8 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     //Retrieve orderId and vendor name
                     String orderId = rowArray[1];
                     String vendorName = rowArray[4];
+                    System.out.println(vendorName);
+
 
                     //Read vendor's order history
                     FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
@@ -327,6 +329,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                 // Close the BufferedWriter to save the changes
                 bw.close();
             } else if (state.equals("Accepted")) {
+                boolean stateUpdated = false;
                 while ((line = br.readLine()) != null) {
                     String[] rowArray = line.split("\\| ");
                     String id = rowArray[0];
@@ -335,9 +338,10 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     String status = rowArray[3];
                     String vendor = rowArray[4];
                     String location = rowArray[5];
-                    if (rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId()))) {
+                    if (!stateUpdated && rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId())) && rowArray[3].equals("Pending")) {
                         // Current runner's status for this task set to "Accepted"
                         status = state;
+                        stateUpdated = true;
                     } else if (rowArray[1].equals(inputOrderId) && !rowArray[2].equals(String.valueOf(user.getId()))) {
                         // All other runners status for this task are set to "Declined".
                         status = "Declined";

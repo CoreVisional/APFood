@@ -101,21 +101,11 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="homeNavBtn">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Register"/>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Home"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="ModifyMenuButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Modify"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="TopUpMenuLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Top up credit"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="homeNavBtnActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="registrationNavBtn">
               <Properties>
@@ -240,6 +230,9 @@
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="16" style="0"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="0" type="rgb"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="4"/>
                 <Property name="text" type="java.lang.String" value="Full Name"/>

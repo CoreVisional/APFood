@@ -19,8 +19,8 @@ public class AdminForm extends javax.swing.JFrame {
     private Object[][] runnerAvailabilityList;
     private Object[][] allRegisteredUsers;
     private Object[][] allVendors;
-    
-    
+
+
     // Instantiate helpers classes
     private final ImageHelper imageHelper = new ImageHelper();
     private final GUIHelper guiHelper = new GUIHelper();
@@ -72,8 +72,6 @@ public class AdminForm extends javax.swing.JFrame {
         APFoodLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         homeNavBtn = new javax.swing.JButton();
-        ModifyMenuButton = new javax.swing.JButton();
-        TopUpMenuLabel = new javax.swing.JButton();
         registrationNavBtn = new javax.swing.JButton();
         topUpCreditNavBtn = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
@@ -161,19 +159,9 @@ public class AdminForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
-        homeNavBtn.setText("Register");
+        homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        homeNavBtn.setText("Home");
         jPanel3.add(homeNavBtn);
-
-        ModifyMenuButton.setText("Modify");
-        jPanel3.add(ModifyMenuButton);
-
-        TopUpMenuLabel.setText("Top up credit");
-        TopUpMenuLabel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                homeNavBtnActionPerformed(evt);
-            }
-        });
-        jPanel3.add(TopUpMenuLabel);
 
         registrationNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         registrationNavBtn.setText("Register User");
@@ -226,6 +214,7 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanel.setPreferredSize(new java.awt.Dimension(1350, 80));
 
         nameJLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        nameJLabel.setForeground(new java.awt.Color(0, 0, 0));
         nameJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         nameJLabel.setText("Full Name");
 
@@ -999,10 +988,6 @@ public class AdminForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_homeNavBtnActionPerformed
-
     private void registrationNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrationNavBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_registrationNavBtnActionPerformed
@@ -1206,8 +1191,6 @@ public class AdminForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel APFoodLabel;
-    private javax.swing.JButton ModifyMenuButton;
-    private javax.swing.JButton TopUpMenuLabel;
     private javax.swing.JPanel adminHomePanel;
     private javax.swing.JPanel adminRegistrationPanel;
     private javax.swing.JButton adminRoleSelectBtn;
