@@ -109,7 +109,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                                     // Populate table row
                                     String[] row = {deliveryId, orderId, customerName, vendorName, location, date, formattedTime, deliveryStatus, feedback};
                                     rows.add(row);
-
+                                    break;
                                 }
                             }
                             br3.close();

@@ -1,9 +1,5 @@
 package com.apu.apfood.db.models;
 
-import com.apu.apfood.db.dao.MenuDao;
-import com.apu.apfood.db.dao.RunnerTaskDao;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +20,10 @@ public class OrderDetails {
     private String deliveryLocation;
 
     private List<FoodDetails> foodDetailsList = new ArrayList<>();
+    
+    public OrderDetails(){
+        
+    }
 
     public void addFoodDetails(String foodName, String foodId, String quantity) {
         FoodDetails foodDetails = new FoodDetails(foodName, foodId, quantity);

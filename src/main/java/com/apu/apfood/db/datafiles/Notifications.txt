@@ -36,3 +36,11 @@ id| userId| content| status| type
 35| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
 36| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
 37| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+38| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+39| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+40| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+41| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+42| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+43| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+44| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+45| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
