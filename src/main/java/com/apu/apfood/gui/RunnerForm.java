@@ -78,7 +78,6 @@ public class RunnerForm extends javax.swing.JFrame {
         guiHelper.panelSwitcher(deliveryHistoryNavBtn, contentPanel, "RunnerTaskHistory");
         guiHelper.panelSwitcher(revenueNavBtn, contentPanel, "RunnerRevenue");
 
-        roleLabel.setText("Delivery Runner");
         nameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
     }
@@ -104,7 +103,7 @@ public class RunnerForm extends javax.swing.JFrame {
         homeNavBtn = new javax.swing.JButton();
         deliveryHistoryNavBtn = new javax.swing.JButton();
         revenueNavBtn = new javax.swing.JButton();
-        roleLabel = new javax.swing.JLabel();
+        logoutJButton2 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
@@ -219,10 +218,13 @@ public class RunnerForm extends javax.swing.JFrame {
         revenueNavBtn.setFocusPainted(false);
         jPanel3.add(revenueNavBtn);
 
-        roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        roleLabel.setForeground(new java.awt.Color(255, 255, 255));
-        roleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        roleLabel.setText("Full Name");
+        logoutJButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        logoutJButton2.setText("Log Out");
+        logoutJButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutJButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -236,8 +238,8 @@ public class RunnerForm extends javax.swing.JFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
             .addGroup(sidePanelLayout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(roleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(67, 67, 67)
+                .addComponent(logoutJButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         sidePanelLayout.setVerticalGroup(
@@ -249,9 +251,9 @@ public class RunnerForm extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(roleLabel)
-                .addGap(41, 41, 41))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 350, Short.MAX_VALUE)
+                .addComponent(logoutJButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -1088,6 +1090,10 @@ public class RunnerForm extends javax.swing.JFrame {
         this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
     }//GEN-LAST:event_taskFinishBtnActionPerformed
 
+    private void logoutJButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutJButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoutJButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1155,6 +1161,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JButton leftPanelBtn;
+    private javax.swing.JButton logoutJButton2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel monthlyRevenueJLabel;
     private javax.swing.JLabel nameLabel;
@@ -1164,7 +1171,6 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JLabel ongVendorNameJLabel;
     private javax.swing.JButton revenueNavBtn;
     private javax.swing.JButton rightPanelBtn;
-    private javax.swing.JLabel roleLabel;
     private javax.swing.JPanel runnerHomePanel;
     private javax.swing.JPanel runnerRevenuePanel;
     private javax.swing.JPanel runnerTaskHistoryPanel;
