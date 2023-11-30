@@ -2,6 +2,7 @@ package com.apu.apfood.gui;
 
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.exceptions.CustomValidationException;
+import com.apu.apfood.gui.auth.LoginForm;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
@@ -20,7 +21,6 @@ public class AdminForm extends javax.swing.JFrame {
     private Object[][] allRegisteredUsers;
     private Object[][] allVendors;
 
-
     // Instantiate helpers classes
     private final ImageHelper imageHelper = new ImageHelper();
     private final GUIHelper guiHelper = new GUIHelper();
@@ -34,10 +34,9 @@ public class AdminForm extends javax.swing.JFrame {
         this.runnerAvailabilityList = userService.getAllRunnerAvailability();
         this.allRegisteredUsers = userService.getAllRegisteredUsers();
         this.allVendors = userService.getAllVendorNames();
-        
+
         initComponents();
         initCustomComponents();
-        
 
         nameJLabel.setText(user.getName());
         emailJLabel.setText(user.getEmail());
@@ -74,7 +73,7 @@ public class AdminForm extends javax.swing.JFrame {
         homeNavBtn = new javax.swing.JButton();
         registrationNavBtn = new javax.swing.JButton();
         topUpCreditNavBtn = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        adminLogoutJButton2 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         nameJLabel = new javax.swing.JLabel();
@@ -186,11 +185,11 @@ public class AdminForm extends javax.swing.JFrame {
         });
         jPanel3.add(topUpCreditNavBtn);
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setText("Log Out");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        adminLogoutJButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        adminLogoutJButton2.setText("Log Out");
+        adminLogoutJButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                adminLogoutJButton2ActionPerformed(evt);
             }
         });
 
@@ -206,7 +205,7 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGap(30, 30, 30))
             .addGroup(sidePanelLayout.createSequentialGroup()
                 .addGap(60, 60, 60)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(adminLogoutJButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         sidePanelLayout.setVerticalGroup(
@@ -217,7 +216,7 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGap(47, 47, 47)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 367, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(adminLogoutJButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
 
@@ -1065,7 +1064,7 @@ public class AdminForm extends javax.swing.JFrame {
             User userToCreate = new User(name, email, password.toCharArray(), role);
             userService.checkCredentials(name, password, email, role);
             userService.addUser(userToCreate);
-            
+
             if (role.equals("runner")) {
                 userService.addNewRunnerAvailability(name);
             }
@@ -1183,9 +1182,9 @@ public class AdminForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_runnerAvailabilityJTableMouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void adminLogoutJButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminLogoutJButton2ActionPerformed
+        // replace with auth manager
+    }//GEN-LAST:event_adminLogoutJButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1211,6 +1210,7 @@ public class AdminForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel APFoodLabel;
     private javax.swing.JPanel adminHomePanel;
+    private javax.swing.JButton adminLogoutJButton2;
     private javax.swing.JPanel adminRegistrationPanel;
     private javax.swing.JButton adminRoleSelectBtn;
     private javax.swing.JPanel adminTopUpCreditPanel;
@@ -1228,7 +1228,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel emailJLabel;
     private javax.swing.JTextField emailTextField;
     private javax.swing.JButton homeNavBtn;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
