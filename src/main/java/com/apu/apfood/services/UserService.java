@@ -25,16 +25,31 @@ public class UserService {
         userDao.add(user);
     }
 
+    public Object[][] getAllRegisteredUsers(boolean manageUsers) {
+        if (manageUsers) {
+            return userDao.getUsers(true);
+        }
+        return userDao.getUsers();
+    }
+
     public Object[][] getAllRegisteredUsers() {
-        return userDao.getAllUsers();
+        return getAllRegisteredUsers(false);
     }
 
     public Object[][] getAllRunnerAvailability() {
         return runnerAvailabilityDao.getAllRunnerAvailability();
     }
-    
+
     public Object[][] getAllVendorNames() {
         return userDao.getAllVendor();
+    }
+    
+    public void removeUser(String id) {
+        userDao.removeUserById(id);
+    }
+    
+    public void updateUser(String inputUserId, String inputUserName, String inputUserEmail, String userInputPassword) {
+        userDao.modifyUser(inputUserId, inputUserName, inputUserEmail, userInputPassword);
     }
 
     public void checkCredentials(String name, String password, String email, String role) throws CustomValidationException {
@@ -77,7 +92,7 @@ public class UserService {
     public void createVendorFolder(String vendorName) {
         userDao.createNewVendorFolder(vendorName);
     }
-    
+
     public void addNewRunnerAvailability(String name) {
         String userId = userDao.getUserId(name);
         this.runnerAvailabilityDao.addNewRunnerAvailability(userId);
@@ -100,8 +115,8 @@ public class UserService {
     public static void main(String[] args) {
         UserService us = new UserService();
         us.addUser(new User(5, "Jane Doe", "asd@asd.com", "qweqweqwe".toCharArray(), "admin"));
-        for (Object[] value: us.getAllVendorNames()) {
-            for(Object row: value) {
+        for (Object[] value : us.getAllVendorNames()) {
+            for (Object row : value) {
                 System.out.println(row);
             }
         }
