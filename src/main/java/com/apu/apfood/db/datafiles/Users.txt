@@ -12,3 +12,8 @@ id| userId| name| email| password| role
 11| 11| asd| asdasdasd@asd.com| asdasda| vendor
 12| 12| jack| jack@gmail.com| asdasd| customer
 13| 13| kuan| kuan@gmail.com| dasdasdas| vendor
+14| 14| Soh| dodo@gmail.com| soh123| customer
+15| 15| Roger| roger123@gmail.com| rogerlovefriedrice| vendor
+16| 16| Kelly| kelly123@gmail.com| kelly123| vendor
+17| 17| Quennie| quennie123@gmail.com| quennie123| runner
+18| 18| Dodo| dodo123@gmail.com| dodo123| admin
