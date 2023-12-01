@@ -19,6 +19,7 @@ public class AdminForm extends javax.swing.JFrame {
     private Object[][] customerBalance;
     private Object[][] runnerAvailabilityList;
     private Object[][] allRegisteredUsers;
+    private Object[][] noAdminRegisteredUsers;
     private Object[][] allVendors;
 
     // Instantiate helpers classes
@@ -33,6 +34,7 @@ public class AdminForm extends javax.swing.JFrame {
         this.customerBalance = userService.getCustomerBalance();
         this.runnerAvailabilityList = userService.getAllRunnerAvailability();
         this.allRegisteredUsers = userService.getAllRegisteredUsers();
+        this.noAdminRegisteredUsers = userService.getAllRegisteredUsers(true);
         this.allVendors = userService.getAllVendorNames();
 
         initComponents();
@@ -45,6 +47,7 @@ public class AdminForm extends javax.swing.JFrame {
         guiHelper.panelSwitcher(homeNavBtn, contentPanel, "adminHome");
         guiHelper.panelSwitcher(registrationNavBtn, contentPanel, "adminRegistration");
         guiHelper.panelSwitcher(topUpCreditNavBtn, contentPanel, "adminTopUp");
+        guiHelper.panelSwitcher(manageUsersNavBtn, contentPanel, "adminManageUsers");
 
         guiHelper.panelSwitcher(customerRoleSelectBtn, registrationFormPanel, "othersForm");
         guiHelper.panelSwitcher(runnerRoleSelectBtn, registrationFormPanel, "othersForm");
@@ -73,6 +76,7 @@ public class AdminForm extends javax.swing.JFrame {
         homeNavBtn = new javax.swing.JButton();
         registrationNavBtn = new javax.swing.JButton();
         topUpCreditNavBtn = new javax.swing.JButton();
+        manageUsersNavBtn = new javax.swing.JButton();
         adminLogoutJButton2 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
@@ -141,6 +145,22 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         creditTopUpTextField = new javax.swing.JTextField();
         creditConfirmBtn = new javax.swing.JButton();
+        adminManageUsersPanel = new javax.swing.JPanel();
+        manageUsersPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        manageUsersJTable = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        manageUserNameTextField = new javax.swing.JTextField();
+        jLabel29 = new javax.swing.JLabel();
+        manageUserIdTextField = new javax.swing.JTextField();
+        manageUserEmailTextField = new javax.swing.JTextField();
+        jLabel30 = new javax.swing.JLabel();
+        manageUserPasswordTextField = new javax.swing.JTextField();
+        manageUsersDeleteBtn = new javax.swing.JButton();
+        manageUsersModifyBtn = new javax.swing.JButton();
+        jLabel26 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -184,6 +204,17 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
         jPanel3.add(topUpCreditNavBtn);
+
+        manageUsersNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        manageUsersNavBtn.setText("Manage Users");
+        manageUsersNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        manageUsersNavBtn.setFocusPainted(false);
+        manageUsersNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageUsersNavBtnActionPerformed(evt);
+            }
+        });
+        jPanel3.add(manageUsersNavBtn);
 
         adminLogoutJButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         adminLogoutJButton2.setText("Log Out");
@@ -597,6 +628,7 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel19.setText("Enter account details here");
 
+        selectedUserRoleLabel1.setEditable(false);
         selectedUserRoleLabel1.setBackground(new java.awt.Color(60, 63, 65));
         selectedUserRoleLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         selectedUserRoleLabel1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -708,6 +740,7 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Enter account details here");
 
+        selectedUserRoleLabel.setEditable(false);
         selectedUserRoleLabel.setBackground(new java.awt.Color(60, 63, 65));
         selectedUserRoleLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         selectedUserRoleLabel.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -967,15 +1000,15 @@ public class AdminForm extends javax.swing.JFrame {
         adminTopUpCreditPanelLayout.setHorizontalGroup(
             adminTopUpCreditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(375, Short.MAX_VALUE)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(352, 352, 352))
             .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
-                .addGap(137, 137, 137)
+                .addGap(94, 94, 94)
                 .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(37, 37, 37))
         );
         adminTopUpCreditPanelLayout.setVerticalGroup(
             adminTopUpCreditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -984,15 +1017,195 @@ public class AdminForm extends javax.swing.JFrame {
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(adminTopUpCreditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
-                        .addGap(65, 65, 65)
+                        .addGap(66, 66, 66)
                         .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
-                        .addGap(101, 101, 101)
+                        .addGap(126, 126, 126)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         contentPanel.add(adminTopUpCreditPanel, "adminTopUp");
+
+        manageUsersPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        manageUsersJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.noAdminRegisteredUsers,
+            new String [] {
+                "ID", "Name", "Email", "Password", "Role"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        manageUsersJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        manageUsersJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        manageUsersJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        manageUsersJTable.setShowGrid(true);
+        JTableHeader manageUsersJTableHeader = manageUsersJTable.getTableHeader();
+        manageUsersJTableHeader.setPreferredSize(new Dimension(20, 40));
+        manageUsersJTable.setRowHeight(40);
+        tableHelper.centerTableValues(manageUsersJTable);
+        manageUsersJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                manageUsersJTableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(manageUsersJTable);
+
+        jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel27.setText("Email:");
+
+        jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel28.setText("Name:");
+
+        manageUserNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel29.setText("User ID:");
+
+        manageUserIdTextField.setEditable(false);
+        manageUserIdTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        manageUserIdTextField.setEnabled(false);
+
+        manageUserEmailTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel30.setText("Password:");
+
+        manageUserPasswordTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        manageUsersDeleteBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        manageUsersDeleteBtn.setText("Delete");
+        manageUsersDeleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageUsersDeleteBtnActionPerformed(evt);
+            }
+        });
+
+        manageUsersModifyBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        manageUsersModifyBtn.setText("Modify");
+        manageUsersModifyBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageUsersModifyBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(manageUsersDeleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(manageUserIdTextField)
+                    .addComponent(manageUserNameTextField)
+                    .addComponent(manageUserEmailTextField)
+                    .addComponent(manageUserPasswordTextField)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 19, Short.MAX_VALUE)
+                        .addComponent(manageUsersModifyBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(23, 23, 23))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(manageUserIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(manageUserNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel28))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(manageUserEmailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel27))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(manageUserPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel30))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(manageUsersDeleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                    .addComponent(manageUsersModifyBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout manageUsersPanelLayout = new javax.swing.GroupLayout(manageUsersPanel);
+        manageUsersPanel.setLayout(manageUsersPanelLayout);
+        manageUsersPanelLayout.setHorizontalGroup(
+            manageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(manageUsersPanelLayout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        manageUsersPanelLayout.setVerticalGroup(
+            manageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(manageUsersPanelLayout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(manageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
+
+        jLabel26.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel26.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel26.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel26.setText("Manage Users");
+        jLabel26.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout adminManageUsersPanelLayout = new javax.swing.GroupLayout(adminManageUsersPanel);
+        adminManageUsersPanel.setLayout(adminManageUsersPanelLayout);
+        adminManageUsersPanelLayout.setHorizontalGroup(
+            adminManageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminManageUsersPanelLayout.createSequentialGroup()
+                .addContainerGap(118, Short.MAX_VALUE)
+                .addGroup(adminManageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminManageUsersPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(352, 352, 352))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminManageUsersPanelLayout.createSequentialGroup()
+                        .addComponent(manageUsersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(81, 81, 81))))
+        );
+        adminManageUsersPanelLayout.setVerticalGroup(
+            adminManageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminManageUsersPanelLayout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47)
+                .addComponent(manageUsersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(84, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(adminManageUsersPanel, "adminManageUsers");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -1186,6 +1399,66 @@ public class AdminForm extends javax.swing.JFrame {
         // replace with auth manager
     }//GEN-LAST:event_adminLogoutJButton2ActionPerformed
 
+    private void manageUsersNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageUsersNavBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_manageUsersNavBtnActionPerformed
+
+    private void manageUsersJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_manageUsersJTableMouseClicked
+        int row = manageUsersJTable.getSelectedRow();
+
+        String userId = (String) manageUsersJTable.getModel().getValueAt(row, 0);
+        String userName = (String) manageUsersJTable.getModel().getValueAt(row, 1);
+        String userEmail = (String) manageUsersJTable.getModel().getValueAt(row, 2);
+        String userPassword = (String) manageUsersJTable.getModel().getValueAt(row, 3);
+
+        manageUserIdTextField.setText(userId);
+        manageUserNameTextField.setText(userName);
+        manageUserEmailTextField.setText(userEmail);
+        manageUserPasswordTextField.setText(userPassword);
+
+    }//GEN-LAST:event_manageUsersJTableMouseClicked
+
+    private void manageUsersModifyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageUsersModifyBtnActionPerformed
+        String userId = manageUserIdTextField.getText();
+        String userName = manageUserNameTextField.getText();
+        String email = manageUserEmailTextField.getText();
+        String password = manageUserPasswordTextField.getText();
+
+        if (userId.isEmpty() || userName.isEmpty() || email.isEmpty()|| password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a row!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        userService.updateUser(userId, userName, email, password);
+        // Refresh and reset
+        tableHelper.refreshTable(manageUsersJTable, userService.getAllRegisteredUsers(true), new String[]{
+            "ID", "Name", "Email", "Password", "Role"
+        });
+        manageUserIdTextField.setText("");
+        manageUserNameTextField.setText("");
+        manageUserEmailTextField.setText("");
+        manageUserPasswordTextField.setText("");
+    }//GEN-LAST:event_manageUsersModifyBtnActionPerformed
+
+    private void manageUsersDeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageUsersDeleteBtnActionPerformed
+        String userId = manageUserIdTextField.getText();
+
+        if (userId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select a row!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        userService.removeUser(userId);
+
+        // Refresh and reset
+        tableHelper.refreshTable(manageUsersJTable, userService.getAllRegisteredUsers(true), new String[]{
+            "ID", "Name", "Email", "Password", "Role"
+        });
+        manageUserIdTextField.setText("");
+        manageUserNameTextField.setText("");
+        manageUserEmailTextField.setText("");
+        manageUserPasswordTextField.setText("");
+    }//GEN-LAST:event_manageUsersDeleteBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1211,6 +1484,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel APFoodLabel;
     private javax.swing.JPanel adminHomePanel;
     private javax.swing.JButton adminLogoutJButton2;
+    private javax.swing.JPanel adminManageUsersPanel;
     private javax.swing.JPanel adminRegistrationPanel;
     private javax.swing.JButton adminRoleSelectBtn;
     private javax.swing.JPanel adminTopUpCreditPanel;
@@ -1245,7 +1519,12 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1255,12 +1534,23 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JTextField manageUserEmailTextField;
+    private javax.swing.JTextField manageUserIdTextField;
+    private javax.swing.JTextField manageUserNameTextField;
+    private javax.swing.JTextField manageUserPasswordTextField;
+    private javax.swing.JButton manageUsersDeleteBtn;
+    private javax.swing.JTable manageUsersJTable;
+    private javax.swing.JButton manageUsersModifyBtn;
+    private javax.swing.JButton manageUsersNavBtn;
+    private javax.swing.JPanel manageUsersPanel;
     private javax.swing.JLabel nameJLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton othersCreateUserBtn;

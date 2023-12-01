@@ -4,8 +4,10 @@ import static com.apu.apfood.db.dao.APFoodDao.BASE_PATH;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.exceptions.CustomValidationException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -104,7 +106,7 @@ public class UserDao extends APFoodDao<User> {
         return customerId;
     }
 
-    public Object[][] getAllUsers() {
+    public Object[][] getUsers(boolean manageUsers) {
         // Declare 2D array
         Object[][] allUsers;
 
@@ -123,10 +125,17 @@ public class UserDao extends APFoodDao<User> {
                 String id = values[1];
                 String name = values[2];
                 String email = values[3];
+                String password = values[4];
                 String role = values[5];
+
                 // Populate table row
-                String[] row = {id, name, email, role};
-                rows.add(row);
+                if (manageUsers && !role.equals("admin")) {
+                    String[] row = {id, name, email, password, role};
+                    rows.add(row);
+                } else if (!manageUsers) {
+                    String[] row = {id, name, email, role};
+                    rows.add(row);
+                }
             }
             br.close();
         } catch (IOException e) {
@@ -139,6 +148,10 @@ public class UserDao extends APFoodDao<User> {
             allUsers[i] = rows.get(i);
         }
         return allUsers;
+    }
+
+    public Object[][] getUsers() {
+        return getUsers(false);
     }
 
     public Object[][] getAllVendor() {
@@ -170,6 +183,95 @@ public class UserDao extends APFoodDao<User> {
         }
 
         return allVendor;
+    }
+
+    public void removeUserById(String inputId) {
+        List<String> updatedLines = new ArrayList<>();
+
+        try {
+            FileReader fr = new FileReader(filePath);
+            BufferedReader br = new BufferedReader(fr);
+
+            // Read the header row and add it to the updated lines
+            updatedLines.add(br.readLine());
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\\| ");
+
+                String id = values[1];
+
+                // Exclude the line if it matches the ID to delete
+                if (id.equals(inputId)) {
+                    continue;
+                }
+
+                updatedLines.add(line);
+            }
+            br.close();
+
+            FileWriter fw = new FileWriter(filePath, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            // Write the updated lines (excluding the line with the deleted ID) to the file
+            for (String updatedLine : updatedLines) {
+                bw.write(updatedLine);
+                bw.newLine();
+            }
+
+            // Close the BufferedWriter to save the changes
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void modifyUser(String inputUserId, String inputUserName, String inputUserEmail, String userInputPassword) {
+        List<String> updatedLines = new ArrayList<>();
+
+        try {
+            FileReader fr = new FileReader(filePath);
+            BufferedReader br = new BufferedReader(fr);
+
+            // Read the header row and add it to the updated lines
+            updatedLines.add(br.readLine());
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\\| ");
+
+                String id = values[0];
+                String userId = values[1];
+                String userName = values[2];
+                String userEmail = values[3];
+                String userPassword = values[4];
+                String userRole = values[5];
+
+                // Exclude the line if it matches the ID to delete
+                if (userId.equals(inputUserId)) {
+                    userName = inputUserName;
+                    userEmail = inputUserEmail;
+                    userPassword = userInputPassword;
+                }
+
+                updatedLines.add(id + "| " + userId + "| " + userName + "| " + userEmail + "| " + userPassword + "| " + userRole);
+            }
+            br.close();
+
+            FileWriter fw = new FileWriter(filePath, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            // Write the updated lines (excluding the line with the deleted ID) to the file
+            for (String updatedLine : updatedLines) {
+                bw.write(updatedLine);
+                bw.newLine();
+            }
+
+            // Close the BufferedWriter to save the changes
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void validateCredentials(String name, String password, String email, String role) throws CustomValidationException {

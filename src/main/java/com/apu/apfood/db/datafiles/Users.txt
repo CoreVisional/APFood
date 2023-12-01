@@ -1,14 +1,13 @@
 id| userId| name| email| password| role
 1| 1| Adam Smith| qwe@qwe.com| qweqweqwe| customer
 2| 2| Jane Doe| asd@asd.com| qweqweqwe| admin
-3| 3| Jack Kwan| jack@picante.apu.edu.my| qweqweqwe| vendor
-4| 4| Howard Lim| picante@picante.apu.edu.my| qqqqqqqq| vendor
+3| 3| Jack Kwan| jack@picante.apu.edu.my| abcderf| vendor
+4| 4| Howard Lim| picante@picante.apu.edu.my| abcd| vendor
 5| 5| Alice Johnson| 123@123.com| qweqweqwe| runner
 6| 6| Jane Doe| asd@asd.com| qweqweqwe| admin
 7| 7| Smy Smith| qwe@qwe.com| qweqweqwe| customer
-8| 8| Gil Bin| qwe@qwe.com| qweqweqwe| customer
+8| 8| Gil Bin| qwe@qwe.com| qweqweqwea| customer
 9| 9| Jilbert Gustin| qwe@qwe.com| qweqweqwe| customer
 10| 10| Jane Doe| asd@asd.com| qweqweqwe| admin
-11| 11| asd| asdasdasd@asd.com| asdasda| vendor
+11| 11| asd| dasd@asd.com| asdasda| vendor
 12| 12| jack| jack@gmail.com| asdasd| customer
-13| 13| kuan| kuan@gmail.com| dasdasdas| vendor
