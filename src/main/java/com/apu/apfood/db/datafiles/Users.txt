@@ -1,4 +1,5 @@
 id| userId| name| email| password| role
+<<<<<<< HEAD
 1| 1| Adam Smith| adam@gmail.com| qweqweqwe| admin
 2| 2| Jane Doe| asd@asd.com| qweqweqwe| admin
 3| 3| Jack Kwan| jack@picante.apu.edu.my| abcderf| vendor
@@ -6,8 +7,9 @@ id| userId| name| email| password| role
 5| 5| Alice Johnson| alice@gmail.com| qweqweqwe| runner
 6| 6| Jane Doe| asd@asd.com| qweqweqwe| admin
 7| 7| Smy Smith| qwe@qwe.com| qweqweqwe| customer
-8| 8| Gil Bin| qwe@qwe.com| qweqweqwea| customer
+8| 8| Gil Bin| qwe@qwe.com| qweqweqwe| customer
 9| 9| Jilbert Gustin| qwe@qwe.com| qweqweqwe| customer
 10| 10| Jane Doe| asd@asd.com| qweqweqwe| admin
-11| 11| asd| dasd@asd.com| asdasda| vendor
-12| 12| jack| jack@gmail.com| asdasd| customer
+11| 11| asd| asdasdasd@asd.com| asdasda| vendor
+13| 13| kelly| kelly@gmail.com| abcabcabc| vendor
+14| 14| Dodo| dodo@gmail.com| dodododo| customer

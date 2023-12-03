@@ -44,19 +44,3 @@ id| userId| content| status| type
 43| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
 44| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
 45| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
-46| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
-47| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
-48| 2| Delivery runner not found [order id: 2, vendor name: Picante]| Unnotified| Push
-49| 1| Delivery runner not found [order id: 1, vendor name: Picante]| Unnotified| Push
-50| 2| Delivery runner not found [order id: 2, vendor name: Picante]| Unnotified| Push
-51| 2| Delivery runner not found [order id: 2, vendor name: Picante]| Unnotified| Push
-52| 2| Delivery runner not found [order id: 2, vendor name: Picante]| Unnotified| Push
-53| 2| Delivery runner not found [order id: 2, vendor name: Picante]| Unnotified| Push
-54| 2| Delivery runner not found [order id: 2, vendor name: Picante]| Unnotified| Push
-55| 1| Delivery runner not found [order id: 1, vendor name: Picante]| Unnotified| Push
-56| 4| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
-57| 4| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
-58| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
-59| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
-60| 2| Delivery ongoing [order id: 2, vendor name: Picante]| Unnotified| Informational
-61| 2| Delivery completed [order id: 2, vendor name: Picante]| Unnotified| Informational
