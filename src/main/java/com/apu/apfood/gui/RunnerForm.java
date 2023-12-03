@@ -703,7 +703,7 @@ public class RunnerForm extends javax.swing.JFrame {
         deliveryHistoryJTable.setModel(new javax.swing.table.DefaultTableModel(
             this.deliveryHistory,
             new String [] {
-                "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus", "Feedback"
+                "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
             }
         )
         {
@@ -769,8 +769,8 @@ public class RunnerForm extends javax.swing.JFrame {
                 .addGap(38, 38, 38)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(187, Short.MAX_VALUE))
         );
 
         contentPanel.add(runnerTaskHistoryPanel, "RunnerTaskHistory");

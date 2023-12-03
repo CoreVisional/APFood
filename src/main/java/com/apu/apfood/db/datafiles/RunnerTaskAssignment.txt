@@ -1,4 +1,4 @@
 id| orderId| deliverRunnerId| status| vendor| location
-1| 1| 5| Pending| Modesto| Block A
-2| 1| 5| Pending| Picante| Block B
-3| 2| 5| Pending| Picante| Block E
+1| 1| 5| Accepted| Modesto| Block A
+2| 1| 5| Accepted| Picante| Block B
+3| 2| 5| Accepted| Picante| Block E
