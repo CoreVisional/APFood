@@ -167,8 +167,6 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     //Retrieve orderId and vendor name
                     String orderId = rowArray[1];
                     String vendorName = rowArray[4];
-                    System.out.println(vendorName);
-
 
                     //Read vendor's order history
                     FileReader fr2 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Orders.txt");
@@ -280,6 +278,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
 
                 if (rowArray[2].equals(String.valueOf(user.getId())) && rowArray[3].equals("Pending")) {
                     String key = vendorName + "-" + orderId;
+                    System.out.println(key);
                     orderKeys.add(key);
                 }
             }
@@ -291,7 +290,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
         return orderKeys.toArray(new String[0]);
     }
 
-    public void changeTaskAssignmentStatus(User user, String state, String inputOrderId) {
+    public void changeTaskAssignmentStatus(User user, String state, String inputOrderId, String vendorName) {
         List<String> updatedLines = new ArrayList<>();
 
         try {
@@ -310,7 +309,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     String status = rowArray[3];
                     String vendor = rowArray[4];
                     String location = rowArray[5];
-                    if (rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId()))) {
+                    if (rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId())) && rowArray[4].equals(vendorName)) {
                         status = state;
                     }
                     updatedLines.add(id + "| " + orderId + "| " + deliveryRunnerId + "| " + status + "| " + vendor + "| " + location);

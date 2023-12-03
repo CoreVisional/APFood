@@ -5,3 +5,4 @@ id| orderId| status| vendor| deliveryRunnerId
 4| 1| Completed| Picante| 5
 5| 1| Completed| Modesto| 5
 6| 1| Completed| Picante| 5
+7| 1| Completed| Picante| 5

@@ -87,7 +87,7 @@ public class RunnerService {
     public void changeTaskAssignmentStatus(User user, String state, String inputOrderId, String vendorName) {
         // Remove # from order id
         String orderId = inputOrderId.replace("#", "");
-        runnerTaskDao.changeTaskAssignmentStatus(user, state, orderId);
+        runnerTaskDao.changeTaskAssignmentStatus(user, state, orderId, vendorName);
 
         if (state.equals("Accepted")) {
             // Set availability to unavailable
