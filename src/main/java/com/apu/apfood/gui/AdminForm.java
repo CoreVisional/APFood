@@ -1475,7 +1475,7 @@ public class AdminForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminForm(new User(5, "Jane Doe", "asd@asd.com", "qweqweqwe".toCharArray(), "admin")).setVisible(true);
+                new AdminForm(new User(5, "Jane Doe", "jane@outsystem.com", "qweqweqwe".toCharArray(), "admin")).setVisible(true);
             }
         });
     }

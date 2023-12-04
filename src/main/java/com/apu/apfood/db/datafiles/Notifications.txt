@@ -44,3 +44,13 @@ id| userId| content| status| type
 43| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
 44| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
 45| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+46| 11| Credit top up [user id: 11]| Unnotified| Transactional
+47| 4| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+48| 4| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+49| 4| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+50| 4| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+51| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+52| 4| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+53| 4| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+54| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+55| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational

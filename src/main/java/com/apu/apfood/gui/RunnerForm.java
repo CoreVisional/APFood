@@ -1038,7 +1038,7 @@ public class RunnerForm extends javax.swing.JFrame {
         // Refresh delivery history table
         this.deliveryHistory = rs.getDeliveryHistory();
         tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
-                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
+                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
                 });
 
         // Reset order list panel index
@@ -1084,7 +1084,7 @@ public class RunnerForm extends javax.swing.JFrame {
         // Refresh delivery history table
         this.deliveryHistory = rs.getDeliveryHistory();
         tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
-                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus"
+                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
                 });
 
         // Refresh revenue values

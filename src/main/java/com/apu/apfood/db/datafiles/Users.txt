@@ -7,5 +7,8 @@ id| userId| name| email| password| role
 6| 6| Jane Doe| asd@asd.com| qweqweqwe| admin
 7| 7| Smy Smith| qwe@qwe.com| qweqweqwe| customer
 8| 8| Gil Bin| qwe@qwe.com| qweqweqwe| customer
-9| 9| Jilbert Gustin| qwe@qwe.com| qweqweqwe| customer
+9| 9| Tamago Smoke| qwe@qwe.com| qweqweqwe| customer
 10| 10| Jane Doe| asd@asd.com| qweqweqwe| admin
+11| 11| Adam Miths| adam@hotmail.com| ajshdgas@asdjasas| customer
+12| 12| Kiwi Fruit| Kiwi@gmail.com| 9123masd@asd....| vendor
+13| 13| Mango Tamago| Mago@gmail.com| 098712Dokie| vendor

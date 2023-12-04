@@ -4,3 +4,5 @@ id| userId| vendor
 3| 7| Modesto
 4| 15| Picante
 5| 16| RainbowDessert
+6| 12| Picante
+7| 13| Big Ribs
