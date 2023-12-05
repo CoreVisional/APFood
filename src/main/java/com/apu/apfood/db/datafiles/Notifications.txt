@@ -1,15 +1,19 @@
 id| userId| content| status| type
-1| 1| Order has been placed| Notified| Informational
-2| 1| Order has been accepted| Notified| Informational
-3| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified| Informational
-4| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
-5| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
-6| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
-7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified| Informational
-8| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified| Informational
-9| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
-10| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
-11| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Not Notified| Informational
-12| 1| Delivery completed [order id: 1, vendor name: Modesto]| Not Notified| Informational
-13| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Not Notified| Informational
-14| 2| Delivery completed [order id: 2, vendor name: Modesto]| Not Notified| Informational
+1| 1| Order has been placed [vendor name: Modesto]| Unnotified| Transactional
+2| 1| Order has been accepted [order id: 1, vendor name: Modesto]| Notified| Informational
+3| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
+4| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
+5| 1| Delivery declined [order id: 2, vendor name: Modesto]| Notified| Push
+6| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
+7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
+8| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
+9| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
+10| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
+11| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+12| 1| Delivery completed [order id: 1, vendor name: Modesto]| Notified| Informational
+13| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
+14| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
+15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
+16| 3| Order has been placed| Unnotified| Informational
+17| 3| Order has been accepted| Notified| Informational
+18| 1| Credit top up| Unnotified| Transactional
