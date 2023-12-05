@@ -41,7 +41,6 @@ public class FileHelper {
         return id;
     }
     
-
     public void writeFile(String filename, File file, String headers, boolean hasNewLine, String... varargs) {
 
         int id = generateID(filename, file);
@@ -86,5 +85,17 @@ public class FileHelper {
         }
 
         return dataList;
+    }
+    
+    public void updateFile(String filePath, String headers, List<String> lines) {
+        
+        try (BufferedWriter writer = Files.newBufferedWriter(new File(filePath).toPath(), StandardCharsets.UTF_8, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            writer.write(headers);
+            for (String line : lines) {
+                writer.write(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
     }
 }

@@ -14,12 +14,11 @@ public class Order extends BaseModel {
     private int orderId, userId, menuId, quantity;
     private LocalDate orderDate = LocalDate.now();
     private LocalTime orderTime = LocalTime.now();
-    private String remarks, mode, deliveryLocation;
-    private boolean discountAvailable;
+    private String vendorName, remarks, mode, deliveryLocation, discountAvailable;
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
     public Order() {
-        
+
     }
 
     public Order(int userId, int menuId, int quantity, String remarks, String mode, String deliveryLocation) {
@@ -29,6 +28,21 @@ public class Order extends BaseModel {
         this.remarks = remarks;
         this.mode = mode;
         this.deliveryLocation = deliveryLocation;
+    }
+
+    public Order(int id, int orderId, int userId, int menuId, int quantity, LocalDate orderDate, LocalTime orderTime, String remarks, String mode, OrderStatus orderStatus, String deliveryLocation, String discountAvailable) {
+        setId(id);
+        this.orderId = orderId;
+        this.userId = userId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+        this.orderDate = orderDate;
+        this.orderTime = orderTime;
+        this.remarks = remarks;
+        this.mode = mode;
+        this.orderStatus = orderStatus;
+        this.deliveryLocation = deliveryLocation;
+        this.discountAvailable = discountAvailable;
     }
 
     public Order(int orderId, int userId, int menuId, int quantity, LocalDate orderDate, LocalTime orderTime, String remarks, String mode, OrderStatus orderStatus, boolean hasDiscount, String deliveryLocation) {
@@ -41,10 +55,10 @@ public class Order extends BaseModel {
         this.remarks = remarks;
         this.mode = mode;
         this.orderStatus = orderStatus;
-        this.discountAvailable = hasDiscount;
+//        this.discountAvailable = hasDiscount;
         this.deliveryLocation = deliveryLocation;
     }
-    
+
     public int getOrderId() {
         return orderId;
     }
@@ -67,6 +81,14 @@ public class Order extends BaseModel {
 
     public void setMenuId(int menuId) {
         this.menuId = menuId;
+    }
+
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
     }
 
     public int getQuantity() {
@@ -117,11 +139,11 @@ public class Order extends BaseModel {
         this.deliveryLocation = deliveryLocation;
     }
 
-    public boolean isDiscountAvailable() {
+    public String isDiscountAvailable() {
         return discountAvailable;
     }
 
-    public void setDiscountAvailable(boolean discountAvailable) {
+    public void setDiscountAvailable(String discountAvailable) {
         this.discountAvailable = discountAvailable;
     }
 

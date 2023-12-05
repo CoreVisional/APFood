@@ -39,6 +39,14 @@ public abstract class APFoodDao<T extends BaseModel> {
         return fileHelper.readFile(filePath);
     }
 
+    public T getById(int id) {
+        return getAll().stream()
+                       .map(this::deserialize)
+                       .filter(entity -> entity.getId() == id)
+                       .findFirst()
+                       .orElse(null);
+    }
+    
     protected String getFullPath(String relativePath) {
         return BASE_PATH + relativePath;
     }

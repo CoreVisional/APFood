@@ -3,8 +3,6 @@ package com.apu.apfood.services;
 import com.apu.apfood.db.dao.FeedbackDao;
 import com.apu.apfood.db.dao.NotificationDao;
 import com.apu.apfood.db.dao.UserDao;
-import com.apu.apfood.db.dao.VendorDao;
-import com.apu.apfood.db.models.Menu;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.db.dao.MenuDao;
 import com.apu.apfood.db.dao.OrderDao;
@@ -25,10 +23,8 @@ import com.apu.apfood.db.models.Vendor;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
-import java.awt.Label;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -47,7 +43,7 @@ import javax.swing.table.TableColumn;
 
 /**
  *
- * @author Alex
+ * @author Maxwell
  */
 public class VendorService {
     private User vendor;

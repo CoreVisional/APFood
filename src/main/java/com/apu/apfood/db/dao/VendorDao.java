@@ -1,10 +1,8 @@
 package com.apu.apfood.db.dao;
 
-import com.apu.apfood.db.models.Menu;
 import com.apu.apfood.db.models.Vendor;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,8 +46,6 @@ public class VendorDao extends APFoodDao<Vendor> {
         }
         return vendorName;
     }
-    
-    
     
     @Override
     protected String serialize(Vendor vendor) {

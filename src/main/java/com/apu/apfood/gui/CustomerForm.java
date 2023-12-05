@@ -1,36 +1,98 @@
 package com.apu.apfood.gui;
 
 import com.apu.apfood.db.dao.MenuDao;
+import com.apu.apfood.db.dao.NotificationDao;
 import com.apu.apfood.db.dao.OrderDao;
-import com.apu.apfood.db.models.User;
+import com.apu.apfood.db.dao.ReviewDao;
+import com.apu.apfood.db.dao.RunnerTaskDao;
+import com.apu.apfood.db.dao.SubscriptionDao;
+import com.apu.apfood.db.dao.TransactionDao;
+import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.apu.apfood.db.dao.VendorDao;
 import com.apu.apfood.db.enums.DeliveryFee;
+import com.apu.apfood.db.enums.NotificationStatus;
+import com.apu.apfood.db.enums.NotificationType;
+import static com.apu.apfood.db.enums.NotificationType.INFORMATIONAL;
+import static com.apu.apfood.db.enums.NotificationType.PUSH;
+import static com.apu.apfood.db.enums.NotificationType.TRANSACTIONAL;
+import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Menu;
+import com.apu.apfood.db.models.Notification;
 import com.apu.apfood.db.models.Order;
+import com.apu.apfood.db.models.Review;
+import com.apu.apfood.db.models.Subscription;
+import com.apu.apfood.db.models.Transaction;
+import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.TableHelper;
+import com.apu.apfood.services.NotificationService;
 import com.apu.apfood.services.OrderService;
+import com.apu.apfood.services.FeedbackService;
+import com.apu.apfood.services.SubscriptionService;
+import com.apu.apfood.services.TransactionService;
+import com.apu.apfood.services.UserService;
 import com.apu.apfood.services.VendorService;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 public class CustomerForm extends javax.swing.JFrame {
     
     private String selectedVendorName = null;
     private final Map<String, Integer> menuItemIdMap = new HashMap<>();
     
+    // Instantiate DAOs
+    UserDao userDao = new UserDao();
     VendorDao vendorDao = new VendorDao();
     MenuDao menuDao = new MenuDao();
     OrderDao orderDao = new OrderDao(selectedVendorName);
+    NotificationDao notificationDao = new NotificationDao();
+    RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
+    TransactionDao transactionDao = new TransactionDao();
+    SubscriptionDao subscriptionDao = new SubscriptionDao();
+    ReviewDao reviewDao = new ReviewDao(selectedVendorName);
     
+    // Instantiate services
+    UserService userService = new UserService(userDao);
     VendorService vendorService = new VendorService(vendorDao, menuDao);
-    OrderService orderService = new OrderService(orderDao);
+    OrderService orderService = new OrderService(orderDao, vendorService);
+    NotificationService notificationService = new NotificationService(notificationDao);
+    TransactionService transactionService = new TransactionService(transactionDao);
+    SubscriptionService subscriptionService = new SubscriptionService(subscriptionDao, transactionDao);
+    FeedbackService reviewService = new FeedbackService(reviewDao, userDao, userService);
     
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -56,6 +118,8 @@ public class CustomerForm extends javax.swing.JFrame {
         
         // Calling methods to populate tables
         populateVendorsTable();
+        
+        updateCreditBalanceDisplay();
     }
     
     public void populateVendorsTable() {
@@ -66,6 +130,34 @@ public class CustomerForm extends javax.swing.JFrame {
         
         tableHelper.populateTable(vendorNames, vendorsTable, rowMapper, true);
         tableHelper.centerTableValues(vendorsTable);
+    }
+    
+    public void updateCreditBalanceDisplay() {
+        int loggedInUserId = 1; // For demo purposes
+        String balance = transactionDao.getTotalBalance(String.valueOf(loggedInUserId));
+        userCreditBalanceLabel1.setText("RM " + balance);
+        userCreditBalanceLabel2.setText("RM " + balance);
+    }
+    
+    public void updateSubscriptionStatusDisplay() {
+        int loggedInUserId = 1; // Replace with actual logged-in user ID
+        boolean isSubscribed = subscriptionService.isUserSubscribed(loggedInUserId);
+
+        if (isSubscribed) {
+            subscriptionValidityPanel.setVisible(true);
+            subscriptionStatusLabel.setText("Active");
+            subscriptionStatusLabel.setForeground(new Color(0, 128, 0)); // Set text color to green
+
+            Subscription latestSubscription = subscriptionService.getLatestActiveSubscription(loggedInUserId);
+            if (latestSubscription != null) {
+                subscriptionValidityLabel.setText(latestSubscription.getSubscriptionEndDate().toString());
+            }
+        } else {
+            subscriptionValidityPanel.setVisible(false);
+            subscriptionStatusLabel.setText("Not Subscribed");
+            subscriptionStatusLabel.setForeground(Color.BLACK); // Set text color back to default
+            subscriptionValidityLabel.setText("");
+        }
     }
 
     /**
@@ -78,26 +170,45 @@ public class CustomerForm extends javax.swing.JFrame {
     private void initComponents() {
 
         sidePanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        apfoodTxtLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel3 = new javax.swing.JPanel();
         homeSidebarBtn = new javax.swing.JButton();
         cafeteriaSidebarBtn = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         financeSidebarBtn = new javax.swing.JButton();
         notificationsSidebarBtn = new javax.swing.JButton();
+        subscriptionsSidebarBtn = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
         homePanel = new javax.swing.JPanel();
+        homeContentPanel = new javax.swing.JPanel();
+        jPanel13 = new javax.swing.JPanel();
+        jPanel23 = new javax.swing.JPanel();
+        quickVendorSelecctionBtn = new javax.swing.JButton();
+        jPanel22 = new javax.swing.JPanel();
+        jLabel43 = new javax.swing.JLabel();
+        userCreditBalanceLabel1 = new javax.swing.JLabel();
+        jPanel10 = new javax.swing.JPanel();
+        historyBtn = new javax.swing.JButton();
+        jPanel21 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        historyPanel = new javax.swing.JPanel();
+        historyContentPanel = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        orderHistoryTbl = new javax.swing.JTable();
+        jPanel24 = new javax.swing.JPanel();
+        reorderBtn = new javax.swing.JButton();
+        viewPastOrderDetailsBtn = new javax.swing.JButton();
+        jPanel14 = new javax.swing.JPanel();
+        orderHistoryBackBtn = new javax.swing.JButton();
         vendorsPanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
@@ -173,30 +284,51 @@ public class CustomerForm extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         orderModesComboBox = new javax.swing.JComboBox<>();
         viewReviewsFromMenuBtn = new javax.swing.JButton();
+        vendorReviewsPanel = new javax.swing.JPanel();
+        jPanel42 = new javax.swing.JPanel();
+        jPanel44 = new javax.swing.JPanel();
+        jPanel45 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        reviewsTbl = new javax.swing.JTable();
         financePanel = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         topUpPanel = new javax.swing.JPanel();
         jLabel36 = new javax.swing.JLabel();
         jLabel37 = new javax.swing.JLabel();
-        jSeparator3 = new javax.swing.JSeparator();
-        creditBalancePanel = new javax.swing.JPanel();
-        jLabel38 = new javax.swing.JLabel();
-        jLabel39 = new javax.swing.JLabel();
+        jPanel36 = new javax.swing.JPanel();
+        jLabel45 = new javax.swing.JLabel();
+        userCreditBalanceLabel2 = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
-        jLabel40 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        transactionsTbl = new javax.swing.JTable();
         notificationsPanel = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jPanel16 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         notificationsTbl = new javax.swing.JTable();
         jPanel17 = new javax.swing.JPanel();
-        markAsReadBtn = new javax.swing.JButton();
         markAllAsReadBtn = new javax.swing.JButton();
         jPanel18 = new javax.swing.JPanel();
         jLabel41 = new javax.swing.JLabel();
         searchNotificationTxtField = new javax.swing.JTextField();
         jPanel19 = new javax.swing.JPanel();
         refreshNotificationBtn = new javax.swing.JButton();
+        subscriptionsPanel = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel29 = new javax.swing.JPanel();
+        jPanel38 = new javax.swing.JPanel();
+        jPanel41 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        subscriptionStatusLabel = new javax.swing.JLabel();
+        subscriptionValidityPanel = new javax.swing.JPanel();
+        jLabel39 = new javax.swing.JLabel();
+        subscriptionValidityLabel = new javax.swing.JLabel();
+        jPanel39 = new javax.swing.JPanel();
+        jPanel35 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel43 = new javax.swing.JPanel();
+        subscribeBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -205,11 +337,12 @@ public class CustomerForm extends javax.swing.JFrame {
         sidePanel.setBackground(new java.awt.Color(0, 89, 100));
         sidePanel.setPreferredSize(new java.awt.Dimension(250, 900));
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("APFood");
+        apfoodTxtLabel.setBackground(new java.awt.Color(255, 255, 255));
+        apfoodTxtLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        apfoodTxtLabel.setForeground(new java.awt.Color(255, 255, 255));
+        apfoodTxtLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        apfoodTxtLabel.setText("APFood");
+        apfoodTxtLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jSeparator1.setBackground(new java.awt.Color(204, 204, 204));
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
@@ -243,13 +376,6 @@ public class CustomerForm extends javax.swing.JFrame {
         });
         jPanel3.add(cafeteriaSidebarBtn);
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Activity");
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.setFocusPainted(false);
-        jPanel3.add(jButton3);
-
         financeSidebarBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         financeSidebarBtn.setForeground(new java.awt.Color(255, 255, 255));
         financeSidebarBtn.setText("Finance");
@@ -274,6 +400,17 @@ public class CustomerForm extends javax.swing.JFrame {
         });
         jPanel3.add(notificationsSidebarBtn);
 
+        subscriptionsSidebarBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        subscriptionsSidebarBtn.setForeground(new java.awt.Color(255, 255, 255));
+        subscriptionsSidebarBtn.setText("Subscriptions");
+        subscriptionsSidebarBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        subscriptionsSidebarBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                subscriptionsSidebarBtnMousePressed(evt);
+            }
+        });
+        jPanel3.add(subscriptionsSidebarBtn);
+
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
         sidePanelLayout.setHorizontalGroup(
@@ -281,7 +418,7 @@ public class CustomerForm extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(apfoodTxtLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(jSeparator1)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
@@ -290,7 +427,7 @@ public class CustomerForm extends javax.swing.JFrame {
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidePanelLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jLabel1)
+                .addComponent(apfoodTxtLabel)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -321,55 +458,14 @@ public class CustomerForm extends javax.swing.JFrame {
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/profile-icon.png"))); // NOI18N
         jLabel5.setName(""); // NOI18N
 
-        jSeparator2.setForeground(new java.awt.Color(102, 102, 102));
-        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
-
-        jPanel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jPanel4.setOpaque(false);
-
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bell.png"))); // NOI18N
-        jLabel6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel7.setText("0");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addContainerGap())
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel7)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout topBarPanelLayout = new javax.swing.GroupLayout(topBarPanel);
         topBarPanel.setLayout(topBarPanelLayout);
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1034, Short.MAX_VALUE)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addContainerGap(1084, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addGap(2, 2, 2)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(32, 32, 32)
                 .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -386,13 +482,9 @@ public class CustomerForm extends javax.swing.JFrame {
                         .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(topBarPanelLayout.createSequentialGroup()
-                                .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(topBarPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel3))
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)
                                 .addGap(2, 2, 2))))
                     .addGroup(topBarPanelLayout.createSequentialGroup()
                         .addGap(28, 28, 28)
@@ -404,18 +496,282 @@ public class CustomerForm extends javax.swing.JFrame {
 
         contentPanel.setLayout(new java.awt.CardLayout());
 
-        javax.swing.GroupLayout homePanelLayout = new javax.swing.GroupLayout(homePanel);
-        homePanel.setLayout(homePanelLayout);
-        homePanelLayout.setHorizontalGroup(
-            homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1361, Short.MAX_VALUE)
+        homePanel.setLayout(new java.awt.BorderLayout());
+
+        jPanel23.setLayout(new java.awt.BorderLayout());
+
+        quickVendorSelecctionBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        quickVendorSelecctionBtn.setForeground(new java.awt.Color(255, 255, 255));
+        quickVendorSelecctionBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/food-icon.png"))); // NOI18N
+        quickVendorSelecctionBtn.setText(" Food");
+        quickVendorSelecctionBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        quickVendorSelecctionBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                quickVendorSelecctionBtnMousePressed(evt);
+            }
+        });
+        jPanel23.add(quickVendorSelecctionBtn, java.awt.BorderLayout.CENTER);
+
+        jPanel22.setLayout(new java.awt.BorderLayout());
+
+        jLabel43.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel43.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel43.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel43.setText("Balance:");
+        jLabel43.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jLabel43.setName(""); // NOI18N
+        jLabel43.setPreferredSize(new java.awt.Dimension(120, 20));
+        jPanel22.add(jLabel43, java.awt.BorderLayout.LINE_START);
+
+        userCreditBalanceLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        userCreditBalanceLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        userCreditBalanceLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        userCreditBalanceLabel1.setText("RM 0.00");
+        userCreditBalanceLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jPanel22.add(userCreditBalanceLabel1, java.awt.BorderLayout.CENTER);
+
+        jPanel10.setLayout(new java.awt.BorderLayout());
+
+        historyBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        historyBtn.setForeground(new java.awt.Color(255, 255, 255));
+        historyBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/history-icon.png"))); // NOI18N
+        historyBtn.setText(" History");
+        historyBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        historyBtn.setPreferredSize(new java.awt.Dimension(100, 35));
+        historyBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                historyBtnMousePressed(evt);
+            }
+        });
+        jPanel10.add(historyBtn, java.awt.BorderLayout.CENTER);
+
+        jPanel21.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ongoing Orders", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+
+        jTable1.setForeground(new java.awt.Color(255, 255, 255));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vendor", "Order Date", "Order Time", "Total"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
+        jPanel21.setLayout(jPanel21Layout);
+        jPanel21Layout.setHorizontalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel21Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
         );
-        homePanelLayout.setVerticalGroup(
-            homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
+        jPanel21Layout.setVerticalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(400, 400, 400)
+                        .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 366, Short.MAX_VALUE)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout homeContentPanelLayout = new javax.swing.GroupLayout(homeContentPanel);
+        homeContentPanel.setLayout(homeContentPanelLayout);
+        homeContentPanelLayout.setHorizontalGroup(
+            homeContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(homeContentPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        homeContentPanelLayout.setVerticalGroup(
+            homeContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homeContentPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        homePanel.add(homeContentPanel, java.awt.BorderLayout.CENTER);
+
         contentPanel.add(homePanel, "homePanel");
+
+        historyPanel.setLayout(new java.awt.BorderLayout());
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Past Orders", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel8.setForeground(new java.awt.Color(255, 255, 255));
+
+        orderHistoryTbl.setForeground(new java.awt.Color(255, 255, 255));
+        orderHistoryTbl.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "OrderId", "Vendor", "Order Date", "Order Time", "Total Amount", "Status"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        orderHistoryTbl.setShowGrid(true);
+        jScrollPane4.setViewportView(orderHistoryTbl);
+
+        jPanel24.setLayout(new java.awt.BorderLayout());
+
+        reorderBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        reorderBtn.setForeground(new java.awt.Color(255, 255, 255));
+        reorderBtn.setText("Reorder");
+        reorderBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        reorderBtn.setPreferredSize(new java.awt.Dimension(125, 31));
+        reorderBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                reorderBtnMousePressed(evt);
+            }
+        });
+        jPanel24.add(reorderBtn, java.awt.BorderLayout.LINE_END);
+
+        viewPastOrderDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        viewPastOrderDetailsBtn.setForeground(new java.awt.Color(255, 255, 255));
+        viewPastOrderDetailsBtn.setText(" View Details");
+        viewPastOrderDetailsBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        viewPastOrderDetailsBtn.setPreferredSize(new java.awt.Dimension(125, 27));
+        viewPastOrderDetailsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewPastOrderDetailsBtnActionPerformed(evt);
+            }
+        });
+        jPanel24.add(viewPastOrderDetailsBtn, java.awt.BorderLayout.LINE_START);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(467, Short.MAX_VALUE)
+                .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(549, 549, 549))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 633, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPanel14.setLayout(new java.awt.BorderLayout());
+
+        orderHistoryBackBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        orderHistoryBackBtn.setForeground(new java.awt.Color(255, 255, 255));
+        orderHistoryBackBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/back-icon.png"))); // NOI18N
+        orderHistoryBackBtn.setText(" Order History");
+        orderHistoryBackBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        orderHistoryBackBtn.setPreferredSize(new java.awt.Dimension(76, 31));
+        orderHistoryBackBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                orderHistoryBackBtnMousePressed(evt);
+            }
+        });
+        jPanel14.add(orderHistoryBackBtn, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout historyContentPanelLayout = new javax.swing.GroupLayout(historyContentPanel);
+        historyContentPanel.setLayout(historyContentPanelLayout);
+        historyContentPanelLayout.setHorizontalGroup(
+            historyContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(historyContentPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        historyContentPanelLayout.setVerticalGroup(
+            historyContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(historyContentPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        historyPanel.add(historyContentPanel, java.awt.BorderLayout.CENTER);
+
+        contentPanel.add(historyPanel, "historyPanel");
 
         vendorsPanel.setLayout(new java.awt.BorderLayout());
 
@@ -457,6 +813,11 @@ public class CustomerForm extends javax.swing.JFrame {
         viewReviewsBtnFromVendorPanel.setText("View Reviews");
         viewReviewsBtnFromVendorPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         viewReviewsBtnFromVendorPanel.setPreferredSize(new java.awt.Dimension(150, 31));
+        viewReviewsBtnFromVendorPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                viewReviewsBtnFromVendorPanelMousePressed(evt);
+            }
+        });
         jPanel20.add(viewReviewsBtnFromVendorPanel, java.awt.BorderLayout.LINE_START);
 
         browseMenuBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -477,7 +838,7 @@ public class CustomerForm extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1327, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1316, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(469, 469, 469)
@@ -490,7 +851,7 @@ public class CustomerForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 706, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -506,7 +867,7 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap(17, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -655,6 +1016,11 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel7.add(jLabel35, java.awt.BorderLayout.LINE_START);
 
         searchVendorMenuTxtField.setForeground(new java.awt.Color(255, 255, 255));
+        searchVendorMenuTxtField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchVendorMenuTxtFieldKeyReleased(evt);
+            }
+        });
         jPanel7.add(searchVendorMenuTxtField, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
@@ -782,7 +1148,7 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 328, Short.MAX_VALUE)
+            .addGap(0, 323, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -795,7 +1161,7 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel37.setLayout(jPanel37Layout);
         jPanel37Layout.setHorizontalGroup(
             jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 328, Short.MAX_VALUE)
+            .addGap(0, 323, Short.MAX_VALUE)
         );
         jPanel37Layout.setVerticalGroup(
             jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -808,7 +1174,7 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 328, Short.MAX_VALUE)
+            .addGap(0, 323, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -821,7 +1187,7 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel34.setLayout(jPanel34Layout);
         jPanel34Layout.setHorizontalGroup(
             jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 328, Short.MAX_VALUE)
+            .addGap(0, 323, Short.MAX_VALUE)
         );
         jPanel34Layout.setVerticalGroup(
             jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1044,7 +1410,13 @@ public class CustomerForm extends javax.swing.JFrame {
         viewReviewsFromMenuBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         viewReviewsFromMenuBtn.setForeground(new java.awt.Color(255, 255, 255));
         viewReviewsFromMenuBtn.setText(">> See Reviews");
+        viewReviewsFromMenuBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         viewReviewsFromMenuBtn.setFocusPainted(false);
+        viewReviewsFromMenuBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                viewReviewsFromMenuBtnMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
         jPanel27.setLayout(jPanel27Layout);
@@ -1075,6 +1447,86 @@ public class CustomerForm extends javax.swing.JFrame {
 
         contentPanel.add(vendorMenuPanel, "vendorMenuPanel");
 
+        vendorReviewsPanel.setLayout(new java.awt.BorderLayout());
+
+        jPanel45.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Reviews", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+
+        reviewsTbl.setForeground(new java.awt.Color(255, 255, 255));
+        reviewsTbl.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Customers", "What They Say", "Ratings"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        reviewsTbl.setRowHeight(40);
+        reviewsTbl.setShowGrid(true);
+        jScrollPane6.setViewportView(reviewsTbl);
+
+        javax.swing.GroupLayout jPanel45Layout = new javax.swing.GroupLayout(jPanel45);
+        jPanel45.setLayout(jPanel45Layout);
+        jPanel45Layout.setHorizontalGroup(
+            jPanel45Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel45Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1304, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel45Layout.setVerticalGroup(
+            jPanel45Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel45Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 757, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel44Layout = new javax.swing.GroupLayout(jPanel44);
+        jPanel44.setLayout(jPanel44Layout);
+        jPanel44Layout.setHorizontalGroup(
+            jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel44Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel45, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel44Layout.setVerticalGroup(
+            jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel44Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel45, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel42Layout = new javax.swing.GroupLayout(jPanel42);
+        jPanel42.setLayout(jPanel42Layout);
+        jPanel42Layout.setHorizontalGroup(
+            jPanel42Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel42Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel44, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel42Layout.setVerticalGroup(
+            jPanel42Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel42Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel44, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        vendorReviewsPanel.add(jPanel42, java.awt.BorderLayout.CENTER);
+
+        contentPanel.add(vendorReviewsPanel, "vendorReviewsPanel");
+
         financePanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         financePanel.setLayout(new java.awt.BorderLayout());
 
@@ -1093,51 +1545,82 @@ public class CustomerForm extends javax.swing.JFrame {
         jLabel37.setText("Top Up");
         topUpPanel.add(jLabel37, java.awt.BorderLayout.CENTER);
 
-        creditBalancePanel.setBackground(new java.awt.Color(0, 102, 0));
-        creditBalancePanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
-        creditBalancePanel.setLayout(new java.awt.BorderLayout());
+        jPanel36.setLayout(new java.awt.BorderLayout());
 
-        jLabel38.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel38.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel38.setText("APFood Wallet");
-        jLabel38.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1));
-        jLabel38.setPreferredSize(new java.awt.Dimension(43, 40));
-        creditBalancePanel.add(jLabel38, java.awt.BorderLayout.PAGE_START);
+        jLabel45.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel45.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel45.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel45.setText("Balance:");
+        jLabel45.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jLabel45.setName(""); // NOI18N
+        jLabel45.setPreferredSize(new java.awt.Dimension(120, 20));
+        jPanel36.add(jLabel45, java.awt.BorderLayout.LINE_START);
 
-        jLabel39.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel39.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel39.setText("RM 0.10");
-        jLabel39.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel39.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1));
-        creditBalancePanel.add(jLabel39, java.awt.BorderLayout.CENTER);
+        userCreditBalanceLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        userCreditBalanceLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        userCreditBalanceLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        userCreditBalanceLabel2.setText("RM 0.00");
+        userCreditBalanceLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jPanel36.add(userCreditBalanceLabel2, java.awt.BorderLayout.CENTER);
 
-        jPanel12.setLayout(new java.awt.BorderLayout());
+        transactionsTbl.setForeground(new java.awt.Color(255, 255, 255));
+        transactionsTbl.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-        jLabel40.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel40.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel40.setText("APFood Credit Balance");
-        jPanel12.add(jLabel40, java.awt.BorderLayout.CENTER);
+            },
+            new String [] {
+                "Amount", "Transaction Date", "Transaction Time", "Remarks", ""
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Double.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        transactionsTbl.setRowHeight(30);
+        transactionsTbl.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        transactionsTbl.setShowGrid(true);
+        transactionsTbl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                transactionsTblMousePressed(evt);
+            }
+        });
+        jScrollPane5.setViewportView(transactionsTbl);
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1326, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jPanel36, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jSeparator3)
-                        .addContainerGap())
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(creditBalancePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 886, Short.MAX_VALUE)
-                .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1145,12 +1628,10 @@ public class CustomerForm extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(topUpPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(26, 26, 26)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel36, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(creditBalancePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(456, Short.MAX_VALUE))
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         financePanel.add(jPanel9, java.awt.BorderLayout.CENTER);
@@ -1167,14 +1648,14 @@ public class CustomerForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Name", "Content", "Notified At", ""
+                "Notification ID", "Name", "Content", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1185,22 +1666,28 @@ public class CustomerForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        notificationsTbl.setRowHeight(30);
+        notificationsTbl.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        notificationsTbl.setShowGrid(true);
+        notificationsTbl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                notificationsTblMousePressed(evt);
+            }
+        });
         jScrollPane3.setViewportView(notificationsTbl);
 
         jPanel17.setLayout(new java.awt.BorderLayout());
-
-        markAsReadBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        markAsReadBtn.setForeground(new java.awt.Color(255, 255, 255));
-        markAsReadBtn.setText("Mark as Read");
-        markAsReadBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        markAsReadBtn.setPreferredSize(new java.awt.Dimension(120, 27));
-        jPanel17.add(markAsReadBtn, java.awt.BorderLayout.LINE_START);
 
         markAllAsReadBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         markAllAsReadBtn.setForeground(new java.awt.Color(255, 255, 255));
         markAllAsReadBtn.setText("Mark All as Read");
         markAllAsReadBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jPanel17.add(markAllAsReadBtn, java.awt.BorderLayout.LINE_END);
+        markAllAsReadBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                markAllAsReadBtnActionPerformed(evt);
+            }
+        });
+        jPanel17.add(markAllAsReadBtn, java.awt.BorderLayout.CENTER);
 
         jPanel18.setLayout(new java.awt.BorderLayout());
 
@@ -1211,6 +1698,11 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel18.add(jLabel41, java.awt.BorderLayout.LINE_START);
 
         searchNotificationTxtField.setForeground(new java.awt.Color(255, 255, 255));
+        searchNotificationTxtField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchNotificationTxtFieldKeyReleased(evt);
+            }
+        });
         jPanel18.add(searchNotificationTxtField, java.awt.BorderLayout.CENTER);
 
         jPanel19.setPreferredSize(new java.awt.Dimension(44, 19));
@@ -1229,19 +1721,17 @@ public class CustomerForm extends javax.swing.JFrame {
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                        .addGap(0, 518, Short.MAX_VALUE)
-                        .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(525, 525, 525))
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1326, Short.MAX_VALUE)
                     .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane3)
-                            .addGroup(jPanel16Layout.createSequentialGroup()
-                                .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
+                        .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(600, 600, 600))
         );
         jPanel16Layout.setVerticalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1251,7 +1741,7 @@ public class CustomerForm extends javax.swing.JFrame {
                     .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                     .addComponent(jPanel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1263,20 +1753,180 @@ public class CustomerForm extends javax.swing.JFrame {
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, 1338, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
-                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         notificationsPanel.add(jPanel15, java.awt.BorderLayout.CENTER);
 
         contentPanel.add(notificationsPanel, "notificationsPanel");
+
+        subscriptionsPanel.setLayout(new java.awt.BorderLayout());
+
+        jPanel29.setBackground(new java.awt.Color(41, 173, 178));
+
+        jPanel38.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Current Plan", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel38.setPreferredSize(new java.awt.Dimension(600, 796));
+
+        jPanel41.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel41.setLayout(new java.awt.BorderLayout());
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Subscription Status:");
+        jLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jLabel7.setPreferredSize(new java.awt.Dimension(160, 16));
+        jPanel41.add(jLabel7, java.awt.BorderLayout.LINE_START);
+
+        subscriptionStatusLabel.setForeground(new java.awt.Color(0, 0, 0));
+        subscriptionStatusLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        subscriptionStatusLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel41.add(subscriptionStatusLabel, java.awt.BorderLayout.CENTER);
+
+        subscriptionValidityPanel.setBackground(new java.awt.Color(227, 161, 119));
+        subscriptionValidityPanel.setLayout(new java.awt.BorderLayout());
+
+        jLabel39.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel39.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel39.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel39.setText("Valid Until:");
+        jLabel39.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jLabel39.setPreferredSize(new java.awt.Dimension(160, 16));
+        subscriptionValidityPanel.add(jLabel39, java.awt.BorderLayout.LINE_START);
+
+        subscriptionValidityLabel.setForeground(new java.awt.Color(0, 0, 0));
+        subscriptionValidityLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        subscriptionValidityLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        subscriptionValidityPanel.add(subscriptionValidityLabel, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout jPanel38Layout = new javax.swing.GroupLayout(jPanel38);
+        jPanel38.setLayout(jPanel38Layout);
+        jPanel38Layout.setHorizontalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel38Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel41, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(subscriptionValidityPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(270, Short.MAX_VALUE))
+        );
+        jPanel38Layout.setVerticalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel38Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(jPanel41, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addComponent(subscriptionValidityPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel39.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Subscription", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+
+        jPanel35.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel35.setLayout(new java.awt.BorderLayout());
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Get 5% Discount on ALL ORDERS when subscribed !");
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jLabel1.setPreferredSize(new java.awt.Dimension(339, 40));
+        jPanel35.add(jLabel1, java.awt.BorderLayout.PAGE_START);
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("ONLY RM 4.00 / month");
+        jLabel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jPanel35.add(jLabel6, java.awt.BorderLayout.CENTER);
+
+        jPanel43.setLayout(new java.awt.BorderLayout());
+
+        subscribeBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        subscribeBtn.setForeground(new java.awt.Color(255, 255, 255));
+        subscribeBtn.setText("Subscribe");
+        subscribeBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        subscribeBtn.setFocusPainted(false);
+        subscribeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscribeBtnActionPerformed(evt);
+            }
+        });
+        jPanel43.add(subscribeBtn, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout jPanel39Layout = new javax.swing.GroupLayout(jPanel39);
+        jPanel39.setLayout(jPanel39Layout);
+        jPanel39Layout.setHorizontalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel39Layout.createSequentialGroup()
+                .addContainerGap(166, Short.MAX_VALUE)
+                .addGroup(jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel39Layout.createSequentialGroup()
+                        .addComponent(jPanel35, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(158, 158, 158))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel39Layout.createSequentialGroup()
+                        .addComponent(jPanel43, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(250, 250, 250))))
+        );
+        jPanel39Layout.setVerticalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel39Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel35, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(66, 66, 66)
+                .addComponent(jPanel43, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(567, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel29Layout = new javax.swing.GroupLayout(jPanel29);
+        jPanel29.setLayout(jPanel29Layout);
+        jPanel29Layout.setHorizontalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel29Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel38, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel39, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel29Layout.setVerticalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel29Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel38, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel39, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        subscriptionsPanel.add(jPanel4, java.awt.BorderLayout.CENTER);
+
+        contentPanel.add(subscriptionsPanel, "subscriptionsPanel");
 
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
@@ -1328,27 +1978,8 @@ public class CustomerForm extends javax.swing.JFrame {
             updateVendorMenuUIElements();
         }
     }//GEN-LAST:event_increaseItemQtyBtnActionPerformed
-
-    private double getDeliveryFee(String deliveryLocation) {
-        // Check if deliveryLocation is null
-        if (deliveryLocation == null) {
-            return 0.0;
-        }
-
-        // Convert deliveryLocation to enum format and get the fee
-        DeliveryFee fee = DeliveryFee.valueOf(deliveryLocation.toUpperCase().replace(" ", "_"));
-        return fee.getFee();
-    }
-
+    
     private Map<String, Double> createPriceMap() {
-//        Map<String, Double> priceMap = new HashMap<>();
-//        for (int i = 0; i < vendorMenuTbl.getRowCount(); i++) {
-//            String itemName = vendorMenuTbl.getValueAt(i, 1).toString();
-//            double price = Double.parseDouble(vendorMenuTbl.getValueAt(i, 3).toString());
-//            priceMap.put(itemName, price);
-//        }
-//        return priceMap;
-
         return tableHelper.createTableMap(vendorMenuTbl, 1, 3, 
                                               Object::toString, 
                                               value -> Double.valueOf(value.toString()));
@@ -1372,7 +2003,7 @@ public class CustomerForm extends javax.swing.JFrame {
         if ("Delivery".equals(selectedOrderMode)) {
             String deliveryLocation = (String) deliveryLocationsComboBox.getSelectedItem();
             
-            double deliveryFee = getDeliveryFee(deliveryLocation);
+            double deliveryFee = OrderService.getDeliveryFee(deliveryLocation);
             jLabel16.setText(String.format("RM %.2f", subtotal));
             jLabel18.setText(String.format("RM %.2f", deliveryFee));
             jLabel20.setText(String.format("RM %.2f", subtotal + deliveryFee));
@@ -1424,12 +2055,13 @@ public class CustomerForm extends javax.swing.JFrame {
         int selectedRow = vendorsTable.getSelectedRow();
         if (selectedRow >= 0) {
             selectedVendorName = vendorsTable.getValueAt(selectedRow, 1).toString();
+            
             orderDao.updateFilePath(selectedVendorName);
 
             // Load the vendor's menu
             loadVendorMenu(selectedVendorName);
 
-            // Switch to the vendor's menu panel using buttonPanelSwitcher
+            // Switch to the vendor's menu panel using panelSwitcher method
             guiHelper.panelSwitcher(browseMenuBtn, contentPanel, "vendorMenuPanel");
 
             vendorNameLabel.setText("Welcome to " + selectedVendorName);
@@ -1566,7 +2198,7 @@ public class CustomerForm extends javax.swing.JFrame {
         // Iterate over each item in the cart and create an order for each
         for (Object[] cartItem : cartItems) {
             int menuId = (Integer) cartItem[0]; // Retrieve menuId
-            
+
             int quantity = (Integer) cartItem[2];
             String remarks = (String) cartItem[3];
 
@@ -1574,8 +2206,8 @@ public class CustomerForm extends javax.swing.JFrame {
             ordersToAdd.add(newOrder);
         }
 
-        // Add all orders using OrderService
-        orderService.addOrders(ordersToAdd);
+        // Add all orders using OrderService and pass the selected vendor name
+        orderService.addOrders(ordersToAdd, selectedVendorName);
 
         // Clear the cart and update UI
         cartItems.clear();
@@ -1613,12 +2245,729 @@ public class CustomerForm extends javax.swing.JFrame {
     private void financeSidebarBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_financeSidebarBtnMousePressed
         guiHelper.panelSwitcher(financeSidebarBtn, contentPanel, "financePanel");
         setTitle("Finance - APFood");
-    }//GEN-LAST:event_financeSidebarBtnMousePressed
+        
+        List<Transaction> transactions = transactionService.getTransactions();
+        int loggedInUserId = 1; // Hardcoded for demo
 
+        // Prepare table data
+        List<Object[]> tableData = transactions.stream()
+            .filter(transaction -> transaction.getUserId() == loggedInUserId)
+            .map(transaction -> new Object[]{
+                String.format("RM %.2f", transaction.getAmount()),
+                transaction.getTransactionOn(),
+                transaction.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")),
+                transaction.getRemarks(),
+                transaction.getRemarks().equals("Top up") ? "Top Up Receipt Available to View" : ""
+            })
+            .collect(Collectors.toList());
+
+        Function<Object[], Object[]> rowMapper = row -> row;
+        
+        tableHelper.populateTable(tableData, transactionsTbl, rowMapper);
+        tableHelper.centerTableValues(transactionsTbl);
+        
+        updateCreditBalanceDisplay();
+    }//GEN-LAST:event_financeSidebarBtnMousePressed
+    
+    private void updateNotificationsTable(List<Object[]> tableData) {
+        Function<Object[], Object[]> rowMapper = row -> row;
+        tableHelper.populateTable(tableData, notificationsTbl, rowMapper);
+
+        TableColumnModel columnModel = notificationsTbl.getColumnModel();
+        columnModel.getColumn(0).setMinWidth(0);
+        columnModel.getColumn(0).setMaxWidth(0);
+        columnModel.getColumn(0).setWidth(0);
+
+        List<Integer> centeredColumns = Arrays.asList(1, 3, 4);
+        
+        // Custom cell rendering with softer colors, adjusted foreground color, and center alignment
+        for (int i = 0; i < notificationsTbl.getColumnCount(); i++) {
+            TableColumn column = notificationsTbl.getColumnModel().getColumn(i);
+            column.setCellRenderer(new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value,
+                                                               boolean isSelected, boolean hasFocus, 
+                                                               int row, int column) {
+                    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                    // Center align if it's in the specified columns
+                    if (centeredColumns.contains(column)) {
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                    }
+
+                    Notification notification = notificationService.getNotificationById((Integer) table.getModel().getValueAt(row, 0));
+                    if (notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED) {
+                        c.setForeground(Color.BLACK); // Set foreground color to black for better readability
+                        switch (notification.getNotificationType()) {
+                            case PUSH -> c.setBackground(new Color(255, 153, 153)); // Softer red
+                            case TRANSACTIONAL, INFORMATIONAL -> c.setBackground(new Color(255, 255, 153)); // Softer yellow
+                            default -> c.setBackground(table.getBackground());
+                        }
+                    } else {
+                        c.setBackground(table.getBackground()); // Default color
+                        c.setForeground(table.getForeground()); // Revert to default foreground color
+                    }
+                    return c;
+                }
+            });
+        }
+    }
+    
+    private boolean isOrderAccepted(Notification notification) {
+        String content = notification.getContent();
+        return content.toLowerCase().contains("order has been accepted");
+    }
+    
+    private String getNotificationActionText(Notification notification) {
+        if (notification.getNotificationType() == NotificationType.PUSH) {
+            return "Action Required";
+        } else if (isOrderAccepted(notification)) {
+            return "View Receipt / Give Review";
+        } else if (notification.getContent().toLowerCase().contains("delivery completed")) {
+            return "Give Feedback";
+        }
+        return "";
+    }
+
+    private void displayNotifications() {
+
+        int loggedInUserId = 1; // Hardcoded for demonstration
+
+        List<Notification> notifications = notificationService.getNotifications()
+                                                               .stream()
+                                                               .filter(notification -> notification.getUserId() == loggedInUserId)
+                                                               .collect(Collectors.toList());
+        List<Object[]> tableData = new ArrayList<>();
+
+        for (Notification notification : notifications) {
+            String senderName = determineSenderName(notification);
+            String content = notification.getContent();
+            String columnActionText = getNotificationActionText(notification);
+
+            tableData.add(new Object[] { notification.getId(), senderName, content, columnActionText });
+        }
+
+        updateNotificationsTable(tableData);
+    }
+    
+    private String determineSenderName(Notification notification) {
+        
+        Pattern vendorOrderAcceptancePattern = Pattern.compile("order has been (accepted|declined)", Pattern.CASE_INSENSITIVE);
+        
+        switch (notification.getNotificationType()) {
+            case PUSH -> {
+                return "APFood";
+            }
+            case TRANSACTIONAL -> {
+                if (notification.getContent().toLowerCase().contains("order has been placed")) {
+                    String vendorName = getVendorNameFromContent(notification.getContent());
+                    return vendorName.isEmpty() ? "APFood" : "APFood - " + vendorName;
+                } else if (notification.getContent().toLowerCase().contains("credit top up")) {
+                    return "Administrator";
+                }
+            }
+            case INFORMATIONAL -> {
+                if (vendorOrderAcceptancePattern.matcher(notification.getContent()).find()) {
+                    return getVendorNameFromContent(notification.getContent());
+                } else if (notification.getContent().toLowerCase().contains("delivery")) {
+                    return getRunnerNameFromContent(notification.getContent());
+                }
+            }
+        }
+        return "Unknown";
+    }
+    
+    private String getVendorNameFromContent(String content) {
+        String vendorPrefix = "vendor name: ";
+        int start = content.indexOf(vendorPrefix);
+        if (start == -1) {
+            return "";
+        }
+        start += vendorPrefix.length();
+        int end = content.indexOf("]", start);
+        if (end == -1) {
+            return "";
+        }
+        return content.substring(start, end).trim();
+    }
+
+    private String getRunnerNameFromContent(String content) {
+        String orderId = extractOrderIdFromContent(content);
+        int runnerId = runnerTaskDao.getRunnerIdByOrderId(orderId);
+        User runner = userDao.getUserById(runnerId);
+        return runner != null ? runner.getName() : "Unknown Runner";
+    }
+
+    private String extractOrderIdFromContent(String content) {
+        String orderPrefix = "[order id: ";
+        int start = content.indexOf(orderPrefix);
+        if (start == -1) {
+            return "";
+        }
+        start += orderPrefix.length();
+        int end = content.indexOf(",", start);
+        if (end == -1) {
+            return "";
+        }
+        return content.substring(start, end);
+    }
+    
     private void notificationsSidebarBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationsSidebarBtnMousePressed
+
         guiHelper.panelSwitcher(notificationsSidebarBtn, contentPanel, "notificationsPanel");
         setTitle("Notifications - APFood");
+
+        displayNotifications();
     }//GEN-LAST:event_notificationsSidebarBtnMousePressed
+
+    private void historyBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_historyBtnMousePressed
+        guiHelper.panelSwitcher(historyBtn, contentPanel, "historyPanel");
+        setTitle("History - APFood");
+        
+        int userId = 1; // User ID for demonstration
+        List<OrderStatus> statuses = Arrays.asList(OrderStatus.ACCEPTED, OrderStatus.DECLINED);
+
+        Map<String, List<Order>> groupedOrders = orderService.getUserOrdersGrouped(userId, statuses);
+        List<Object[]> tableData = new ArrayList<>();
+
+        for (Map.Entry<String, List<Order>> entry : groupedOrders.entrySet()) {
+            List<Order> orders = entry.getValue();
+            if (!orders.isEmpty()) {
+                Order representativeOrder = orders.get(0); // // A representative order for common details
+                double totalAmount = orderService.calculateTotalAmountForGroupedOrders(orders, representativeOrder.getVendorName());
+                Object[] row = formatOrderTable(representativeOrder, totalAmount);
+                tableData.add(row);
+            }
+        }
+
+        updateOrderHistoryTable(tableData);
+    }//GEN-LAST:event_historyBtnMousePressed
+
+    private Object[] formatOrderTable(Order order, double totalAmount) {        
+
+        return new Object[]{
+            order.getOrderId(),
+            order.getVendorName(),
+            order.getOrderDate().toString(), 
+            order.getOrderTime().format(DateTimeFormatter.ofPattern("HH:mm a")),
+            String.format("RM %.2f", totalAmount), 
+            order.getOrderStatus().toString(),
+        };
+    }
+
+    private void updateOrderHistoryTable(List<Object[]> tableData) {
+        Function<Object[], Object[]> rowMapper = row -> row;
+
+        tableHelper.populateTable(tableData, orderHistoryTbl, rowMapper);
+        tableHelper.centerTableValues(orderHistoryTbl);
+
+        TableColumnModel columnModel = orderHistoryTbl.getColumnModel();
+        if (columnModel.getColumnCount() > 5) { // Check if the orderId column is still present
+            columnModel.removeColumn(columnModel.getColumn(0));
+        }
+    }
+    
+    private void orderHistoryBackBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_orderHistoryBackBtnMousePressed
+        guiHelper.panelSwitcher(orderHistoryBackBtn, contentPanel, "homePanel");
+        setTitle("Home - APFood");
+    }//GEN-LAST:event_orderHistoryBackBtnMousePressed
+
+    private void showOrderDetailsPopup(List<Order> orderDetails, String vendorName) {
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        for (Order order : orderDetails) {
+            Menu menuItem = vendorService.getVendorMenuItems(vendorName).stream()
+                                         .filter(menu -> menu.getId() == order.getMenuId())
+                                         .findFirst()
+                                         .orElse(new Menu(0, "Unknown", "Unknown", 0.0));
+            String itemDetail = menuItem.getMenuName() + " - Qty: " + order.getQuantity();
+            if (!order.getRemarks().isEmpty()) {
+                itemDetail += " (Remarks: " + order.getRemarks() + ")";
+            }
+            listModel.addElement(itemDetail);
+        }
+
+
+        JList<String> orderItemList = new JList<>(listModel);
+
+        orderItemList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Padding for each cell
+                if (isSelected) {
+                    setBackground(Color.LIGHT_GRAY); // Background for selected item
+                    setForeground(Color.BLACK);
+                } else {
+                    setBackground(Color.WHITE); // Background for non-selected items
+                    setForeground(Color.BLACK);
+                }
+                return this;
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(orderItemList);
+        scrollPane.setPreferredSize(new Dimension(350, 200)); // Set preferred size
+
+        JOptionPane.showMessageDialog(this, scrollPane, "Order Details for " + vendorName, JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void viewPastOrderDetailsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewPastOrderDetailsBtnActionPerformed
+
+        int selectedRow = orderHistoryTbl.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select an order to view details.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int orderId = (Integer) orderHistoryTbl.getModel().getValueAt(selectedRow, 0);
+        
+        String vendorName = (String) orderHistoryTbl.getValueAt(selectedRow, 0);
+        LocalDate orderDate = LocalDate.parse((String) orderHistoryTbl.getValueAt(selectedRow, 1));
+
+        // Parsing the time string with the appropriate format
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm a");
+        LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2), timeFormatter);
+        
+        System.out.println(orderTime);
+        
+        List<Order> orderDetails = orderService.getOrderDetails(orderId, vendorName, orderDate, orderTime);
+        showOrderDetailsPopup(orderDetails, vendorName);
+    }//GEN-LAST:event_viewPastOrderDetailsBtnActionPerformed
+
+    private void reorderBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reorderBtnMousePressed
+
+        int selectedRow = orderHistoryTbl.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row to reorder.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int orderId = (Integer) orderHistoryTbl.getModel().getValueAt(selectedRow, 0);
+
+        selectedVendorName = (String) orderHistoryTbl.getValueAt(selectedRow, 0);
+        LocalDate orderDate = LocalDate.parse((String) orderHistoryTbl.getValueAt(selectedRow, 1));
+
+        // Adjusted DateTimeFormatter for 24-hour format without AM/PM
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm a");
+        LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2), timeFormatter);
+
+        List<Order> orderDetails = orderService.getOrderDetails(orderId, selectedVendorName, orderDate, orderTime);
+
+        loadVendorMenu(selectedVendorName);
+        guiHelper.panelSwitcher(reorderBtn, contentPanel, "vendorMenuPanel");
+        vendorNameLabel.setText("Welcome to " + selectedVendorName);
+        setTitle(selectedVendorName + " Menu - APFood");
+
+        cartItems.clear(); // Clear existing cart items
+        for (Order order : orderDetails) {
+            Menu menuItem = vendorService.getVendorMenuItems(selectedVendorName).stream()
+                                         .filter(menu -> menu.getId() == order.getMenuId())
+                                         .findFirst()
+                                         .orElse(null);
+
+            if (menuItem != null) {
+                cartItems.add(new Object[]{ menuItem.getId(), menuItem.getMenuName(), order.getQuantity(), order.getRemarks() });
+            }
+        }
+
+        updateOrderCartTable();
+        updateCartUIElements();
+    }//GEN-LAST:event_reorderBtnMousePressed
+
+    private void generateAndShowOrderReceipt(int orderId, String vendorName) {
+        // Fetch order details
+        List<Order> orders = orderDao.getByOrderIdAndVendorName(orderId, vendorName);
+
+        if (orders.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Order details not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Get customer's name
+        int userId = orders.get(0).getUserId();
+        String customerName = userDao.getUserById(userId).getName();
+
+        StringBuilder receiptContent = new StringBuilder();
+        double subtotal = 0.0;
+        receiptContent.append("Customer Name: ").append(customerName).append("\n")
+                       .append("Order ID: ").append(orderId).append("\n")
+                       .append("Vendor: ").append(vendorName).append("\n")
+                       .append("Items:\n");
+
+        for (Order order : orders) {
+            Menu menuItem = menuDao.getMenuById(order.getMenuId(), vendorName);
+            double itemTotal = menuItem.getPrice() * order.getQuantity();
+            subtotal += itemTotal;
+
+            receiptContent.append(" - ").append(menuItem.getMenuName())
+                           .append(" x ").append(order.getQuantity())
+                           .append(" @ RM ").append(String.format("%.2f", menuItem.getPrice()))
+                           .append(" = RM ").append(String.format("%.2f", itemTotal))
+                           .append("\n");
+        }
+
+        // Calculate delivery fee if applicable
+        double deliveryFee = 0.0;
+        if ("Delivery".equals(orders.get(0).getMode())) {
+            String deliveryLocation = orders.get(0).getDeliveryLocation();
+            deliveryFee = DeliveryFee.valueOf(deliveryLocation.toUpperCase().replace(" ", "_")).getFee();
+        }
+
+        double grandTotal = subtotal + deliveryFee;
+
+        // Append delivery and total information
+        receiptContent.append("Subtotal: RM ").append(String.format("%.2f", subtotal)).append("\n")
+                       .append("Delivery Fee: RM ").append(String.format("%.2f", deliveryFee)).append("\n")
+                       .append("Grand Total: RM ").append(String.format("%.2f", grandTotal));
+
+        // Display the receipt
+        JTextArea textArea = new JTextArea(receiptContent.toString());
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        JOptionPane.showMessageDialog(this, scrollPane, "Order Receipt", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void saveReview(int orderId, String feedback, int rating, String vendorName) {
+        Review review = new Review(orderId, feedback, rating);
+        reviewService.addReview(review, vendorName);
+    }
+    
+    private void displayVendorReviewDialog(int orderId, String vendorName) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        // Create and add a label for the feedback text area
+        JLabel feedbackLabel = new JLabel("Feedback:");
+        panel.add(feedbackLabel);
+
+        // Create a text area for feedback
+        JTextArea feedbackTextArea = new JTextArea(5, 20); // Adjust rows and columns as needed
+        feedbackTextArea.setLineWrap(true);
+        feedbackTextArea.setWrapStyleWord(true);
+        JScrollPane scrollPane = new JScrollPane(feedbackTextArea);
+        panel.add(scrollPane);
+
+        // Create and add a label for the rating dropdown
+        JLabel ratingLabel = new JLabel("Rating:");
+        panel.add(ratingLabel);
+
+        // Create a combobox for rating
+        JComboBox<String> ratingComboBox = new JComboBox<>(new String[]{ "1", "2", "3", "4", "5" });
+        panel.add(ratingComboBox);
+
+        Object[] options = { "Submit", "Cancel" };
+
+        // Show JOptionPane with the panel and custom buttons
+        int result = JOptionPane.showOptionDialog(this, panel, "Write Review",
+                                                  JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                                                  null, options, options[0]);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String feedback = feedbackTextArea.getText();
+            int rating = Integer.parseInt((String) ratingComboBox.getSelectedItem());
+            saveReview(orderId, feedback, rating, vendorName);
+        }
+    }
+    
+    private void displayRunnerFeedbackDialog(int orderId, String vendorName) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        // Create and add a label for the feedback text area
+        JLabel feedbackLabel = new JLabel("Feedback:");
+        panel.add(feedbackLabel);
+
+        // Create a text area for feedback
+        JTextArea feedbackTextArea = new JTextArea(5, 20); // Adjust rows and columns as needed
+        feedbackTextArea.setLineWrap(true);
+        feedbackTextArea.setWrapStyleWord(true);
+        JScrollPane scrollPane = new JScrollPane(feedbackTextArea);
+        panel.add(scrollPane);
+
+        Object[] options = { "Submit", "Cancel" };
+
+        // Show JOptionPane with the panel and custom buttons
+        int result = JOptionPane.showOptionDialog(this, panel, "Give Runner Feedback",
+                                                  JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                                                  null, options, options[0]);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String feedback = feedbackTextArea.getText();
+            int runnerId = runnerTaskDao.getRunnerIdByOrderId(String.valueOf(orderId));
+            runnerTaskDao.addRunnerFeedback(runnerId, orderId, vendorName, feedback);
+            JOptionPane.showMessageDialog(this, "Feedback submitted successfully!", "Feedback", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    private void notificationsTblMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationsTblMousePressed
+
+        int selectedRow = notificationsTbl.getSelectedRow();
+        if (selectedRow != -1) {
+            int notificationId = (Integer) notificationsTbl.getValueAt(selectedRow, 0);
+            Notification notification = notificationService.getNotificationById(notificationId);
+
+            if (notification != null) {
+                if (notification.getNotificationType() == NotificationType.PUSH) {
+                    String[] pushOptions = { "Takeaway", "Dine-in" };
+                    int selection = JOptionPane.showOptionDialog(this, 
+                            "Select an option for your order:", 
+                            "Order Option", 
+                            JOptionPane.DEFAULT_OPTION, 
+                            JOptionPane.INFORMATION_MESSAGE, 
+                            null, pushOptions, pushOptions[0]);
+
+                    if (selection >= 0) {
+                        String mode = pushOptions[selection];
+                        String orderIdStr = extractOrderIdFromContent(notification.getContent());
+                        String vendorName = getVendorNameFromContent(notification.getContent());
+                        int orderId = Integer.parseInt(orderIdStr);
+
+                        orderService.updateOrderMode(orderId, mode, vendorName);
+                    }
+                }
+                
+                if (isOrderAccepted(notification) && "View Receipt / Give Review".equals(notificationsTbl.getValueAt(selectedRow, 3))) {
+                    String[] notificationOptions  = {"View Receipt", "Give Review"};
+                    int selection = JOptionPane.showOptionDialog(this,
+                            "Select an option:",
+                            "Notification Action",
+                            JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null, notificationOptions , notificationOptions [0]);
+
+                    String orderIdStr = extractOrderIdFromContent(notification.getContent());
+                    selectedVendorName = getVendorNameFromContent(notification.getContent());
+                    try {
+                        int orderId = Integer.parseInt(orderIdStr);
+                        if (selection == 0) {
+                            generateAndShowOrderReceipt(orderId, selectedVendorName);
+                        } else if (selection == 1) {
+                            displayVendorReviewDialog(orderId, selectedVendorName);
+                        }
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(this, "Invalid order ID.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                
+                if ("Give Feedback".equals(notificationsTbl.getValueAt(selectedRow, 3))) {
+                    String content = notification.getContent();
+                    String orderIdStr = extractOrderIdFromContent(content);
+                    selectedVendorName = getVendorNameFromContent(content);
+                    try {
+                        int orderId = Integer.parseInt(orderIdStr);
+                        displayRunnerFeedbackDialog(orderId, selectedVendorName);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(this, "Invalid order ID.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+
+                // Update notification status as 'Notified' regardless of the notification type
+                if (notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED) {
+                    notification.setNotificationStatus(NotificationStatus.NOTIFIED);
+                    notificationService.updateNotification(notification);
+
+                    // Save the current scroll position
+                    JScrollBar scrollBar = jScrollPane3.getVerticalScrollBar();
+                    int scrollPosition = scrollBar.getValue();
+
+                    displayNotifications(); // Refresh the table
+
+                    // Restore the scroll position
+                    SwingUtilities.invokeLater(() -> scrollBar.setValue(scrollPosition));
+
+                    // Restore the row selection
+                    if (selectedRow < notificationsTbl.getRowCount()) {
+                        notificationsTbl.setRowSelectionInterval(selectedRow, selectedRow);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_notificationsTblMousePressed
+
+    private void subscriptionsSidebarBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subscriptionsSidebarBtnMousePressed
+        guiHelper.panelSwitcher(subscriptionsSidebarBtn, contentPanel, "subscriptionsPanel");
+        setTitle("My Subscriptions - APFood");
+        
+        updateSubscriptionStatusDisplay();
+    }//GEN-LAST:event_subscriptionsSidebarBtnMousePressed
+
+    private void quickVendorSelecctionBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_quickVendorSelecctionBtnMousePressed
+        guiHelper.panelSwitcher(quickVendorSelecctionBtn, contentPanel, "vendorsPanel");
+        setTitle("All Vendors - APFood");
+    }//GEN-LAST:event_quickVendorSelecctionBtnMousePressed
+
+    private void searchVendorMenuTxtFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchVendorMenuTxtFieldKeyReleased
+        tableHelper.searchTable(vendorMenuTbl, searchVendorMenuTxtField.getText(), new int[] {1});
+    }//GEN-LAST:event_searchVendorMenuTxtFieldKeyReleased
+    
+    private void showCreditTopUpReceipt(Transaction transaction) {
+        // Get the user's name
+        String userName = userDao.getUserById(transaction.getUserId()).getName();
+
+        // Create the receipt content
+        String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: %s",
+                                              userName, transaction.getAmount(), 
+                                              transaction.getTransactionOn(), 
+                                              transaction.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")),
+                                              transaction.getRemarks());
+
+        // Show the receipt in a popup
+        JTextArea textArea = new JTextArea(receiptContent);
+        textArea.setEditable(false);
+
+        // Set a monospaced font and increase the font size
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+        // Set the text area background and foreground colors
+        textArea.setBackground(new Color(240, 240, 240)); // Light gray background
+        textArea.setForeground(Color.BLACK); // Black text
+
+        // Add padding to the text area
+        textArea.setBorder(BorderFactory.createCompoundBorder(
+            textArea.getBorder(), 
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        // Enable line wrapping and wrap by words
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(350, 150));
+        JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void transactionsTblMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_transactionsTblMousePressed
+
+        int selectedRow = transactionsTbl.getSelectedRow();
+        
+        int loggedInUserId = 1;
+        
+        if (selectedRow != -1) {
+            String receiptText = (String) transactionsTbl.getValueAt(selectedRow, 4);
+            if ("Top Up Receipt Available to View".equals(receiptText)) {
+                double amount = Double.parseDouble(((String) transactionsTbl.getValueAt(selectedRow, 0)).replace("RM ", ""));
+                LocalDate date = (LocalDate) transactionsTbl.getValueAt(selectedRow, 1);
+                LocalTime time = LocalTime.parse((String) transactionsTbl.getValueAt(selectedRow, 2), DateTimeFormatter.ofPattern("HH:mm a"));
+
+                // Find the matching transaction
+                Transaction transaction = transactionService.getTransactions().stream()
+                    .filter(t -> t.getUserId() == loggedInUserId && t.getAmount() == amount && 
+                                 t.getTransactionOn().equals(date) && t.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")).equals(time.format(DateTimeFormatter.ofPattern("HH:mm a"))))
+                    .findFirst()
+                    .orElse(null);
+
+                if (transaction != null) {
+                    showCreditTopUpReceipt(transaction);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Transaction not found.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_transactionsTblMousePressed
+
+    private void markAllAsReadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_markAllAsReadBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_markAllAsReadBtnActionPerformed
+
+    private void searchNotificationTxtFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchNotificationTxtFieldKeyReleased
+        tableHelper.searchTable(notificationsTbl, searchNotificationTxtField.getText(), new int[] { 1, 2 });
+    }//GEN-LAST:event_searchNotificationTxtFieldKeyReleased
+
+    private void subscribeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscribeBtnActionPerformed
+
+        int loggedInUserId = 1;
+
+        // Use the service layer to check for active subscription
+        if (subscriptionService.isUserSubscribed(loggedInUserId)) {
+            JOptionPane.showMessageDialog(this, "You already have an active subscription.", "Subscription", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Add the subscription for the user
+            subscriptionService.addSubscription(loggedInUserId);
+
+            // Update user's credit balance display
+            updateCreditBalanceDisplay();
+
+            JOptionPane.showMessageDialog(this, "Subscription successful. Enjoy your benefits!", "Subscription", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_subscribeBtnActionPerformed
+
+    private List<Map<String, String>> fetchVendorReviews(String vendorName) {
+        List<Review> reviews = reviewService.getCustomerReviewsForVendor(vendorName);
+        List<Map<String, String>> processedReviews = new ArrayList<>();
+
+        for (Review review : reviews) {
+            String customerId = userDao.getUserId(String.valueOf(review.getOrderId()), vendorName);
+            String customerName = userDao.getUserById(Integer.parseInt(customerId)).getName();
+
+            Map<String, String> reviewData = new HashMap<>();
+            reviewData.put("customerName", customerName);
+            reviewData.put("feedback", review.getFeedback());
+            reviewData.put("rating", review.getRating() + " Stars");
+
+            processedReviews.add(reviewData);
+        }
+
+        return processedReviews;
+    }
+    
+    private void populateVendorReviewsTable(String vendorName) {
+        List<Map<String, String>> reviews = fetchVendorReviews(vendorName);
+
+        Function<Map<String, String>, Object[]> rowMapper = review -> 
+            new Object[]{ review.get("customerName"), review.get("feedback"), review.get("rating") };
+
+        tableHelper.populateTable(reviews, reviewsTbl, rowMapper);
+        tableHelper.centerTableValues(reviewsTbl);
+    }
+    
+    private String getFormattedVendorReviews(String vendorName) {
+        List<Map<String, String>> reviews = fetchVendorReviews(vendorName);
+        StringBuilder formattedReviews = new StringBuilder();
+
+        for (Map<String, String> review : reviews) {
+            formattedReviews.append(review.get("customerName"))
+                            .append(" - ")
+                            .append(review.get("rating"))
+                            .append(": ")
+                            .append(review.get("feedback"))
+                            .append("\n\n");
+        }
+
+        return formattedReviews.toString();
+    }
+    
+    private void viewReviewsBtnFromVendorPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewReviewsBtnFromVendorPanelMousePressed
+        
+        int selectedRow = vendorsTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            selectedVendorName = vendorsTable.getValueAt(selectedRow, 1).toString();
+            populateVendorReviewsTable(selectedVendorName);
+            guiHelper.panelSwitcher(viewReviewsBtnFromVendorPanel, contentPanel, "vendorReviewsPanel");
+            setTitle(selectedVendorName + " Reviews - APFood");
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a vendor to view customer reviews of this vendor.");
+        }
+    }//GEN-LAST:event_viewReviewsBtnFromVendorPanelMousePressed
+
+    private void viewReviewsFromMenuBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewReviewsFromMenuBtnMousePressed
+        String reviews = getFormattedVendorReviews(selectedVendorName);
+        JTextArea textArea = new JTextArea(reviews);
+        textArea.setEditable(false);
+
+        // Set a soft background color and customize font
+        textArea.setBackground(new Color(245, 245, 220)); // Soft cream color
+        textArea.setFont(new Font("Serif", Font.PLAIN, 14));
+        textArea.setForeground(Color.DARK_GRAY); // Dark gray text for readability
+        textArea.setWrapStyleWord(true);
+        textArea.setLineWrap(true);
+        textArea.setMargin(new Insets(5, 5, 5, 5)); // Add some padding
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(350, 150));
+        scrollPane.getViewport().setBackground(textArea.getBackground()); // Match the color of the viewport to the JTextArea
+
+        JOptionPane.showMessageDialog(this, scrollPane, selectedVendorName + " Reviews", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_viewReviewsFromMenuBtnMousePressed
     
     private void updateVendorMenuUIElements() {
         itemQtyLabel.setText(String.valueOf(menuItemQuantity));
@@ -1691,6 +3040,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addToCartBtn;
+    private javax.swing.JLabel apfoodTxtLabel;
     private javax.swing.JButton browseMenuBtn;
     private javax.swing.JButton cafeteriaSidebarBtn;
     private javax.swing.JButton clearCartBtn;
@@ -1700,17 +3050,19 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JPanel costSummaryWithDeliveryAndDiscountPanel;
     private javax.swing.JPanel costSummaryWithDeliveryPanel;
     private javax.swing.JPanel costSummaryWithDiscountPanel;
-    private javax.swing.JPanel creditBalancePanel;
     private javax.swing.JButton decreaseItemQtyBtn;
     private javax.swing.JComboBox<String> deliveryLocationsComboBox;
     private javax.swing.JPanel financePanel;
     private javax.swing.JButton financeSidebarBtn;
+    private javax.swing.JButton historyBtn;
+    private javax.swing.JPanel historyContentPanel;
+    private javax.swing.JPanel historyPanel;
+    private javax.swing.JPanel homeContentPanel;
     private javax.swing.JPanel homePanel;
     private javax.swing.JButton homeSidebarBtn;
     private javax.swing.JButton increaseItemQtyBtn;
     private javax.swing.JLabel itemQtyLabel;
     private javax.swing.JTextArea itemRemarksTxtArea;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1742,18 +3094,22 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
@@ -1761,53 +3117,86 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
+    private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
+    private javax.swing.JPanel jPanel23;
+    private javax.swing.JPanel jPanel24;
     private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
     private javax.swing.JPanel jPanel28;
+    private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel30;
     private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel32;
     private javax.swing.JPanel jPanel33;
     private javax.swing.JPanel jPanel34;
+    private javax.swing.JPanel jPanel35;
+    private javax.swing.JPanel jPanel36;
     private javax.swing.JPanel jPanel37;
+    private javax.swing.JPanel jPanel38;
+    private javax.swing.JPanel jPanel39;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel40;
+    private javax.swing.JPanel jPanel41;
+    private javax.swing.JPanel jPanel42;
+    private javax.swing.JPanel jPanel43;
+    private javax.swing.JPanel jPanel44;
+    private javax.swing.JPanel jPanel45;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JTable jTable1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton markAllAsReadBtn;
-    private javax.swing.JButton markAsReadBtn;
     private javax.swing.JPanel notificationsPanel;
     private javax.swing.JButton notificationsSidebarBtn;
     private javax.swing.JTable notificationsTbl;
     private javax.swing.JTable orderCartTbl;
+    private javax.swing.JButton orderHistoryBackBtn;
+    private javax.swing.JTable orderHistoryTbl;
     private javax.swing.JComboBox<String> orderModesComboBox;
     private javax.swing.JPanel orderSummaryPanel;
     private javax.swing.JButton placeOrderBtn;
+    private javax.swing.JButton quickVendorSelecctionBtn;
     private javax.swing.JButton refreshNotificationBtn;
+    private javax.swing.JButton reorderBtn;
+    private javax.swing.JTable reviewsTbl;
     private javax.swing.JTextField searchNotificationTxtField;
     private javax.swing.JTextField searchVendorMenuTxtField;
     private javax.swing.JPanel sidePanel;
+    private javax.swing.JButton subscribeBtn;
+    private javax.swing.JLabel subscriptionStatusLabel;
+    private javax.swing.JLabel subscriptionValidityLabel;
+    private javax.swing.JPanel subscriptionValidityPanel;
+    private javax.swing.JPanel subscriptionsPanel;
+    private javax.swing.JButton subscriptionsSidebarBtn;
     private javax.swing.JPanel topBarPanel;
     private javax.swing.JPanel topUpPanel;
+    private javax.swing.JTable transactionsTbl;
     private javax.swing.JButton updateCartBtn;
+    private javax.swing.JLabel userCreditBalanceLabel1;
+    private javax.swing.JLabel userCreditBalanceLabel2;
     private javax.swing.JPanel vendorMenuPanel;
     private javax.swing.JTable vendorMenuTbl;
     private javax.swing.JLabel vendorNameLabel;
+    private javax.swing.JPanel vendorReviewsPanel;
     private javax.swing.JPanel vendorsPanel;
     private javax.swing.JTable vendorsTable;
+    private javax.swing.JButton viewPastOrderDetailsBtn;
     private javax.swing.JButton viewReviewsBtnFromVendorPanel;
     private javax.swing.JButton viewReviewsFromMenuBtn;
     // End of variables declaration//GEN-END:variables

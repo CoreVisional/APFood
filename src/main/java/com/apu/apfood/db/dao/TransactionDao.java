@@ -1,6 +1,6 @@
 package com.apu.apfood.db.dao;
 
-import com.apu.apfood.db.models.User;
+import com.apu.apfood.db.models.Transaction;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,32 +8,49 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Bryan
  */
-public class TransactionDao extends APFoodDao<User> {
+public class TransactionDao extends APFoodDao<Transaction> {
 
-    private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\Transactions.txt";
+    private static final String TRANSACTION_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Transactions.txt";
     private static final String HEADERS = "id| userId| amount| date| time| remark\n";
 
     public TransactionDao() {
-        super(USER_FILEPATH, HEADERS);
+        super(TRANSACTION_FILEPATH, HEADERS);
+    }
+    
+    public List<Transaction> getAllTransactions() {
+        List<String[]> rawData = super.getAll();
+        return rawData.stream()
+                      .map(this::deserialize)
+                      .collect(Collectors.toList());
     }
 
     @Override
-    protected String serialize(User user) {
-        return user.getName() + "| " + user.getEmail() + "| " + new String(user.getPassword()) + user.getRole() + "\n";
+    protected String serialize(Transaction transaction) {
+        return "";
     }
     
     @Override
-    protected User deserialize(String[] data) {
-        return null;
+    protected Transaction deserialize(String[] data) {
+        int id = Integer.parseInt(data[0].trim());
+        int userId = Integer.parseInt(data[1].trim());
+        double amount = Double.parseDouble(data[2].trim());
+        LocalDate transactionDate = LocalDate.parse(data[3].trim());
+        LocalTime transactionTime = LocalTime.parse(data[4].trim());
+        String remarks = data[5].trim();
+        
+        return new Transaction(id, userId, amount, transactionDate, transactionTime, remarks);
     }
 
     @Override
-    public void update(User user) {
+    public void update(Transaction transaction) {
+
     }
 
     public void writeTransaction(String userId, String amount, String remark) {
@@ -58,7 +75,7 @@ public class TransactionDao extends APFoodDao<User> {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(totalAmount);
@@ -82,14 +99,9 @@ public class TransactionDao extends APFoodDao<User> {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
 
         return totalDiscountAmount;
-    }
-
-    public static void main(String[] args) {
-        TransactionDao td = new TransactionDao();
-        System.out.println(td.calculateAmountSaved("2"));
     }
 }

@@ -9,16 +9,20 @@ import com.apu.apfood.exceptions.CustomValidationException;
 
 /**
  *
- * @author Alex
+ * @author Bryan
  */
 public class UserService {
 
-    private final UserDao userDao = new UserDao();
+    private UserDao userDao = new UserDao();
     private final RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
     private final TransactionDao transactionDao = new TransactionDao();
     private final NotificationDao notificationDao = new NotificationDao();
 
     public UserService() {
+    }
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     public void addUser(User user) {
@@ -43,11 +47,11 @@ public class UserService {
     public Object[][] getAllVendorNames() {
         return userDao.getAllVendor();
     }
-    
+
     public void removeUser(String id) {
         userDao.removeUserById(id);
     }
-    
+
     public void updateUser(String inputUserId, String inputUserName, String inputUserEmail, String userInputPassword) {
         userDao.modifyUser(inputUserId, inputUserName, inputUserEmail, userInputPassword);
     }
@@ -120,5 +124,10 @@ public class UserService {
                 System.out.println(row);
             }
         }
+    }
+
+    public boolean isCustomer(int userId) {
+        User user = userDao.getUserById(userId);
+        return user != null && "customer".equalsIgnoreCase(user.getRole());
     }
 }

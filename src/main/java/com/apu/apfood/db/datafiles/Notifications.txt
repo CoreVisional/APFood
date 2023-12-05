@@ -18,8 +18,6 @@ id| userId| content| status| type
 17| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
 18| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
 19| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
-20| | Delivery completed [order id: jLabel24, vendor name: jLabel24]| Unnotified| Informational
-21| | Delivery completed [order id: jLabel24, vendor name: jLabel24]| Unnotified| Informational
 22| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
 23| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
 24| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
