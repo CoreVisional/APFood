@@ -23,4 +23,9 @@ public class UserService {
         // Remove leading and trailing white spaces
         return email.trim().toLowerCase();
     }
+    
+    public boolean isCustomer(int userId) {
+        User user = userDao.getUserById(userId);
+        return user != null && "customer".equalsIgnoreCase(user.getRole());
+    }
 }
