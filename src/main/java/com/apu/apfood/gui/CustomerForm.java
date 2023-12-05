@@ -134,7 +134,7 @@ public class CustomerForm extends javax.swing.JFrame {
     
     public void updateCreditBalanceDisplay() {
         int loggedInUserId = 1; // For demo purposes
-        String balance = transactionDao.getTotalBalance(String.valueOf(loggedInUserId));
+        String balance = transactionService.getTotalBalance(String.valueOf(loggedInUserId));
         userCreditBalanceLabel1.setText("RM " + balance);
         userCreditBalanceLabel2.setText("RM " + balance);
     }
