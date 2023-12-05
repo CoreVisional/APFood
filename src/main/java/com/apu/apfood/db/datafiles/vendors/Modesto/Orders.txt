@@ -1,6 +1,6 @@
-id| orderId| customerId| menuId| quantity| date| time| remarks| mode| orderStatus| hasDiscount| deliveryLocation
+id| orderId| userId| menuId| quantity| orderDate| orderTime| remarks| mode| orderStatus| hasDiscount| deliveryLocation
 1| 1| 1| 1| 1| 2022-11-22| 10:07:35.357908| hi| Delivery| Accepted| no| Block A
 2| 1| 1| 2| 3| 2022-11-22| 10:07:35.357908| hi| Delivery| Accepted| no| Block A
-3| 2| 2| 1| 6| 2023-11-19| 10:07:35.357908| hi| Delivery| Accepted| no| Block E
-4| 2| 2| 2| 2| 2023-11-19| 10:07:35.357908| hi| Delivery| Accepted| no| Block E
-5| 2| 2| 3| 3| 2023-11-19| 10:07:35.357908| hi| Delivery| Pending| no| Block B
+3| 2| 2| 1| 6| 2023-11-19| 10:07:35.357908| hi| Takeaway| Accepted| no| Block E
+4| 2| 2| 1| 6| 2023-11-19| 10:07:35.357908| hi| Takeaway| Accepted| no| Block E
+5| 2| 2| 1| 6| 2023-11-19| 10:07:35.357908| hi| Takeaway| Accepted| no| Block E
