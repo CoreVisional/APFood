@@ -3,7 +3,6 @@ package com.apu.apfood.db.models;
 import com.apu.apfood.db.enums.NotificationStatus;
 import com.apu.apfood.db.enums.NotificationType;
 import com.apu.apfood.db.models.common.BaseModel;
-import java.time.LocalDateTime;
 
 /**
  *
@@ -12,20 +11,19 @@ import java.time.LocalDateTime;
 public class Notification extends BaseModel {
     private int userId;
     private String content;
-    private NotificationType notificationType;
     private NotificationStatus notificationStatus = NotificationStatus.UNNOTIFIED;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private NotificationType notificationType;
     
     public Notification() {
         
     }
 
-    public Notification(int id, int userId, String content, NotificationType notificationType, NotificationStatus notificationStatus) {
+    public Notification(int id, int userId, String content, NotificationStatus notificationStatus, NotificationType notificationType) {
         setId(id); 
         this.userId = userId;
         this.content = content;
-        this.notificationType = notificationType;
         this.notificationStatus = notificationStatus;
+        this.notificationType = notificationType;
     }
 
     public int getUserId() {
@@ -58,13 +56,5 @@ public class Notification extends BaseModel {
 
     public void setNotificationStatus(NotificationStatus notificationStatus) {
         this.notificationStatus = notificationStatus;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
