@@ -1,2 +1,0 @@
-id| orderId| feedback| rating
-1| 1| Yummy but got food poisoning!| 2

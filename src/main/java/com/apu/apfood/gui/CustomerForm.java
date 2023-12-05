@@ -2627,8 +2627,8 @@ public class CustomerForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, scrollPane, "Order Receipt", JOptionPane.INFORMATION_MESSAGE);
     }
     
-    private void saveReview(int orderId, String feedback, int rating, String vendorName) {
-        Review review = new Review(orderId, feedback, rating);
+    private void saveReview(String feedback, int rating, int orderId, String vendorName) {
+        Review review = new Review(feedback, rating, orderId);
         reviewService.addReview(review, vendorName);
     }
     
@@ -2665,7 +2665,7 @@ public class CustomerForm extends javax.swing.JFrame {
         if (result == JOptionPane.OK_OPTION) {
             String feedback = feedbackTextArea.getText();
             int rating = Integer.parseInt((String) ratingComboBox.getSelectedItem());
-            saveReview(orderId, feedback, rating, vendorName);
+            saveReview(feedback, rating, orderId, vendorName);
         }
     }
     

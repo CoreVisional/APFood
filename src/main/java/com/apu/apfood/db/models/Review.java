@@ -9,30 +9,22 @@ import com.apu.apfood.db.models.common.BaseModel;
 public class Review extends BaseModel {
     
     private String feedback;
-    private int orderId, rating;
+    private int rating, orderId;
     
     public Review() {
         
     }
     
-    public Review(int orderId, String feedback, int rating) {
-        this.orderId = orderId;
+    public Review(String feedback, int rating, int orderId) {
         this.feedback = feedback;
         this.rating = rating;
+        this.orderId = orderId;
     }
     
-    public Review(int id, int orderId, String feedback, int rating) {
+    public Review(int id, String feedback, int rating, int orderId) {
         setId(id);
-        this.orderId = orderId;
         this.feedback = feedback;
         this.rating = rating;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
 
@@ -50,5 +42,13 @@ public class Review extends BaseModel {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+    
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 }
