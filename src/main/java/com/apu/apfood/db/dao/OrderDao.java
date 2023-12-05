@@ -93,7 +93,6 @@ public class OrderDao extends APFoodDao<Order> {
     
     @Override
     protected Order deserialize(String[] data) {
-        int id = Integer.parseInt(data[0].trim());
         int orderId = Integer.parseInt(data[1].trim());
         int userId = Integer.parseInt(data[2].trim());
         int menuId = Integer.parseInt(data[3].trim());
@@ -103,10 +102,10 @@ public class OrderDao extends APFoodDao<Order> {
         String remarks = data[7].trim();
         String orderMode = data[8].trim();
         OrderStatus orderStatus = OrderStatus.valueOf(data[9].trim().toUpperCase());
-        String hasDiscount = data[10].trim();
+        String hasDiscount = data[10].trim();      
         String deliveryLocation = data[11].trim();
 
-        return new Order(id, orderId, userId, menuId, quantity, orderDate, orderTime, remarks, orderMode, orderStatus, deliveryLocation, hasDiscount);
+        return new Order(orderId, userId, menuId, quantity, orderDate, orderTime, remarks, orderMode, orderStatus, deliveryLocation, hasDiscount);
     }
     
     @Override
