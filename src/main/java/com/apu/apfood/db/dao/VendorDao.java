@@ -23,6 +23,13 @@ public class VendorDao extends APFoodDao<Vendor> {
                       .collect(Collectors.toList());
     }
     
+    public Vendor getVendorByUserId(int userId) {
+        return getAllVendors().stream()
+            .filter(vendor -> vendor.getUserId() == userId)
+            .findFirst()
+            .orElse(null);
+    }
+    
     @Override
     protected String serialize(Vendor vendor) {
         return "";
