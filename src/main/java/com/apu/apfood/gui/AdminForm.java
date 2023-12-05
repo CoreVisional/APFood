@@ -2,7 +2,7 @@ package com.apu.apfood.gui;
 
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.exceptions.CustomValidationException;
-import com.apu.apfood.gui.auth.LoginForm;
+import com.apu.apfood.gui.auth.AuthenticationManager;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
@@ -12,7 +12,6 @@ import java.awt.Color;
 import javax.swing.JComboBox;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.time.format.DateTimeFormatter;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -32,6 +31,7 @@ public class AdminForm extends javax.swing.JFrame {
     private final ImageHelper imageHelper = new ImageHelper();
     private final GUIHelper guiHelper = new GUIHelper();
     private final TableHelper tableHelper = new TableHelper();
+    private final AuthenticationManager authManager = new AuthenticationManager();
 
     /**
      * Creates new form VendorFrame
@@ -1403,7 +1403,7 @@ public class AdminForm extends javax.swing.JFrame {
     }//GEN-LAST:event_runnerAvailabilityJTableMouseClicked
 
     private void adminLogoutJButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminLogoutJButton2ActionPerformed
-        // replace with auth manager
+        authManager.logout(this);
     }//GEN-LAST:event_adminLogoutJButton2ActionPerformed
 
     private void manageUsersNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageUsersNavBtnActionPerformed
