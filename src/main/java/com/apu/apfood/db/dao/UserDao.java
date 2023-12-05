@@ -17,6 +17,10 @@ public class UserDao extends APFoodDao<User> {
     public UserDao() {
         super(USER_FILEPATH, HEADERS);
     }
+    
+    public User getUserById(int id) {
+        return getById(id);
+    }
 
     @Override
     protected String serialize(User user) {
@@ -25,7 +29,13 @@ public class UserDao extends APFoodDao<User> {
 
     @Override
     protected User deserialize(String[] data) {
-        return null;
+        int id = Integer.parseInt(data[0].trim());
+        String name = data[2].trim();
+        String email = data[3].trim();
+        char[] password = data[4].trim().toCharArray();
+        String role = data[5].trim();
+
+        return new User(id, name, email, password, role);
     }
 
     @Override
