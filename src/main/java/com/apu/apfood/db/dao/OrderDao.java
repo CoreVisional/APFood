@@ -1,8 +1,14 @@
 package com.apu.apfood.db.dao;
 
+import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Order;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -25,17 +31,48 @@ public class OrderDao extends APFoodDao<Order> {
         this.filePath = getFullPath(ORDER_FILEPATH + vendorName + "/Orders.txt");
     }
 
-    public void addOrders(List<Order> orders) {
+    public void addOrders(List<Order> orders, String vendorName) {
         if (orders == null || orders.isEmpty()) {
             return;
         }
 
-        // Generate unique orderId once for the entire batch
-        int uniqueOrderId = generateUniqueOrderId();
+        int uniqueOrderId = generateUniqueOrderId(vendorName);
 
         for (Order order : orders) {
-            order.setOrderId(uniqueOrderId); // Set the shared unique orderId for each order
-            super.add(order); // Call the base class add method for each order
+            order.setOrderId(uniqueOrderId);
+            super.add(order);
+        }
+    }
+    
+    public List<Order> getUserOrders(int userId, List<OrderStatus> statuses) {
+        File vendorsDir = new File(BASE_PATH + "/src/main/java/com/apu/apfood/db/datafiles/vendors/");
+        return Arrays.stream(vendorsDir.listFiles())
+                .filter(File::isDirectory)
+                .flatMap(vendorFolder -> processVendorFolder(vendorFolder, userId, statuses).stream())
+                .collect(Collectors.toList());
+    }
+
+    private List<Order> processVendorFolder(File vendorFolder, int userId, List<OrderStatus> statuses) {
+        updateFilePath(vendorFolder.getName());
+        return super.getAll().stream()
+                .map(this::deserialize)
+                .filter(order -> order != null && order.getUserId() == userId && statuses.contains(order.getOrderStatus()))
+                .peek(order -> order.setVendorName(vendorFolder.getName()))
+                .collect(Collectors.toList());
+    }
+    
+    public void updateOrderMode(int orderId, String newMode, String vendorName) {
+        // Update the file path to point to the specific vendor's Orders.txt
+        updateFilePath(vendorName);
+
+        List<Order> orders = getAllOrders();
+
+        for (Order order : orders) {
+            if (order.getOrderId() == orderId) {
+                order.setMode(newMode);
+                update(order);
+                break;
+            }
         }
     }
     
@@ -56,46 +93,87 @@ public class OrderDao extends APFoodDao<Order> {
     
     @Override
     protected Order deserialize(String[] data) {
-        return null;
+        int id = Integer.parseInt(data[0].trim());
+        int orderId = Integer.parseInt(data[1].trim());
+        int userId = Integer.parseInt(data[2].trim());
+        int menuId = Integer.parseInt(data[3].trim());
+        int quantity = Integer.parseInt(data[4].trim());
+        LocalDate orderDate = LocalDate.parse(data[5].trim());
+        LocalTime orderTime = LocalTime.parse(data[6].trim());
+        String remarks = data[7].trim();
+        String orderMode = data[8].trim();
+        OrderStatus orderStatus = OrderStatus.valueOf(data[9].trim().toUpperCase());
+        String hasDiscount = data[10].trim();
+        String deliveryLocation = data[11].trim();
+
+        return new Order(id, orderId, userId, menuId, quantity, orderDate, orderTime, remarks, orderMode, orderStatus, deliveryLocation, hasDiscount);
     }
     
     @Override
-    public void update(Order order) {
-        
+    public void update(Order orderToUpdate) {
+        List<Order> orders = getAllOrders();
+        List<String> serializedOrders = new ArrayList<>();
+        String serializedUpdateOrder = serialize(orderToUpdate);
+
+        for (Order order : orders) {
+            StringBuilder serializedOrderBuilder = new StringBuilder();
+            serializedOrderBuilder.append(order.getId()).append("| ");
+
+            if (order.getOrderId() == orderToUpdate.getOrderId()) {
+                serializedOrderBuilder.append(serializedUpdateOrder);
+            } else {
+                serializedOrderBuilder.append(serialize(order));
+            }
+
+            serializedOrders.add(serializedOrderBuilder.toString());
+        }
+
+        fileHelper.updateFile(filePath, HEADERS, serializedOrders);
     }
     
-    private int generateUniqueOrderId() {
+    private int generateUniqueOrderId(String vendorName) {
         int maxOrderId = 0;
-        File parentDir = new File(filePath).getParentFile().getParentFile();
 
-        File[] vendorDirs = parentDir.listFiles();
-        
-        if (vendorDirs == null) return 1; // If no directories are found, start with 1
+        // Define the path to the specific vendor's order file
+        File orderFile = new File(getFullPath(ORDER_FILEPATH + vendorName + "/Orders.txt"));
 
-        for (File vendorDir : vendorDirs) {
-            if (!vendorDir.isDirectory()) continue;
+        // Check if the order file exists
+        if (!orderFile.exists()) {
+            return 1; // If file doesn't exist, start with 1
+        }
 
-            File orderFile = new File(vendorDir, "OrdersTest.txt");
-            if (!orderFile.exists()) continue;
+        try {
+            List<String[]> orders = fileHelper.readFile(orderFile.getPath());
 
-            try {
-                List<String[]> orders = fileHelper.readFile(orderFile.getPath());
-                
-                for (String[] order : orders) {
-                    if (order.length > 1) {
-                        try {
-                            int orderId = Integer.parseInt(order[1].trim());
-                            maxOrderId = Math.max(maxOrderId, orderId);
-                        } catch (NumberFormatException e) {
-                            System.err.println(e.getMessage());
-                        }
-                    }
+            for (int i = 1; i < orders.size(); i++) {
+                String[] order = orders.get(i);
+                try {
+                    int orderId = Integer.parseInt(order[1].trim());
+                    maxOrderId = Math.max(maxOrderId, orderId);
+                } catch (NumberFormatException e) {
+                    System.err.println("Error parsing order ID: " + e.getMessage());
                 }
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
             }
+        } catch (Exception e) {
+            System.err.println("Error reading order file for " + vendorName + ": " + e.getMessage());
         }
 
         return maxOrderId + 1;
+    }
+    
+    public List<Order> getAllOrders() {
+        List<Order> rawData = super.getAll().stream()
+                                   .map(this::deserialize)
+                                   .collect(Collectors.toList());
+        
+        return rawData;
+    }
+
+    public List<Order> getByOrderIdAndVendorName(int orderId, String vendorName) {
+        updateFilePath(vendorName);
+        return getAll().stream()
+                       .map(this::deserialize)
+                       .filter(order -> order.getOrderId() == orderId)
+                       .collect(Collectors.toList());
     }
 }
