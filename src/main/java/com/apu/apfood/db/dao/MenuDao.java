@@ -46,5 +46,14 @@ public class MenuDao extends APFoodDao<Menu> {
     @Override
     public void update(Menu menu) {
         
-    }   
+    }
+    
+    public Menu getMenuById(int id, String vendorName) {
+        this.filePath = getFullPath(MENU_FILEPATH + vendorName + "/Menu.txt");
+        return getAll().stream()
+                       .map(this::deserialize)
+                       .filter(menu -> menu.getId() == id)
+                       .findFirst()
+                       .orElse(null); // Return null if not found
+    }
 }
