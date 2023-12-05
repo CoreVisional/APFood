@@ -182,10 +182,12 @@ public class AdminForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
+        homeNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         homeNavBtn.setText("Home");
         jPanel3.add(homeNavBtn);
 
+        registrationNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         registrationNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         registrationNavBtn.setText("Register User");
         registrationNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -197,6 +199,7 @@ public class AdminForm extends javax.swing.JFrame {
         });
         jPanel3.add(registrationNavBtn);
 
+        topUpCreditNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         topUpCreditNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         topUpCreditNavBtn.setText("Top Up Credit");
         topUpCreditNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -208,6 +211,7 @@ public class AdminForm extends javax.swing.JFrame {
         });
         jPanel3.add(topUpCreditNavBtn);
 
+        manageUsersNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         manageUsersNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         manageUsersNavBtn.setText("Manage Users");
         manageUsersNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -1432,7 +1436,7 @@ public class AdminForm extends javax.swing.JFrame {
         String password = manageUserPasswordTextField.getText();
 
         if (userId.isEmpty() || userName.isEmpty() || email.isEmpty()|| password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select a row!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -1451,7 +1455,7 @@ public class AdminForm extends javax.swing.JFrame {
         String userId = manageUserIdTextField.getText();
 
         if (userId.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select a row!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         userService.removeUser(userId);

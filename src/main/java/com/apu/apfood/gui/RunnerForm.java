@@ -187,6 +187,7 @@ public class RunnerForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
+        homeNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         homeNavBtn.setText("Home");
         homeNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -198,6 +199,7 @@ public class RunnerForm extends javax.swing.JFrame {
         });
         jPanel3.add(homeNavBtn);
 
+        deliveryHistoryNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         deliveryHistoryNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         deliveryHistoryNavBtn.setText("Delivery History");
         deliveryHistoryNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -209,6 +211,7 @@ public class RunnerForm extends javax.swing.JFrame {
         });
         jPanel3.add(deliveryHistoryNavBtn);
 
+        revenueNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         revenueNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         revenueNavBtn.setText("Revenue");
         revenueNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
