@@ -110,6 +110,8 @@ public class CustomerForm extends javax.swing.JFrame {
     public CustomerForm() {
         initComponents();
         initCustomComponents();
+        
+        
     }
 
     private void initCustomComponents () {

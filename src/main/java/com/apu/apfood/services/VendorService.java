@@ -46,6 +46,7 @@ import javax.swing.table.TableColumn;
  * @author Maxwell
  */
 public class VendorService {
+
     private User vendor;
     private UserDao userDao = new UserDao();
     private NotificationDao notificationDao = new NotificationDao();
@@ -55,57 +56,52 @@ public class VendorService {
     private FeedbackDao feedbackDao = new FeedbackDao();
     private TransactionDao transactionDao = new TransactionDao();
     private RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
-    private RunnerAvailabilityDao runnerAvailabilityDao= new RunnerAvailabilityDao();
+    private RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
     private String vendorName;
     private final Map<String, Integer> menuItemIdMap = new HashMap<>();
     private Map<Integer, OrderDetails> ordersMap = new HashMap<>();
-    
+
     // Instantiate helpers classes
-    ImageHelper imageHelper = new ImageHelper();
-    GUIHelper guiHelper = new GUIHelper();
     TableHelper tableHelper = new TableHelper();
-    
+
     public VendorService(User vendor) {
         this.vendor = vendor;
         this.vendorName = vendorDao.getVendorName(vendor.getId());
     }
-    
+
     public VendorService() {
-        
+
     }
-    
+
     public VendorService(VendorDao vendorDao, MenuDao menuDao) {
         this.vendorDao = vendorDao;
         this.menuDao = menuDao;
-        this.vendorName = vendorDao.getVendorName(vendor.getId());
     }
-    
+
     public List<String> getDistinctVendorNames() {
         List<Vendor> allVendors = vendorDao.getAllVendors();
 
         Set<String> vendorNames = allVendors.stream()
-                                                  .map(Vendor::getVendorName)
-                                                  .collect(Collectors.toSet());
+                .map(Vendor::getVendorName)
+                .collect(Collectors.toSet());
 
         return new ArrayList<>(vendorNames);
     }
-    
-    public String getVendorName()
-    {
+
+    public String getVendorName() {
         String vendorName = vendorDao.getVendorName(vendor.getId());
         return vendorName;
     }
-    
+
     public List<Menu> getVendorMenuItems(String vendorName) {
         return menuDao.getAllMenuItems(vendorName);
     }
-    
-    public List<Order> getVendorOrderList (String vendorName)
-    {
+
+    public List<Order> getVendorOrderList(String vendorName) {
         return orderDao.getOrderListfromVendor(vendorName);
     }
-    
-     public List<Menu> convertJTableToMenuList(JTable table) {
+
+    public List<Menu> convertJTableToMenuList(JTable table) {
         List<Menu> menuList = new ArrayList<>();
 
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -124,12 +120,11 @@ public class VendorService {
 
         return menuList;
     }
-    
-    public void updateMenuItems (String vendorName, List<Menu> menus)
-    {
+
+    public void updateMenuItems(String vendorName, List<Menu> menus) {
         menuDao.updateMenuItems(vendorName, menus);
     }
-    
+
     public Map<Integer, OrderDetails> cleanOrderList(List<Order> orderList) {
         Map<Integer, OrderDetails> orderMap = new HashMap<>();
 
@@ -167,20 +162,19 @@ public class VendorService {
 
         Function<Menu, Object[]> rowMapper = menu -> {
             menuItemIdMap.put(menu.getMenuName(), menu.getId());
-            return new Object[] { menu.getMenuName(), menu.getMenuType(), menu.getPrice() };
+            return new Object[]{menu.getMenuName(), menu.getMenuType(), menu.getPrice()};
         };
-        
+
         tableHelper.populateTable(menuItems, menuTable, rowMapper, true);
         tableHelper.SetupTableSorter(menuTable);
         String[] types = {"food", "drink"};
         JComboBox combo = new JComboBox<String>(types);
         TableColumn col = menuTable.getColumnModel().getColumn(2);
         col.setCellEditor(new DefaultCellEditor(combo));
-        
+
     }
-    
-    public void populateOrderTable(JTable ordersTable, OrderStatus orderStatus)
-    {
+
+    public void populateOrderTable(JTable ordersTable, OrderStatus orderStatus) {
         RefreshOrderMap(orderStatus);
         Function<OrderDetails, Object[]> rowMapper = OrderDetails -> {
             return new Object[]{
@@ -194,17 +188,15 @@ public class VendorService {
                 OrderDetails.getMode()
             };
         };
-        
 
         tableHelper.populateTable(new ArrayList<>(ordersMap.values()), ordersTable, rowMapper, false);
         tableHelper.SetupTableSorter(ordersTable);
         int[] scalableColumns = {2, 3, 4};
         tableHelper.adjustColumnsToScalable(scalableColumns, ordersTable);
-        
+
     }
-    
-    public void populateOrderHistoryTable(JTable orderHistoryTable)
-    {
+
+    public void populateOrderHistoryTable(JTable orderHistoryTable) {
         RefreshOrderMap(OrderStatus.ACCEPTED);
         Function<OrderDetails, Object[]> rowMapper = OrderDetails -> {
             int orderId = Integer.parseInt(OrderDetails.getOrderId());
@@ -226,24 +218,21 @@ public class VendorService {
         tableHelper.SetupTableSorter(orderHistoryTable);
         int[] scalableColumns = {2, 3, 4};
         tableHelper.adjustColumnsToScalable(scalableColumns, orderHistoryTable);
-        
+
     }
-    
-    public void populateRevenueDashboard(JLabel year, JLabel month, JLabel day, JTable revenueTable)
-    {
+
+    public void populateRevenueDashboard(JLabel year, JLabel month, JLabel day, JTable revenueTable) {
         RefreshOrderMap(OrderStatus.ACCEPTED);
         Double yearRevenue = 0.0;
         Double monthRevenue = 0.0;
         Double dayRevenue = 0.0;
         // Define the date format expected in the string
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        
-        
-        for (OrderDetails orderDetail : ordersMap.values())
-        {
+
+        for (OrderDetails orderDetail : ordersMap.values()) {
             LocalDate orderDate = LocalDate.parse(orderDetail.getOrderDate(), dateFormatter);
             LocalDate currentDate = LocalDate.now();
-            
+
             // Check if the date and time is under a year ago
             if (orderDate.getYear() == currentDate.getYear()) {
                 yearRevenue += getRevenueFromOrderDetails(orderDetail);
@@ -259,26 +248,22 @@ public class VendorService {
                 dayRevenue += getRevenueFromOrderDetails(orderDetail);
             }
         }
-        
+
         //Set the revenue labels' text accordingly 
-        year.setText(String.format("%.2f",yearRevenue));
-        month.setText(String.format("%.2f",monthRevenue));
-        day.setText(String.format("%.2f",dayRevenue));
-      
-        
-        
+        year.setText(String.format("%.2f", yearRevenue));
+        month.setText(String.format("%.2f", monthRevenue));
+        day.setText(String.format("%.2f", dayRevenue));
+
     }
-    
-    public void populateRevenueOrdersTable(JTable revenueOrdersTable, LocalDate beforeDate, LocalDate afterDate)
-    {
+
+    public void populateRevenueOrdersTable(JTable revenueOrdersTable, LocalDate beforeDate, LocalDate afterDate) {
         List<Order> orderList = orderDao.getOrderListfromVendor(vendorName);
         orderList = orderList.stream()
                 .filter(order -> order.getOrderDate().isAfter(beforeDate) && order.getOrderDate().isBefore(afterDate) && order.getOrderStatus() == OrderStatus.ACCEPTED)
                 .collect(Collectors.toList());
         RefreshOrderMap(orderList);
         Function<OrderDetails, Object[]> rowMapper = orderDetails -> {
-            return new Object[]
-            {
+            return new Object[]{
                 orderDetails.getOrderId(),
                 orderDetails.getCustomerName(),
                 orderDetails.getFoodNameList(),
@@ -293,44 +278,38 @@ public class VendorService {
         tableHelper.SetupTableSorter(revenueOrdersTable);
         int[] scalableColumns = {2, 3, 4};
         tableHelper.adjustColumnsToScalable(scalableColumns, revenueOrdersTable);
-        
+
     }
-    
-    public void populateNotificationsTable(JTable notificationsTable, int userId)
-    {
+
+    public void populateNotificationsTable(JTable notificationsTable, int userId) {
         List<Notification> notificationList = notificationDao.getNotificationList();
         // Filter notification with the correct userId and if it is unnotified
         notificationList = notificationList.stream()
                 .filter(notification -> notification.getUserId() == userId && notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED)
                 .collect(Collectors.toList());
         Function<Notification, Object[]> rowMapper = notification -> {
-            return new Object[]     
-            { 
+            return new Object[]{
                 notification.getId(),
                 notification.getContent(),
                 notification.getNotificationType(),
                 notification.getNotificationStatus()
             };
         };
-        
+
         tableHelper.populateTable(notificationList, notificationsTable, rowMapper, false);
         tableHelper.SetupTableSorter(notificationsTable);
     }
-    
-    
-    public double getRevenueFromOrderDetails(OrderDetails orderDetail)
-    {
+
+    public double getRevenueFromOrderDetails(OrderDetails orderDetail) {
         double revenue = 0.0;
-        for(FoodDetails foodDetail : orderDetail.getFoodDetailsList())
-        {
+        for (FoodDetails foodDetail : orderDetail.getFoodDetailsList()) {
             Menu menu = menuDao.getMenuItem(vendorName, Integer.parseInt(foodDetail.getFoodId()));
             revenue += Integer.parseInt(foodDetail.getQuantity()) * menu.getPrice();
         }
         return revenue;
     }
-    
-    public void RefreshOrderMap(OrderStatus orderStatus)
-    {
+
+    public void RefreshOrderMap(OrderStatus orderStatus) {
         List<Order> orderList = getVendorOrderList(vendorName);
         // Filter orders with status
         orderList = orderList.stream()
@@ -339,61 +318,54 @@ public class VendorService {
         ordersMap.clear(); // Clear previous entries
         ordersMap = cleanOrderList(orderList);
     }
-    public void RefreshOrderMap()
-    {
+
+    public void RefreshOrderMap() {
         List<Order> orderList = getVendorOrderList(vendorName);
         orderList = orderList.stream()
                 .collect(Collectors.toList());
         ordersMap.clear(); // Clear previous entries
         ordersMap = cleanOrderList(orderList);
     }
-    public void RefreshOrderMap(List<Order> orderList)
-    {
+
+    public void RefreshOrderMap(List<Order> orderList) {
         orderList = orderList.stream()
                 .collect(Collectors.toList());
         ordersMap.clear(); // Clear previous entries
         ordersMap = cleanOrderList(orderList);
     }
-    
-    public void updateOrderStatus(JTable table, OrderStatus orderStatus)
-    {
+
+    public void updateOrderStatus(JTable table, OrderStatus orderStatus) {
         RefreshOrderMap();
         boolean success = false;
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             int orderId = Integer.parseInt(String.valueOf(table.getValueAt(selectedRow, 0)));
             OrderDetails orderDetail = ordersMap.get(orderId);
-                success = orderDao.updateOrderStatus(orderId, orderStatus, vendorName);
-                if (success == true)
-                {
-                    String userId = userDao.getUserId(String.valueOf(table.getValueAt(selectedRow, 1)));
-                    String content = "Your order is " + orderStatus.toString() + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
-                    notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
-                    if (orderStatus == OrderStatus.ACCEPTED)
-                    {
-                        Object[][] result = runnerAvailabilityDao.getAllRunnerAvailability();
-                        for (Object[] row : result)
-                        {
-                            int runnerId = Integer.parseInt(String.valueOf(row[1]));
-                            runnerTaskDao.writeVendorTaskAssignment(orderId, runnerId, vendorName, orderDetail.getDeliveryLocation());
-                           
-                        }
+            success = orderDao.updateOrderStatus(orderId, orderStatus, vendorName);
+            if (success == true) {
+                String userId = userDao.getUserId(String.valueOf(table.getValueAt(selectedRow, 1)));
+                String content = "Your order is " + orderStatus.toString() + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
+                notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
+                if (orderStatus == OrderStatus.ACCEPTED) {
+                    Object[][] result = runnerAvailabilityDao.getAllRunnerAvailability();
+                    for (Object[] row : result) {
+                        int runnerId = Integer.parseInt(String.valueOf(row[1]));
+                        runnerTaskDao.writeVendorTaskAssignment(orderId, runnerId, vendorName, orderDetail.getDeliveryLocation());
+
                     }
-                    else if (orderStatus == OrderStatus.DECLINED)
-                    {
-                        //If order is cancelled refund customer
-                        double totalPrice = getRevenueFromOrderDetails(orderDetail);
-                        transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Refund for [orderid: " + String.valueOf(orderId) + "]");
-                    }
+                } else if (orderStatus == OrderStatus.DECLINED) {
+                    //If order is cancelled refund customer
+                    double totalPrice = getRevenueFromOrderDetails(orderDetail);
+                    transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Refund for [orderid: " + String.valueOf(orderId) + "]");
                 }
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Please select a row in the table", "No Row Selected", JOptionPane.WARNING_MESSAGE);
         }
-        
+
     }
-    
-    public void updateNotificationStatus(JTable table, NotificationStatus notificationStatus)
-    {
+
+    public void updateNotificationStatus(JTable table, NotificationStatus notificationStatus) {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             int id = Integer.parseInt(String.valueOf(table.getValueAt(selectedRow, 0)));
@@ -402,10 +374,10 @@ public class VendorService {
             JOptionPane.showMessageDialog(null, "Please select a row in the table", "No Row Selected", JOptionPane.WARNING_MESSAGE);
         }
     }
-    
+
     public void populateDateComboBoxes(JComboBox<Integer> yearComboBox,
-                                              JComboBox<Integer> monthComboBox,
-                                              JComboBox<Integer> dayComboBox) {
+            JComboBox<Integer> monthComboBox,
+            JComboBox<Integer> dayComboBox) {
         // Populate year combo box with a range of years
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int year = currentYear; year >= 1970; year--) {
@@ -413,7 +385,7 @@ public class VendorService {
         }
 
         // Populate month combo box
-        for (int month = 1; month<=12; month++) {
+        for (int month = 1; month <= 12; month++) {
             monthComboBox.addItem(month);
         }
         // Populate day combo box

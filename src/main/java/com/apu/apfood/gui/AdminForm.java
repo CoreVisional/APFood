@@ -8,9 +8,15 @@ import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
 import com.apu.apfood.services.UserService;
 import com.formdev.flatlaf.FlatDarculaLaf;
+import java.awt.Color;
 import javax.swing.JComboBox;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.time.format.DateTimeFormatter;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.table.JTableHeader;
 
 public class AdminForm extends javax.swing.JFrame {
@@ -84,9 +90,6 @@ public class AdminForm extends javax.swing.JFrame {
         emailJLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
         adminHomePanel = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
@@ -274,31 +277,14 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/profile-icon.png"))); // NOI18N
         jLabel5.setName(""); // NOI18N
 
-        jSeparator2.setForeground(new java.awt.Color(102, 102, 102));
-        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
-
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bell.png"))); // NOI18N
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel7.setText("3+");
-
         javax.swing.GroupLayout topBarPanelLayout = new javax.swing.GroupLayout(topBarPanel);
         topBarPanel.setLayout(topBarPanelLayout);
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1027, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addGap(0, 0, 0)
-                .addComponent(jLabel7)
-                .addGap(18, 18, 18)
+                .addContainerGap(1090, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addGap(2, 2, 2)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(32, 32, 32)
                 .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(emailJLabel)
                     .addComponent(nameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -315,20 +301,13 @@ public class AdminForm extends javax.swing.JFrame {
                         .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(topBarPanelLayout.createSequentialGroup()
-                                .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(topBarPanelLayout.createSequentialGroup()
-                                            .addComponent(nameJLabel)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(emailJLabel)))
-                                    .addComponent(jLabel7))
+                                .addComponent(nameJLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(emailJLabel)
                                 .addGap(2, 2, 2))))
                     .addGroup(topBarPanelLayout.createSequentialGroup()
                         .addGap(28, 28, 28)
-                        .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel4))))
+                        .addComponent(jLabel4)))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
@@ -629,7 +608,6 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel19.setText("Enter account details here");
 
         selectedUserRoleLabel1.setEditable(false);
-        selectedUserRoleLabel1.setBackground(new java.awt.Color(60, 63, 65));
         selectedUserRoleLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         selectedUserRoleLabel1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         selectedUserRoleLabel1.setText("No role selected");
@@ -741,7 +719,6 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel11.setText("Enter account details here");
 
         selectedUserRoleLabel.setEditable(false);
-        selectedUserRoleLabel.setBackground(new java.awt.Color(60, 63, 65));
         selectedUserRoleLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         selectedUserRoleLabel.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         selectedUserRoleLabel.setText("No role selected");
@@ -1381,6 +1358,36 @@ public class AdminForm extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        // ask to generate receipt?
+        // if yes
+         // Get the user's name
+
+        // Create the receipt content
+        String receiptContent = String.format("User: hi");
+
+        // Show the receipt in a popup
+        JTextArea textArea = new JTextArea(receiptContent);
+        textArea.setEditable(false);
+
+        // Set a monospaced font and increase the font size
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+        // Set the text area background and foreground colors
+        textArea.setBackground(new Color(240, 240, 240)); // Light gray background
+        textArea.setForeground(Color.BLACK); // Black text
+
+        // Add padding to the text area
+        textArea.setBorder(BorderFactory.createCompoundBorder(
+            textArea.getBorder(), 
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        // Enable line wrapping and wrap by words
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(350, 150));
+        JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_creditConfirmBtnActionPerformed
 
     private void allUsersJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allUsersJTableMouseClicked
@@ -1527,8 +1534,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -1540,7 +1545,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JTextField manageUserEmailTextField;
     private javax.swing.JTextField manageUserIdTextField;

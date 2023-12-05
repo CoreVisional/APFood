@@ -1,28 +1,28 @@
 id| userId| content| status| type
-1| 1| Order has been placed| Notified| Informational
-2| 1| Order has been accepted| Notified| Informational
+1| 1| Order has been placed [order id: 1, vendor name: Modesto]| Unnotified| Transactional
+2| 1| Order has been accepted [order id: 1, vendor name: Modesto]| Notified| Informational
 3| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
 4| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
 5| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
 6| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
-7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
 8| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
 9| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
-10| 1| Credit top up [user id: 1]| Unnotified| Transactional
+10| 1| Credit top up [user id: 1]| Notified| Transactional
 11| 12| Credit top up [user id: 12]| Unnotified| Transactional
 12| 12| Credit top up [user id: 12]| Unnotified| Transactional
 13| 12| Credit top up [user id: 12]| Unnotified| Transactional
 14| 12| Credit top up [user id: 12]| Unnotified| Transactional
-15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
-16| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
+16| 1| Delivery completed [order id: 1, vendor name: Modesto]| Notified| Informational
 17| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
 18| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
-19| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+19| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Notified| Informational
 22| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
-23| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
-24| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+23| 1| Delivery completed [order id: 1, vendor name: Modesto]| Notified| Informational
+24| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
 25| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
-26| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+26| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
 27| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
 28| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
 29| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
@@ -47,8 +47,12 @@ id| userId| content| status| type
 48| 4| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
 49| 4| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
 50| 4| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
-51| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+51| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Notified| Informational
 52| 4| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
 53| 4| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
 54| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
 55| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+56| 1| Your order is In_progress [order id: 2, vendor name: Picante]| Unnotified| Informational
+57| 1| Your order is Accepted [order id: 2, vendor name: Picante]| Unnotified| Informational
+58| 8| Credit top up [user id: 8]| Unnotified| Transactional
+59| 8| Credit top up [user id: 8]| Unnotified| Transactional

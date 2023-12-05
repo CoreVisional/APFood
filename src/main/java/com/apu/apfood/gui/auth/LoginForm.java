@@ -191,23 +191,19 @@ public class LoginForm extends javax.swing.JFrame {
         if (userObject.getRole().equals("admin")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new AdminForm(userObject); // Should pass in userObject
-            System.out.println(userObject);
+            new AdminForm(userObject);
         } else if (userObject.getRole().equals("customer")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new CustomerForm(); // Should pass in userObject
-            System.out.println(userObject);
+            new CustomerForm();
         } else if (userObject.getRole().equals("runner")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new RunnerForm(userObject);
-            System.out.println(userObject);
         } else if (userObject.getRole().equals("vendor")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new VendorForm(userObject);
-            System.out.println(userObject);
         }
     }//GEN-LAST:event_signInBtnActionPerformed
 
