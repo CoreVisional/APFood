@@ -1,5 +1,5 @@
 id| userId| content| status| type
-1| 1| Order has been placed [vendor name: Modesto]| Unnotified| Transactional
+1| 1| Order has been placed [order id: 1, vendor name: Modesto]| Unnotified| Transactional
 2| 1| Order has been accepted [order id: 1, vendor name: Modesto]| Notified| Informational
 3| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
 4| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
