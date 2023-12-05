@@ -1,13 +1,18 @@
 package com.apu.apfood.helpers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -15,14 +20,24 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TableHelper {
 
-    public void centerTableValues(JTable tableName) {
-
+    public void centerTableValues(JTable tableName, List<Integer> centeredColumns) {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-        tableName.setDefaultRenderer(String.class, centerRenderer);
-        tableName.setDefaultRenderer(Integer.class, centerRenderer);
-        tableName.setDefaultRenderer(Double.class, centerRenderer);
-        tableName.setDefaultRenderer(Object.class, centerRenderer);
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+        DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+        defaultRenderer.setHorizontalAlignment(JLabel.LEFT);
+
+        for (int i = 0; i < tableName.getColumnCount(); i++) {
+            if (centeredColumns.contains(i)) {
+                tableName.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            } else {
+                tableName.getColumnModel().getColumn(i).setCellRenderer(defaultRenderer);
+            }
+        }
+    }
+
+    public void centerTableValues(JTable tableName) {
+        centerTableValues(tableName, IntStream.range(0, tableName.getColumnCount()).boxed().collect(Collectors.toList()));
     }
 
     // Generic method with index control
@@ -80,6 +95,24 @@ public class TableHelper {
         }
         
         return map;
+    }
+    
+    public void searchTable(JTable tableName, String searchTerm, int[] searchIndices) {
+        DefaultTableModel tableModel = (DefaultTableModel) tableName.getModel();
+        TableRowSorter<DefaultTableModel> tableRowSorter = new TableRowSorter<>(tableModel);
+        tableName.setRowSorter(tableRowSorter);
+
+        if (searchTerm.trim().length() == 0) {
+            tableRowSorter.setRowFilter(null);
+        } else {
+            List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
+            for (int index : searchIndices) {
+                RowFilter<DefaultTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + searchTerm, index);
+                filters.add(rowFilter);
+            }
+            RowFilter<DefaultTableModel, Object> combinedFilter = RowFilter.orFilter(filters);
+            tableRowSorter.setRowFilter(combinedFilter);
+        }
     }
 
     public void refreshTable(javax.swing.JTable jtable, Object[][] deliveryHistory) {
