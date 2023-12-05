@@ -22,6 +22,9 @@ import java.util.Map;
  */
 public class RunnerTaskDao extends APFoodDao<User> {
 
+    private static final String RUNNER_FEEDBACK_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerFeedback.txt";
+    private static final String FEEDBACK_HEADERS = "id| deliveryRunnerId| orderId| vendor| feedback\n";
+    
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerTaskAssignment.txt";
     private static final String HEADERS = "id| orderId| deliveryRunnerId| status| vendorName\n";
 
@@ -132,6 +135,12 @@ public class RunnerTaskDao extends APFoodDao<User> {
         return deliveryHistory;
     }
 
+    public void addRunnerFeedback(int deliveryRunnerId, int orderId, String vendor, String feedback) {
+        String feedbackEntry = deliveryRunnerId + "| " + orderId + "| " + vendor + "| " + feedback; // Add newline here
+        File feedbackFile = new File(BASE_PATH + RUNNER_FEEDBACK_FILEPATH);
+        fileHelper.writeFile(RUNNER_FEEDBACK_FILEPATH, feedbackFile, FEEDBACK_HEADERS, true, feedbackEntry);
+    }
+    
     public String getRunnerFeedback(String orderId, String vendorName) {
         String feedback = "";
         try {
@@ -509,11 +518,26 @@ public class RunnerTaskDao extends APFoodDao<User> {
         }
         return taskDetails;
     }
+    
+    public int getRunnerIdByOrderId(String orderId) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\\| ");
+                if (values[1].equals(orderId)) {
+                    return Integer.parseInt(values[2].trim());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
+        return -1;
+    }
 
     public static void main(String[] args) {
         RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
         runnerTaskDao.getOrderList(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner"));
         runnerTaskDao.getOrderKeys(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner"));
     }
-
 }
