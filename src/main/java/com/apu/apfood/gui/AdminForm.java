@@ -12,6 +12,9 @@ import java.awt.Color;
 import javax.swing.JComboBox;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -1354,44 +1357,50 @@ public class AdminForm extends javax.swing.JFrame {
 
                 userService.addTopUpTransaction(customerId, topUpText, "Top up");
                 tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
+                tableHelper.centerTableValues(customerCreditBalanceJTable);
                 double value = Double.parseDouble(currentBalance) + topUpAmount;
                 creditBalanceTextField.setText(String.valueOf(value));
+
+                int choice = JOptionPane.showConfirmDialog(this, "Do you want to generate a receipt?", "Generate receipt", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    // Create the receipt content
+                    String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: Top Up",
+                            customerName,
+                            topUpAmount,
+                            LocalDate.now(),
+                            LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm a")));
+
+                    // Show the receipt in a popup
+                    JTextArea textArea = new JTextArea(receiptContent);
+                    textArea.setEditable(false);
+
+                    // Set a monospaced font and increase the font size
+                    textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+                    // Set the text area background and foreground colors
+                    textArea.setBackground(new Color(240, 240, 240)); // Light gray background
+                    textArea.setForeground(Color.BLACK); // Black text
+
+                    // Add padding to the text area
+                    textArea.setBorder(BorderFactory.createCompoundBorder(
+                            textArea.getBorder(),
+                            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+                    // Enable line wrapping and wrap by words
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(350, 150));
+                    JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
+                }
 
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-        // ask to generate receipt?
-        // if yes
-         // Get the user's name
 
-        // Create the receipt content
-        String receiptContent = String.format("User: hi");
-
-        // Show the receipt in a popup
-        JTextArea textArea = new JTextArea(receiptContent);
-        textArea.setEditable(false);
-
-        // Set a monospaced font and increase the font size
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-
-        // Set the text area background and foreground colors
-        textArea.setBackground(new Color(240, 240, 240)); // Light gray background
-        textArea.setForeground(Color.BLACK); // Black text
-
-        // Add padding to the text area
-        textArea.setBorder(BorderFactory.createCompoundBorder(
-            textArea.getBorder(), 
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-
-        // Enable line wrapping and wrap by words
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(350, 150));
-        JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_creditConfirmBtnActionPerformed
 
     private void allUsersJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allUsersJTableMouseClicked
@@ -1435,7 +1444,7 @@ public class AdminForm extends javax.swing.JFrame {
         String email = manageUserEmailTextField.getText();
         String password = manageUserPasswordTextField.getText();
 
-        if (userId.isEmpty() || userName.isEmpty() || email.isEmpty()|| password.isEmpty()) {
+        if (userId.isEmpty() || userName.isEmpty() || email.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }

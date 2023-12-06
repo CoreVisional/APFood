@@ -56,3 +56,13 @@ id| userId| content| status| type
 57| 1| Your order is Accepted [order id: 2, vendor name: Picante]| Unnotified| Informational
 58| 8| Credit top up [user id: 8]| Unnotified| Transactional
 59| 8| Credit top up [user id: 8]| Unnotified| Transactional
+60| 8| Credit top up [user id: 8]| Unnotified| Transactional
+61| 8| Credit top up [user id: 8]| Unnotified| Transactional
+62| 9| Credit top up [user id: 9]| Unnotified| Transactional
+63| 9| Credit top up [user id: 9]| Unnotified| Transactional
+64| 9| Credit top up [user id: 9]| Unnotified| Transactional
+65| 9| Credit top up [user id: 9]| Unnotified| Transactional
+66| 9| Credit top up [user id: 9]| Unnotified| Transactional
+67| 11| Credit top up [user id: 11]| Unnotified| Transactional
+68| 11| Credit top up [user id: 11]| Unnotified| Transactional
+69| 11| Credit top up [user id: 11]| Unnotified| Transactional
