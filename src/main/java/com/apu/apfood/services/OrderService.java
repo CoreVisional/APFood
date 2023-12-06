@@ -29,7 +29,17 @@ public class OrderService {
         this.subscriptionService = subscriptionService;
     }
     
-    public void addOrders(List<Order> orders, String vendorName) {
+    public void addOrders(List<Order> orders, String vendorName, int userId) {
+        if (orders == null || orders.isEmpty()) {
+            return;
+        }
+
+        boolean isUserSubscribed = subscriptionService.isUserSubscribed(userId);
+
+        orders.forEach(order -> {
+            order.setDiscountAvailable(isUserSubscribed ? "yes" : "no");
+        });
+
         orderDao.addOrders(orders, vendorName);
     }
 
@@ -37,6 +47,15 @@ public class OrderService {
         List<Order> userOrders = orderDao.getUserOrders(userId, statuses);
         return userOrders.stream()
                          .collect(Collectors.groupingBy(order -> order.getOrderId() + "-" + order.getVendorName()));
+    }
+    
+    public double calculateDiscountAmount(double subtotal, int userId) {
+        boolean isUserSubscribed = subscriptionService.isUserSubscribed(userId);
+
+        if (isUserSubscribed && subtotal >= 12.00) {
+            return subtotal * 0.10;
+        }
+        return 0.0;
     }
 
     public double calculateTotalAmountForGroupedOrders(List<Order> groupedOrders, String vendorName, int userId) {
@@ -48,25 +67,20 @@ public class OrderService {
                                                          .stream()
                                                          .collect(Collectors.toMap(Menu::getId, Menu::getPrice));
 
-        boolean isSubscribed = subscriptionService.isUserSubscribed(userId);
-
         double total = 0.0;
         for (Order order : groupedOrders) {
             double itemTotal = menuPriceMap.getOrDefault(order.getMenuId(), 0.0) * order.getQuantity();
             total += itemTotal;
         }
 
-        // Check if the user is subscribed and the total is at least RM 12.00 for the 10% discount
-        double discountRate = (isSubscribed && total >= 12.00) ? 0.9 : 1.0; // Apply 10% discount if conditions are met
+        double discountAmount = calculateDiscountAmount(total, userId);
 
-        // Apply discount on items' total cost
-        total *= discountRate;
+        total -= discountAmount;
 
         double deliveryFee = "Delivery".equals(groupedOrders.get(0).getMode()) 
                              ? getDeliveryFee(groupedOrders.get(0).getDeliveryLocation()) 
                              : 0.0;
 
-        // Add the delivery fee after applying the discount
         return total + deliveryFee;
     }
 
