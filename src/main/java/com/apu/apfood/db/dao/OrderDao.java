@@ -32,10 +32,6 @@ public class OrderDao extends APFoodDao<Order> {
     }
 
     public void addOrders(List<Order> orders, String vendorName) {
-        if (orders == null || orders.isEmpty()) {
-            return;
-        }
-
         int uniqueOrderId = generateUniqueOrderId(vendorName);
 
         for (Order order : orders) {
