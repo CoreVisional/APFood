@@ -10,6 +10,7 @@ import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
 import com.apu.apfood.db.dao.TransactionDao;
 import com.apu.apfood.db.dao.VendorDao;
+import com.apu.apfood.db.enums.DeliveryFee;
 import com.apu.apfood.db.enums.NotificationStatus;
 import com.apu.apfood.db.enums.NotificationType;
 import com.apu.apfood.db.enums.OrderStatus;
@@ -58,6 +59,7 @@ public class VendorService {
     private RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
     private RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
     private String vendorName;
+    private SubscriptionService subscriptionService;
     private final Map<String, Integer> menuItemIdMap = new HashMap<>();
     private Map<Integer, OrderDetails> ordersMap = new HashMap<>();
 
@@ -197,7 +199,7 @@ public class VendorService {
     }
 
     public void populateOrderHistoryTable(JTable orderHistoryTable) {
-        RefreshOrderMap(OrderStatus.ACCEPTED);
+        RefreshOrderMap(OrderStatus.READY);
         Function<OrderDetails, Object[]> rowMapper = OrderDetails -> {
             int orderId = Integer.parseInt(OrderDetails.getOrderId());
             Feedback feedback = feedbackDao.getFeedbackFromOrderId(orderId, vendorName);
@@ -222,7 +224,7 @@ public class VendorService {
     }
 
     public void populateRevenueDashboard(JLabel year, JLabel month, JLabel day, JTable revenueTable) {
-        RefreshOrderMap(OrderStatus.ACCEPTED);
+        RefreshOrderMap(OrderStatus.READY);
         Double yearRevenue = 0.0;
         Double monthRevenue = 0.0;
         Double dayRevenue = 0.0;
@@ -259,7 +261,7 @@ public class VendorService {
     public void populateRevenueOrdersTable(JTable revenueOrdersTable, LocalDate beforeDate, LocalDate afterDate) {
         List<Order> orderList = orderDao.getOrderListfromVendor(vendorName);
         orderList = orderList.stream()
-                .filter(order -> order.getOrderDate().isAfter(beforeDate) && order.getOrderDate().isBefore(afterDate) && order.getOrderStatus() == OrderStatus.ACCEPTED)
+                .filter(order -> order.getOrderDate().isAfter(beforeDate) && order.getOrderDate().isBefore(afterDate) && order.getOrderStatus() == OrderStatus.READY)
                 .collect(Collectors.toList());
         RefreshOrderMap(orderList);
         Function<OrderDetails, Object[]> rowMapper = orderDetails -> {
@@ -344,18 +346,32 @@ public class VendorService {
             success = orderDao.updateOrderStatus(orderId, orderStatus, vendorName);
             if (success == true) {
                 String userId = userDao.getUserId(String.valueOf(table.getValueAt(selectedRow, 1)));
-                String content = "Your order is " + orderStatus.toString() + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
-                notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
-                if (orderStatus == OrderStatus.ACCEPTED) {
+                if (orderStatus == OrderStatus.ACCEPTED){
+                    String content = "Order has been accepted" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
+                    notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
+                }
+                else if (orderStatus == OrderStatus.READY) {
                     Object[][] result = runnerAvailabilityDao.getAllRunnerAvailability();
                     for (Object[] row : result) {
                         int runnerId = Integer.parseInt(String.valueOf(row[1]));
                         runnerTaskDao.writeVendorTaskAssignment(orderId, runnerId, vendorName, orderDetail.getDeliveryLocation());
 
                     }
-                } else if (orderStatus == OrderStatus.DECLINED) {
+                    String content = "Order has been sent for delivery" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
+                    notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
+                } 
+                else if (orderStatus == OrderStatus.DECLINED) {
+                    String content = "Order has been cancelled" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
+                    notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.TRANSACTIONAL.toString());
                     //If order is cancelled refund customer
+                    double fee = DeliveryFee.getFeeForBlock(orderDetail.getDeliveryLocation());
                     double totalPrice = getRevenueFromOrderDetails(orderDetail);
+                     // Check if the user is subscribed and the total is at least RM 12.00 for the 10% discount
+                    boolean isSubscribed = subscriptionService.isUserSubscribed(Integer.parseInt(orderDetail.getAccountId()));
+                    double discountRate = (isSubscribed && totalPrice >= 12.00) ? 0.9 : 1.0; // Apply 10% discount if conditions are met
+                    // Apply discount on items' total cost
+                    totalPrice *= discountRate;
+                    totalPrice += fee;
                     transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Refund for [orderid: " + String.valueOf(orderId) + "]");
                 }
             }
