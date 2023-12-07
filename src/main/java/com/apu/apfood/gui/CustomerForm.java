@@ -1954,8 +1954,19 @@ public class CustomerForm extends javax.swing.JFrame {
 
     private void decreaseItemQtyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decreaseItemQtyBtnActionPerformed
         int selectedCartIndex = orderCartTbl.getSelectedRow();
+        int selectedMenuIndex = vendorMenuTbl.getSelectedRow();
+
+        // Check if a row is selected in the vendorMenuTbl and not in the cart
+        if (selectedMenuIndex != -1 && selectedCartIndex == -1) {
+            if (menuItemQuantity > 1) {
+                menuItemQuantity--;
+            } else {
+                menuItemQuantity = 1; // Prevent it from going below 1
+            }
+            itemQtyLabel.setText(String.valueOf(menuItemQuantity));
+        }
         // Check if a row is selected in the orderCartTbl
-        if (selectedCartIndex != -1) {
+        else if (selectedCartIndex != -1) {
             if (menuItemQuantity > 1) {
                 menuItemQuantity--;
                 updateCartBtn.setEnabled(true); // Keep the Update Cart button enabled
@@ -1968,6 +1979,7 @@ public class CustomerForm extends javax.swing.JFrame {
                 if (confirm == JOptionPane.YES_OPTION) {
                     cartItems.remove(selectedCartIndex);
                     updateCartUIElements();
+                    updateCartBtn.setEnabled(false);
                 }
             }
             itemQtyLabel.setText(String.valueOf(menuItemQuantity));
@@ -1982,7 +1994,7 @@ public class CustomerForm extends javax.swing.JFrame {
             }
         } else {
             JOptionPane.showMessageDialog(this,
-                                          "Please select an item in the cart to update.",
+                                          "Please select an item to adjust its quantity.",
                                           "No Selection",
                                           JOptionPane.WARNING_MESSAGE);
         }
@@ -2083,8 +2095,8 @@ public class CustomerForm extends javax.swing.JFrame {
                 
                 if (cartItem[1].equals(itemName)) {
                     // Update the quantity of the existing item
-                    int currentQuantity = (int) cartItem[1];
-                    cartItem[1] = (selectedCartIndex == i) ? menuItemQuantity : currentQuantity + menuItemQuantity;
+                    int currentQuantity = (int) cartItem[2];
+                    cartItem[2] = (selectedCartIndex == i) ? menuItemQuantity : currentQuantity + menuItemQuantity;
                     updateOrderCartTable();
                     updateCartUIElements();
                     return;
@@ -2176,6 +2188,9 @@ public class CustomerForm extends javax.swing.JFrame {
             cartItem[2] = menuItemQuantity;
             String updatedRemarks = itemRemarksTxtArea.getText();
             cartItem[3] = updatedRemarks;
+
+            cartItems.set(selectedCartIndex, cartItem); // Update the cartItems list
+
             updateOrderCartTable();
             updateCartUIElements();
             itemQtyLabel.setText("1");
@@ -2661,12 +2676,7 @@ public class CustomerForm extends javax.swing.JFrame {
         JScrollPane scrollPane = new JScrollPane(textArea);
         JOptionPane.showMessageDialog(this, scrollPane, "Order Receipt", JOptionPane.INFORMATION_MESSAGE);
     }
-    
-    private void saveReview(String feedback, int rating, int orderId, String vendorName) {
-        Review review = new Review(feedback, rating, orderId);
-        reviewService.addReview(review, vendorName);
-    }
-    
+
     private void displayVendorReviewDialog(int orderId, String vendorName) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -2700,7 +2710,8 @@ public class CustomerForm extends javax.swing.JFrame {
         if (result == JOptionPane.OK_OPTION) {
             String feedback = feedbackTextArea.getText();
             int rating = Integer.parseInt((String) ratingComboBox.getSelectedItem());
-            saveReview(feedback, rating, orderId, vendorName);
+            Review review = new Review(feedback, rating, orderId);
+            reviewService.addReview(review, vendorName);
         }
     }
     
