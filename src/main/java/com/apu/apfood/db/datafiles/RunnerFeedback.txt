@@ -1,4 +1,2 @@
 id| deliveryRunnerId| orderId| vendor| feedback
-1| 5| 1| Modesto| Hi, good service ya!
-2| 5| 1| Picante| Excellent service, very quick!
-3| 5| 2| Picante| Rider was speedy, just ordered, 15 min received
+1| 5| 2| Picante| 10 miles per hour speed, so good
