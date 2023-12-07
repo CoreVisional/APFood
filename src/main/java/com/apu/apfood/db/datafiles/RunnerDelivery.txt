@@ -1,2 +1,2 @@
 id| orderId| status| vendor| deliveryRunnerId
-1| 1| Ongoing| Picante| 5
+1| 1| Available| Picante| 5
