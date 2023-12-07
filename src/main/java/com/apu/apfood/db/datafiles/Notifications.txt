@@ -66,3 +66,8 @@ id| userId| content| status| type
 67| 11| Credit top up [user id: 11]| Unnotified| Transactional
 68| 11| Credit top up [user id: 11]| Unnotified| Transactional
 69| 11| Credit top up [user id: 11]| Unnotified| Transactional
+70| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Unnotified| Informational
+71| 1| Delivery completed [order id: 1, vendor name: Modesto]| Unnotified| Informational
+72| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+73| 1| Delivery completed [order id: 1, vendor name: Picante]| Unnotified| Informational
+74| 9| Credit top up [user id: 9]| Unnotified| Transactional

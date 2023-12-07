@@ -19,7 +19,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.RowFilter;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 public class AdminForm extends javax.swing.JFrame {
 
@@ -166,6 +169,8 @@ public class AdminForm extends javax.swing.JFrame {
         manageUserPasswordTextField = new javax.swing.JTextField();
         manageUsersDeleteBtn = new javax.swing.JButton();
         manageUsersModifyBtn = new javax.swing.JButton();
+        searchField = new javax.swing.JTextField();
+        jLabel31 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1137,6 +1142,15 @@ public class AdminForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        searchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchFieldActionPerformed(evt);
+            }
+        });
+
+        jLabel31.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel31.setText("Search");
+
         javax.swing.GroupLayout manageUsersPanelLayout = new javax.swing.GroupLayout(manageUsersPanel);
         manageUsersPanel.setLayout(manageUsersPanelLayout);
         manageUsersPanelLayout.setHorizontalGroup(
@@ -1145,7 +1159,12 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGap(59, 59, 59)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(manageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(manageUsersPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
         manageUsersPanelLayout.setVerticalGroup(
@@ -1153,8 +1172,14 @@ public class AdminForm extends javax.swing.JFrame {
             .addGroup(manageUsersPanelLayout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addGroup(manageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageUsersPanelLayout.createSequentialGroup()
+                        .addGroup(manageUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel31)
+                            .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(33, 33, 33)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53)))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -1479,6 +1504,18 @@ public class AdminForm extends javax.swing.JFrame {
         manageUserPasswordTextField.setText("");
     }//GEN-LAST:event_manageUsersDeleteBtnActionPerformed
 
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(manageUsersJTable.getModel());
+        manageUsersJTable.setRowSorter(sorter);
+
+        String text = searchField.getText();
+        if (text.trim().length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+        }
+    }//GEN-LAST:event_searchFieldActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1545,6 +1582,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
@@ -1580,6 +1618,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JButton registrationNavBtn;
     private javax.swing.JTable runnerAvailabilityJTable;
     private javax.swing.JButton runnerRoleSelectBtn;
+    private javax.swing.JTextField searchField;
     private javax.swing.JTextField selectedUserRoleLabel;
     private javax.swing.JTextField selectedUserRoleLabel1;
     private javax.swing.JPanel sidePanel;

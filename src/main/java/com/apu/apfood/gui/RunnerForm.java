@@ -4,6 +4,7 @@ import com.apu.apfood.db.dao.RunnerRevenueDao;
 import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
+import com.apu.apfood.gui.auth.AuthenticationManager;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
@@ -27,6 +28,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private String[] orderKeys;
     private int orderListPanelIndex = 0;
     private RunnerRevenueDao runnerRevenueDao = new RunnerRevenueDao();
+    private AuthenticationManager authenticationManager = new AuthenticationManager();
 
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -1062,13 +1064,14 @@ public class RunnerForm extends javax.swing.JFrame {
         tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
                 new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
                 });
+        tableHelper.centerTableValues(deliveryHistoryJTable);
 
         // Refresh revenue values
         this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
     }//GEN-LAST:event_taskFinishBtnActionPerformed
 
     private void runnerLogoutJButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runnerLogoutJButton2ActionPerformed
-        // replace with auth manager
+        authenticationManager.logout(this);
     }//GEN-LAST:event_runnerLogoutJButton2ActionPerformed
 
     /**

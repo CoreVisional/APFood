@@ -2,7 +2,6 @@ package com.apu.apfood.services;
 
 import com.apu.apfood.db.dao.NotificationDao;
 import com.apu.apfood.db.dao.RunnerAvailabilityDao;
-import com.apu.apfood.db.dao.RunnerRevenueDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
 import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.FoodDetails;
@@ -19,7 +18,6 @@ public class RunnerService {
 
     private User runner;
     private RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
-    private RunnerRevenueDao runnerRevenueDao = new RunnerRevenueDao();
     private RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
     private NotificationDao notificationDao = new NotificationDao();
     private UserDao userDao = new UserDao();
