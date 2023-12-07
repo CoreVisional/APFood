@@ -92,7 +92,7 @@ public class VendorForm extends javax.swing.JFrame {
     
     public void populateOrdersInProgressTable()
     {
-        vs.populateOrderTable(ordersInProgressTable, OrderStatus.IN_PROGRESS);
+        vs.populateOrderTable(ordersInProgressTable, OrderStatus.ACCEPTED);
     }
     
     public void populateOrderHistoryTable()
@@ -955,14 +955,14 @@ public class VendorForm extends javax.swing.JFrame {
 
     private void acceptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptBtnActionPerformed
         // TODO add your handling code here:
-        vs.updateOrderStatus(incomingOrdersTable, OrderStatus.IN_PROGRESS);
+        vs.updateOrderStatus(incomingOrdersTable, OrderStatus.ACCEPTED);
         populateIncomingOrdersTable();
         populateOrdersInProgressTable();
     }//GEN-LAST:event_acceptBtnActionPerformed
 
     private void readyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readyBtnActionPerformed
         // TODO add your handling code here:
-        vs.updateOrderStatus(ordersInProgressTable, OrderStatus.ACCEPTED);
+        vs.updateOrderStatus(ordersInProgressTable, OrderStatus.READY);
         populateIncomingOrdersTable();
         populateOrdersInProgressTable();
         populateOrderHistoryTable();

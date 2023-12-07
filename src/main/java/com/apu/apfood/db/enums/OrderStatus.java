@@ -7,9 +7,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author Alex
  */
 public enum OrderStatus {
+    READY,
     ACCEPTED,
     PENDING,
-    IN_PROGRESS,
     DECLINED;
     
     @Override
