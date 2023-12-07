@@ -1049,6 +1049,9 @@ public class RunnerForm extends javax.swing.JFrame {
         this.deliveryTasks = rs.getDeliveryTask(user);
         this.orderKeys = rs.getOrderKeys(user);
 
+        // Reset order list panel index
+        orderListPanelIndex = 0;
+
         //  DisplayTask() if orderkeys.length > 0;
         if (orderKeys.length == 0) {
             CardLayout card = (CardLayout) runnerTaskPanel.getLayout();

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -88,8 +89,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                             String date = rowArray2[5];
                             String time = rowArray2[6];
 
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSS");
-                            LocalTime parsedTime = LocalTime.parse(time, formatter);
+                            LocalTime parsedTime = LocalTime.parse(time);
                             int hours = parsedTime.getHour();
                             int minutes = parsedTime.getMinute();
                             // Formatting minutes to have leading zeros if necessary
