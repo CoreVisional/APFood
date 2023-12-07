@@ -17,3 +17,18 @@ id| userId| content| status| type
 16| 3| Order has been placed| Unnotified| Informational
 17| 3| Order has been accepted| Notified| Informational
 18| 1| Credit top up| Unnotified| Transactional
+19| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
+20| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
+21| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
+22| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
+23| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
+24| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
+25| 1| Order has been placed [order id: 6, vendor name: Picante]| Unnotified| Transactional
+26| 1| Order has been placed [order id: 7, vendor name: Picante]| Unnotified| Transactional
+27| 1| Order has been placed [order id: 8, vendor name: Picante]| Unnotified| Transactional
+28| 1| Order has been placed [order id: 9, vendor name: Picante]| Unnotified| Transactional
+29| 1| Order has been placed [order id: 10, vendor name: Picante]| Unnotified| Transactional
+30| 1| Order has been placed [order id: 11, vendor name: Picante]| Unnotified| Transactional
+31| 1| Order has been placed [order id: 12, vendor name: Picante]| Unnotified| Transactional
+32| 1| Order has been placed [order id: 13, vendor name: Picante]| Unnotified| Transactional
+33| 1| Order has been placed [order id: 14, vendor name: Picante]| Unnotified| Transactional
