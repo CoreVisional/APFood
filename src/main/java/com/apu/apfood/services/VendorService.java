@@ -8,6 +8,7 @@ import com.apu.apfood.db.dao.MenuDao;
 import com.apu.apfood.db.dao.OrderDao;
 import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
+import com.apu.apfood.db.dao.SubscriptionDao;
 import com.apu.apfood.db.dao.TransactionDao;
 import com.apu.apfood.db.dao.VendorDao;
 import com.apu.apfood.db.enums.DeliveryFee;
@@ -59,7 +60,7 @@ public class VendorService {
     private RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
     private RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
     private String vendorName;
-    private SubscriptionService subscriptionService;
+    private SubscriptionService subscriptionService = new SubscriptionService(new SubscriptionDao(), new TransactionDao());
     private final Map<String, Integer> menuItemIdMap = new HashMap<>();
     private Map<Integer, OrderDetails> ordersMap = new HashMap<>();
 
@@ -141,6 +142,7 @@ public class VendorService {
             } else {
                 // If orderMap doesn't contain an entry for this orderId, add a new entry
                 OrderDetails orderDetails = new OrderDetails();
+                orderDetails.setAccountId(String.valueOf(order.getUserId()));
                 orderDetails.setOrderId(String.valueOf(orderId));
                 orderDetails.setCustomerName(userDao.getUserName(String.valueOf(order.getUserId())));
                 orderDetails.setMode(order.getMode());
