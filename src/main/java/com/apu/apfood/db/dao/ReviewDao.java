@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ReviewDao extends APFoodDao<Review> {
     
     private static final String REVIEWS_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/vendors/";   
-    private static final String HEADERS = "id| orderId| feedback| rating\n";
+    private static final String HEADERS = "id| feedback| rating| orderId\n";
     
     public ReviewDao() {
         
@@ -36,19 +36,19 @@ public class ReviewDao extends APFoodDao<Review> {
     
     @Override
     protected String serialize(Review review) {
-        return review.getOrderId() + "| " +
-               review.getFeedback() + "| " +
-               review.getRating() + "\n";
+        return review.getFeedback() + "| " +
+               review.getRating() + "| " +
+               review.getOrderId() + "\n";
     }
     
     @Override
     protected Review deserialize(String[] data) {
         int id = Integer.parseInt(data[0].trim());
-        int orderId = Integer.parseInt(data[1].trim());
-        String feedback = data[2].trim();
-        int rating = Integer.parseInt(data[3].trim());
+        String feedback = data[1].trim();
+        int rating = Integer.parseInt(data[2].trim());
+        int orderId = Integer.parseInt(data[3].trim());
         
-        return new Review(id, orderId, feedback, rating);
+        return new Review(id, feedback, rating, orderId);
     }
 
     @Override

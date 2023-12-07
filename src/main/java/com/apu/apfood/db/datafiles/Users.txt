@@ -1,5 +1,5 @@
 id| userId| name| email| password| role
-1| 1| Adam Smith| adam@gmail.com| qweqweqwe| admin
+1| 1| Adam Smith| adam@gmail.com| qweqweqwe| customer
 2| 2| Jane Doe| asd@asd.com| qweqweqwe| admin
 3| 3| Jack Kwan| jack@picante.apu.edu.my| abcderf| vendor
 4| 4| Howard Lim| picante@picante.apu.edu.my| abcd| vendor

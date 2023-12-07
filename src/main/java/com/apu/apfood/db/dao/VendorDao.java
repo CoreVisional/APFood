@@ -47,6 +47,7 @@ public class VendorDao extends APFoodDao<Vendor> {
         return vendorName;
     }
     
+
     @Override
     protected String serialize(Vendor vendor) {
         return "";

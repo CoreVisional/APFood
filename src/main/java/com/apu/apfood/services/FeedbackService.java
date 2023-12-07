@@ -38,4 +38,10 @@ public class FeedbackService {
             })
             .collect(Collectors.toList());
     }
+    
+    public boolean hasReviewForOrder(int orderId, String vendorName) {
+        reviewDao.updateFilePath(vendorName);
+        List<Review> allReviews = reviewDao.getAllReviews();
+        return allReviews.stream().anyMatch(review -> review.getOrderId() == orderId);
+    }
 }

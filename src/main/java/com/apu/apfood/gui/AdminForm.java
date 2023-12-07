@@ -193,6 +193,11 @@ public class AdminForm extends javax.swing.JFrame {
         homeNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         homeNavBtn.setText("Home");
+        homeNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                homeNavBtnActionPerformed(evt);
+            }
+        });
         jPanel3.add(homeNavBtn);
 
         registrationNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -1230,7 +1235,8 @@ public class AdminForm extends javax.swing.JFrame {
     }//GEN-LAST:event_registrationNavBtnActionPerformed
 
     private void topUpCreditNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topUpCreditNavBtnActionPerformed
-        // TODO add your handling code here:
+        tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
+        tableHelper.centerTableValues(customerCreditBalanceJTable);
     }//GEN-LAST:event_topUpCreditNavBtnActionPerformed
 
     private void emailTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTextFieldActionPerformed
@@ -1446,7 +1452,14 @@ public class AdminForm extends javax.swing.JFrame {
     }//GEN-LAST:event_adminLogoutJButton2ActionPerformed
 
     private void manageUsersNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageUsersNavBtnActionPerformed
-        // TODO add your handling code here:
+        tableHelper.refreshTable(manageUsersJTable, userService.getAllRegisteredUsers(true), new String[]{
+            "ID", "Name", "Email", "Password", "Role"
+        });
+        tableHelper.centerTableValues(manageUsersJTable);
+        manageUserIdTextField.setText("");
+        manageUserNameTextField.setText("");
+        manageUserEmailTextField.setText("");
+        manageUserPasswordTextField.setText("");
     }//GEN-LAST:event_manageUsersNavBtnActionPerformed
 
     private void manageUsersJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_manageUsersJTableMouseClicked
@@ -1516,6 +1529,10 @@ public class AdminForm extends javax.swing.JFrame {
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
         }
     }//GEN-LAST:event_searchFieldActionPerformed
+
+    private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_homeNavBtnActionPerformed
 
     /**
      * @param args the command line arguments

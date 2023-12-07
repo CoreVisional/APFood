@@ -2,8 +2,10 @@ package com.apu.apfood.services;
 
 import com.apu.apfood.db.dao.OrderDao;
 import com.apu.apfood.db.enums.DeliveryFee;
+import com.apu.apfood.db.enums.NotificationType;
 import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Menu;
+import com.apu.apfood.db.models.Notification;
 import com.apu.apfood.db.models.Order;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,14 +23,34 @@ public class OrderService {
     
     private final OrderDao orderDao;
     private final VendorService vendorService;
+    private final SubscriptionService subscriptionService;
+    private final NotificationService notificationService;
 
-    public OrderService(OrderDao orderDao, VendorService vendorService) {
+    public OrderService(OrderDao orderDao, VendorService vendorService, SubscriptionService subscriptionService, NotificationService notificationService) {
         this.orderDao = orderDao;
         this.vendorService = vendorService;
+        this.subscriptionService = subscriptionService;
+        this.notificationService = notificationService;
     }
     
-    public void addOrders(List<Order> orders, String vendorName) {
+    public void addOrders(List<Order> orders, String vendorName, int userId) {
+        if (orders == null || orders.isEmpty()) {
+            return;
+        }
+
+        boolean isUserSubscribed = subscriptionService.isUserSubscribed(userId);
+
+        orders.forEach(order -> {
+            order.setDiscountAvailable(isUserSubscribed ? "yes" : "no");
+        });
+
         orderDao.addOrders(orders, vendorName);
+
+        // Send notification to vendor with the necessary details
+        int orderId = orders.get(0).getOrderId();
+        String notificationContent = "Order has been placed [order id: " + orderId + ", vendor name: " + vendorName + "]";
+        Notification notification = new Notification(userId, notificationContent, NotificationType.TRANSACTIONAL);
+        notificationService.addNotification(notification);
     }
 
     public Map<String, List<Order>> getUserOrdersGrouped(int userId, List<OrderStatus> statuses) {
@@ -36,8 +58,17 @@ public class OrderService {
         return userOrders.stream()
                          .collect(Collectors.groupingBy(order -> order.getOrderId() + "-" + order.getVendorName()));
     }
+    
+    public double calculateDiscountAmount(double subtotal, int userId) {
+        boolean isUserSubscribed = subscriptionService.isUserSubscribed(userId);
 
-    public double calculateTotalAmountForGroupedOrders(List<Order> groupedOrders, String vendorName) {
+        if (isUserSubscribed && subtotal >= 12.00) {
+            return subtotal * 0.10;
+        }
+        return 0.0;
+    }
+
+    public double calculateTotalAmountForGroupedOrders(List<Order> groupedOrders, String vendorName, int userId) {
         if (groupedOrders.isEmpty()) {
             return 0.0;
         }
@@ -51,6 +82,10 @@ public class OrderService {
             double itemTotal = menuPriceMap.getOrDefault(order.getMenuId(), 0.0) * order.getQuantity();
             total += itemTotal;
         }
+
+        double discountAmount = calculateDiscountAmount(total, userId);
+
+        total -= discountAmount;
 
         double deliveryFee = "Delivery".equals(groupedOrders.get(0).getMode()) 
                              ? getDeliveryFee(groupedOrders.get(0).getDeliveryLocation()) 

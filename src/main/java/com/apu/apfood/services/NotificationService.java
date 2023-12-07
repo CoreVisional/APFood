@@ -16,15 +16,57 @@ public class NotificationService {
         this.notificationDao = notificationDao;
     }
     
+    public void addNotification(Notification notification) {
+        notificationDao.add(notification);
+    }
+    
     public List<Notification> getNotifications() {
-        return notificationDao.getAllNotifications();
+        List<Notification> notifications = notificationDao.getAllNotifications();
+        notifications.forEach(this::extractDetailsFromContent);
+        return notifications;
     }
 
     public Notification getNotificationById(int id) {
-        return notificationDao.getNotificationById(id);
+        Notification notification = notificationDao.getNotificationById(id);
+        extractDetailsFromContent(notification);
+        return notification;
     }
-
+    
     public void updateNotification(Notification notification) {
         notificationDao.update(notification);
+    }
+
+    private void extractDetailsFromContent(Notification notification) {
+        String content = notification.getContent();
+        notification.setOrderId(extractOrderIdFromContent(content));
+        notification.setVendorName(extractVendorNameFromContent(content));
+    }
+
+    private String extractOrderIdFromContent(String content) {
+        String orderPrefix = "[order id: ";
+        int start = content.indexOf(orderPrefix);
+        if (start == -1) {
+            return "";
+        }
+        start += orderPrefix.length();
+        int end = content.indexOf(",", start);
+        if (end == -1) {
+            return "";
+        }
+        return content.substring(start, end);
+    }
+
+    private String extractVendorNameFromContent(String content) {
+        String vendorPrefix = "vendor name: ";
+        int start = content.indexOf(vendorPrefix);
+        if (start == -1) {
+            return "";
+        }
+        start += vendorPrefix.length();
+        int end = content.indexOf("]", start);
+        if (end == -1) {
+            return "";
+        }
+        return content.substring(start, end).trim();
     }
 }

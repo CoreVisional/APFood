@@ -1,13 +1,2 @@
 id| orderId| status| vendor| deliveryRunnerId
-1| 1| Completed| Modesto| 5
-2| 1| Completed| Picante| 5
-3| 1| Completed| Modesto| 5
-4| 1| Completed| Picante| 5
-5| 1| Completed| Modesto| 5
-6| 1| Completed| Picante| 5
-7| 1| Completed| Picante| 5
-8| 1| Completed| Modesto| 5
-9| 1| Completed| Picante| 5
-10| 2| Completed| Picante| 5
-11| 1| Completed| Modesto| 5
-12| 1| Completed| Picante| 5
+1| 1| Ongoing| Picante| 5

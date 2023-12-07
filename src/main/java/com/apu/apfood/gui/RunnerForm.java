@@ -218,6 +218,11 @@ public class RunnerForm extends javax.swing.JFrame {
         revenueNavBtn.setText("Revenue");
         revenueNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         revenueNavBtn.setFocusPainted(false);
+        revenueNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                revenueNavBtnActionPerformed(evt);
+            }
+        });
         jPanel3.add(revenueNavBtn);
 
         runnerLogoutJButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -957,10 +962,38 @@ public class RunnerForm extends javax.swing.JFrame {
 
 
     private void deliveryHistoryNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryHistoryNavBtnActionPerformed
-
+        // Refresh delivery history table
+        this.deliveryHistory = rs.getDeliveryHistory();
+        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
+                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
+                });
+        tableHelper.centerTableValues(deliveryHistoryJTable);
     }//GEN-LAST:event_deliveryHistoryNavBtnActionPerformed
 
     private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
+        // Delivery Task 
+        if (rs.checkOngoingTask(user)) {
+            // If runner has ongoing task display a new card
+            CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+            card.show(runnerTaskPanel, "RunnerOngoingTask");
+            List<String> taskDetails = rs.displayOngoingTaskDetails(user);
+            ongLocationJLabel.setText(taskDetails.get(0));
+            ongOrderIdJLabel.setText("#" + taskDetails.get(1));
+            ongVendorNameJLabel.setText(taskDetails.get(2));
+            ongCustomerNameJLabel.setText(taskDetails.get(3));
+        } else {
+            this.deliveryTasks = rs.getDeliveryTask(user);
+            this.orderKeys = rs.getOrderKeys(user);
+
+            if (orderKeys.length == 0) {
+                CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+                card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
+            } else {
+                rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+                CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+                card.show(runnerTaskPanel, "RunnerPendingTask");
+            }
+        }
     }//GEN-LAST:event_homeNavBtnActionPerformed
 
     private void taskDeclineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskDeclineBtnActionPerformed
@@ -1013,12 +1046,6 @@ public class RunnerForm extends javax.swing.JFrame {
         ongVendorNameJLabel.setText(taskDetails.get(2));
         ongCustomerNameJLabel.setText(taskDetails.get(3));
 
-        // Refresh delivery history table
-        this.deliveryHistory = rs.getDeliveryHistory();
-        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
-                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
-                });
-
         // Reset order list panel index
         orderListPanelIndex = 0;
     }//GEN-LAST:event_taskAcceptBtnActionPerformed
@@ -1062,20 +1089,17 @@ public class RunnerForm extends javax.swing.JFrame {
             card.show(runnerTaskPanel, "RunnerPendingTask");
         }
 
-        // Refresh delivery history table
-        this.deliveryHistory = rs.getDeliveryHistory();
-        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
-                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
-                });
-        tableHelper.centerTableValues(deliveryHistoryJTable);
 
-        // Refresh revenue values
-        this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
     }//GEN-LAST:event_taskFinishBtnActionPerformed
 
     private void runnerLogoutJButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runnerLogoutJButton2ActionPerformed
         authenticationManager.logout(this);
     }//GEN-LAST:event_runnerLogoutJButton2ActionPerformed
+
+    private void revenueNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueNavBtnActionPerformed
+        // Refresh revenue values
+        this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
+    }//GEN-LAST:event_revenueNavBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1092,7 +1116,7 @@ public class RunnerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RunnerForm(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
+                new RunnerForm(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "runner")).setVisible(true);
             }
         });
     }

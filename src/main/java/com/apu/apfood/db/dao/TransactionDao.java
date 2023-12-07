@@ -33,7 +33,11 @@ public class TransactionDao extends APFoodDao<Transaction> {
 
     @Override
     protected String serialize(Transaction transaction) {
-        return "";
+        return transaction.getUserId() + "| " +
+               transaction.getAmount() + "| " +
+               transaction.getTransactionOn() + "| " +
+               transaction.getTransactionAt() + "| " +
+               transaction.getRemarks() + "\n";
     }
     
     @Override

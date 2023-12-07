@@ -56,6 +56,7 @@ public class RunnerService {
     }
 
     public void displayTask(String[] orderKeys, int orderListPanelIndex, Map<String, OrderDetails> deliveryTasks, javax.swing.JLabel taskCustomerNameJLabel, javax.swing.JLabel taskVendorNameJLabel, javax.swing.JLabel taskOrderIdJLabel, javax.swing.JTextArea taskOrderListJTextArea) {
+
         UserDao ud = new UserDao();
 
         // Get order details based on chosen key

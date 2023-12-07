@@ -5,6 +5,8 @@ import com.apu.apfood.db.dao.TransactionDao;
 import com.apu.apfood.db.models.Subscription;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -46,11 +48,14 @@ public class SubscriptionService {
     }
     
     public boolean isUserSubscribed(int userId) {
-        LocalDate today = LocalDate.now();
-        return subscriptionDao.getAllSubscriptions().stream()
-                              .anyMatch(subscription -> subscription.getUserId() == userId &&
-                                                        !today.isBefore(subscription.getSubscriptionStartDate()) &&
-                                                        !today.isAfter(subscription.getSubscriptionEndDate()));
+        LocalDate currentDate = LocalDate.now();
+        List<Subscription> subscriptions = subscriptionDao.getAllSubscriptions();
+
+        return subscriptions.stream()
+                .filter(Objects::nonNull) // Ignore null values
+                .anyMatch(sub -> sub.getUserId() == userId &&
+                                 !currentDate.isBefore(sub.getSubscriptionStartDate()) &&
+                                 !currentDate.isAfter(sub.getSubscriptionEndDate()));
     }
 
     public boolean hasUserEverSubscribed(int userId) {

@@ -1,6 +1,1 @@
 id| feedback| rating| orderId
-1| Good Nasi Lemak| 5| 1
-2| Excellent service and fast delivery| 5| 2
-3| Spicy but delicious| 5| 3
-4| Order declined, disappointed| 5| 4
-5| Prompt delivery, great packaging| 5| 5
