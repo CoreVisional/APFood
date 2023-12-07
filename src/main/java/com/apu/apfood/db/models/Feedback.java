@@ -3,8 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.apu.apfood.db.models;
-
-import com.apu.apfood.db.enums.Rating;
 import com.apu.apfood.db.models.common.BaseModel;
 
 /**
@@ -13,14 +11,14 @@ import com.apu.apfood.db.models.common.BaseModel;
  */
 public class Feedback extends BaseModel{
     private String feedback;
-    private Rating rating;
+    private int rating;
     private int orderId;
     
     public Feedback() {
         
     }
     
-    public Feedback(String feedback, Rating rating, int orderId) {
+    public Feedback(String feedback, int rating, int orderId) {
         this.feedback = feedback;
         this.rating = rating;
         this.orderId = orderId;
@@ -34,11 +32,11 @@ public class Feedback extends BaseModel{
         return feedback;
     }
 
-    public void setRating(Rating rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
-    public Rating getRating() {
+    public int getRating() {
         return rating;
     }
 

@@ -186,7 +186,7 @@ public class VendorService {
                 OrderDetails.getFoodQuantityList(),
                 OrderDetails.getFoodRemarkList(),
                 OrderDetails.getOrderDate(),
-                OrderDetails.getOrderTime(),
+                OrderDetails.getOrderTime().toString().split("\\.")[0],
                 OrderDetails.getMode()
             };
         };
@@ -203,6 +203,10 @@ public class VendorService {
         Function<OrderDetails, Object[]> rowMapper = OrderDetails -> {
             int orderId = Integer.parseInt(OrderDetails.getOrderId());
             Feedback feedback = feedbackDao.getFeedbackFromOrderId(orderId, vendorName);
+            if (feedback == null)
+            {
+                feedback = new Feedback("No Feedback yet", 0, orderId);
+            }
             return new Object[]{
                 OrderDetails.getOrderId(),
                 OrderDetails.getCustomerName(),
@@ -210,7 +214,7 @@ public class VendorService {
                 OrderDetails.getFoodQuantityList(),
                 OrderDetails.getFoodRemarkList(),
                 OrderDetails.getOrderDate(),
-                OrderDetails.getOrderTime(),
+                OrderDetails.getOrderTime().toString().split("\\.")[0],
                 OrderDetails.getMode(),
                 feedback.getRating(),
                 feedback.getFeedback()
@@ -272,7 +276,7 @@ public class VendorService {
                 orderDetails.getFoodQuantityList(),
                 orderDetails.getFoodPriceList(),
                 orderDetails.getOrderDate(),
-                orderDetails.getOrderTime(),
+                orderDetails.getOrderTime().toString().split("\\.")[0],
                 getRevenueFromOrderDetails(orderDetails)
             };
         };

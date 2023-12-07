@@ -45,19 +45,6 @@ public class Order extends BaseModel {
         this.discountAvailable = discountAvailable;
     }
 
-    public Order(int orderId, int userId, int menuId, int quantity, LocalDate orderDate, LocalTime orderTime, String remarks, String mode, OrderStatus orderStatus, boolean hasDiscount, String deliveryLocation) {
-        this.orderId = orderId;
-        this.userId = userId;
-        this.menuId = menuId;
-        this.quantity = quantity;
-        this.orderDate = orderDate;
-        this.orderTime = orderTime;
-        this.remarks = remarks;
-        this.mode = mode;
-        this.orderStatus = orderStatus;
-//        this.discountAvailable = hasDiscount;
-        this.deliveryLocation = deliveryLocation;
-    }
 
     public int getOrderId() {
         return orderId;

@@ -4,7 +4,6 @@
  */
 package com.apu.apfood.db.dao;
 
-import com.apu.apfood.db.enums.Rating;
 import com.apu.apfood.db.models.Feedback;
 import com.apu.apfood.helpers.FileHelper;
 import java.util.List;
@@ -35,7 +34,7 @@ public class FeedbackDao extends APFoodDao<Feedback> {
     @Override
     protected Feedback deserialize(String[] data) {
         String feedback = data[1].trim();
-        Rating rating = Rating.valueOf(data[2].trim().toUpperCase());
+        int rating = Integer.parseInt(data[2].trim());
         int orderId = Integer.parseInt(data[3].trim());
         
         return new Feedback(feedback, rating, orderId);
