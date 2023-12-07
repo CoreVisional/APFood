@@ -36,4 +36,16 @@ public class VendorService {
     public List<Menu> getVendorMenuItems(String vendorName) {
         return menuDao.getAllMenuItems(vendorName);
     }
+    
+    public int getVendorUserId(String vendorName) {
+        List<Vendor> allVendors = vendorDao.getAllVendors();
+
+        for (Vendor vendor : allVendors) {
+            if (vendor.getVendorName().equalsIgnoreCase(vendorName)) {
+                return vendor.getUserId();
+            }
+        }
+
+        return -1;
+    }
 }
