@@ -104,21 +104,21 @@ public class CustomerForm extends javax.swing.JFrame {
     
     private final List<Object[]> cartItems = new ArrayList<>();
 
-    private int loggedInUserId;
+    private final User loggedInUser;
     private boolean isUserSubscribed;
     
     /**
      * Creates new form VendorFrame
+     * @param user The logged-in user object
      */
-    public CustomerForm() {
+    public CustomerForm(User user) {
+        this.loggedInUser = user;
         initComponents();
         initCustomComponents();
     }
 
     private void initCustomComponents () {
-        
-        loggedInUserId = 1;
-        isUserSubscribed = subscriptionService.isUserSubscribed(loggedInUserId);
+        isUserSubscribed = subscriptionService.isUserSubscribed(loggedInUser.getId());
         
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
@@ -140,7 +140,7 @@ public class CustomerForm extends javax.swing.JFrame {
     }
 
     private void updateCreditBalanceDisplay() {
-        String balance = transactionService.getTotalBalance(String.valueOf(loggedInUserId));
+        String balance = transactionService.getTotalBalance(String.valueOf(loggedInUser.getId()));
         userCreditBalanceLabel1.setText("RM " + balance);
         userCreditBalanceLabel2.setText("RM " + balance);
     }
@@ -152,7 +152,7 @@ public class CustomerForm extends javax.swing.JFrame {
             subscriptionStatusLabel.setText("Active");
             subscriptionStatusLabel.setForeground(new Color(0, 128, 0)); // Set text color to green
 
-            Subscription latestSubscription = subscriptionService.getLatestActiveSubscription(loggedInUserId);
+            Subscription latestSubscription = subscriptionService.getLatestActiveSubscription(loggedInUser.getId());
             if (latestSubscription != null) {
                 subscriptionValidityLabel.setText(latestSubscription.getSubscriptionEndDate().toString());
             }
@@ -182,6 +182,8 @@ public class CustomerForm extends javax.swing.JFrame {
         financeSidebarBtn = new javax.swing.JButton();
         notificationsSidebarBtn = new javax.swing.JButton();
         subscriptionsSidebarBtn = new javax.swing.JButton();
+        jPanel46 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         userFullNameLabel = new javax.swing.JLabel();
@@ -415,16 +417,27 @@ public class CustomerForm extends javax.swing.JFrame {
         });
         jPanel3.add(subscriptionsSidebarBtn);
 
+        jPanel46.setOpaque(false);
+        jPanel46.setLayout(new java.awt.BorderLayout());
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Logout");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.setFocusPainted(false);
+        jPanel46.add(jButton1, java.awt.BorderLayout.CENTER);
+
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
         sidePanelLayout.setHorizontalGroup(
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(apfoodTxtLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel46, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(apfoodTxtLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
         );
         sidePanelLayout.setVerticalGroup(
@@ -436,7 +449,9 @@ public class CustomerForm extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(428, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 362, Short.MAX_VALUE)
+                .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -530,7 +545,6 @@ public class CustomerForm extends javax.swing.JFrame {
         userCreditBalanceLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         userCreditBalanceLabel1.setForeground(new java.awt.Color(255, 255, 255));
         userCreditBalanceLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        userCreditBalanceLabel1.setText("RM 0.00");
         userCreditBalanceLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
         jPanel22.add(userCreditBalanceLabel1, java.awt.BorderLayout.CENTER);
 
@@ -1536,6 +1550,11 @@ public class CustomerForm extends javax.swing.JFrame {
 
         topUpPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true), null));
         topUpPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        topUpPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                topUpPanelMousePressed(evt);
+            }
+        });
         topUpPanel.setLayout(new java.awt.BorderLayout(-20, 0));
 
         jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1563,7 +1582,6 @@ public class CustomerForm extends javax.swing.JFrame {
         userCreditBalanceLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         userCreditBalanceLabel2.setForeground(new java.awt.Color(255, 255, 255));
         userCreditBalanceLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        userCreditBalanceLabel2.setText("RM 0.00");
         userCreditBalanceLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
         jPanel36.add(userCreditBalanceLabel2, java.awt.BorderLayout.CENTER);
 
@@ -2043,7 +2061,7 @@ public class CustomerForm extends javax.swing.JFrame {
             deliveryFee = OrderService.getDeliveryFee(deliveryLocation);
         }
 
-        double discountAmount = orderService.calculateDiscountAmount(subtotal, loggedInUserId);
+        double discountAmount = orderService.calculateDiscountAmount(subtotal, loggedInUser.getId());
         double grandTotal = subtotal - discountAmount + deliveryFee;
 
         return new double[] { subtotal, discountAmount, deliveryFee, grandTotal };
@@ -2332,7 +2350,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
         // Prepare table data
         List<Object[]> tableData = transactions.stream()
-            .filter(transaction -> transaction.getUserId() == loggedInUserId)
+            .filter(transaction -> transaction.getUserId() == loggedInUser.getId())
             .map(transaction -> new Object[]{
                 String.format("RM %.2f", transaction.getAmount()),
                 transaction.getTransactionOn(),
@@ -2415,7 +2433,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private void displayNotifications() {
         List<Notification> notifications = notificationService.getNotifications()
                                                                .stream()
-                                                               .filter(notification -> notification.getUserId() == loggedInUserId)
+                                                               .filter(notification -> notification.getUserId() == loggedInUser.getId())
                                                                .collect(Collectors.toList());
         List<Object[]> tableData = new ArrayList<>();
 
@@ -2899,7 +2917,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
                 // Find the matching transaction
                 Transaction transaction = transactionService.getTransactions().stream()
-                    .filter(t -> t.getUserId() == loggedInUserId && t.getAmount() == amount && 
+                    .filter(t -> t.getUserId() == loggedInUser.getId() && t.getAmount() == amount && 
                                  t.getTransactionOn().equals(date) && t.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")).equals(time.format(DateTimeFormatter.ofPattern("HH:mm a"))))
                     .findFirst()
                     .orElse(null);
@@ -2928,7 +2946,7 @@ public class CustomerForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "You already have an active subscription.", "Subscription", JOptionPane.INFORMATION_MESSAGE);
         } else {
             // Add the subscription for the user
-            subscriptionService.addSubscription(loggedInUserId);
+            subscriptionService.addSubscription(loggedInUser.getId());
 
             // Update user's credit balance display
             updateCreditBalanceDisplay();
@@ -3014,6 +3032,10 @@ public class CustomerForm extends javax.swing.JFrame {
 
         JOptionPane.showMessageDialog(this, scrollPane, selectedVendorName + " Reviews", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_viewReviewsFromMenuBtnMousePressed
+
+    private void topUpPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topUpPanelMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_topUpPanelMousePressed
     
     private void updateVendorMenuUIElements() {
         itemQtyLabel.setText(String.valueOf(menuItemQuantity));
@@ -3079,7 +3101,8 @@ public class CustomerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CustomerForm().setVisible(true);
+                User mockUser = new User(1, "Adam Smith", "qwe@qwe.com", "qweqweqwe".toCharArray(), "customer");
+                new CustomerForm(mockUser).setVisible(true);
             }
         });
     }
@@ -3109,6 +3132,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JButton increaseItemQtyBtn;
     private javax.swing.JLabel itemQtyLabel;
     private javax.swing.JTextArea itemRemarksTxtArea;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -3188,6 +3212,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel43;
     private javax.swing.JPanel jPanel44;
     private javax.swing.JPanel jPanel45;
+    private javax.swing.JPanel jPanel46;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
