@@ -92,7 +92,7 @@ public class CustomerForm extends javax.swing.JFrame {
     TransactionService transactionService = new TransactionService(transactionDao);
     SubscriptionService subscriptionService = new SubscriptionService(subscriptionDao, transactionDao);
     ReviewService reviewService = new ReviewService(reviewDao, userDao, userService);
-    OrderService orderService = new OrderService(orderDao, vendorService, subscriptionService);
+    OrderService orderService = new OrderService(orderDao, vendorService, subscriptionService, notificationService);
     
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
@@ -2368,17 +2368,18 @@ public class CustomerForm extends javax.swing.JFrame {
     
     private String getNotificationActionText(Notification notification) {
         if (notification.getNotificationType() == NotificationType.PUSH) {
-            return "Action Required";
+            return notification.getNotificationStatus() == NotificationStatus.NOTIFIED ? "" : "Action Required";
         } else if (isOrderAccepted(notification)) {
-            return "View Receipt / Give Review";
+            boolean reviewExists = reviewService.hasReviewForOrder(Integer.parseInt(notification.getOrderId()), notification.getVendorName());
+            return reviewExists ? "View Receipt" : "View Receipt / Give Review";
         } else if (notification.getContent().toLowerCase().contains("delivery completed")) {
-            return "Give Feedback";
+            boolean feedbackGiven = runnerTaskDao.hasFeedbackForOrder(Integer.parseInt(notification.getOrderId()), notification.getVendorName());       
+            return feedbackGiven ? "Feedback Given" : "Give Feedback";
         }
         return "";
     }
 
     private void displayNotifications() {
-
         List<Notification> notifications = notificationService.getNotifications()
                                                                .stream()
                                                                .filter(notification -> notification.getUserId() == loggedInUserId)
@@ -2387,10 +2388,10 @@ public class CustomerForm extends javax.swing.JFrame {
 
         for (Notification notification : notifications) {
             String senderName = determineSenderName(notification);
-            String content = notification.getContent();
-            String columnActionText = getNotificationActionText(notification);
+            String userFriendlyContent = notification.getContent().replaceAll("\\[order id: \\d+, vendor name: [^\\]]+\\]", "");
+            String actionText = getNotificationActionText(notification);
 
-            tableData.add(new Object[] { notification.getId(), senderName, content, columnActionText });
+            tableData.add(new Object[] { notification.getId(), senderName, userFriendlyContent, actionText });
         }
 
         updateNotificationsTable(tableData);
@@ -2406,56 +2407,28 @@ public class CustomerForm extends javax.swing.JFrame {
             }
             case TRANSACTIONAL -> {
                 if (notification.getContent().toLowerCase().contains("order has been placed")) {
-                    String vendorName = getVendorNameFromContent(notification.getContent());
-                    return vendorName.isEmpty() ? "APFood" : "APFood - " + vendorName;
+                    selectedVendorName = notification.getVendorName();
+                    return selectedVendorName.isEmpty() ? "APFood" : "APFood - " + selectedVendorName;
                 } else if (notification.getContent().toLowerCase().contains("credit top up")) {
                     return "Administrator";
                 }
             }
             case INFORMATIONAL -> {
                 if (vendorOrderAcceptancePattern.matcher(notification.getContent()).find()) {
-                    return getVendorNameFromContent(notification.getContent());
+                    return notification.getVendorName();
                 } else if (notification.getContent().toLowerCase().contains("delivery")) {
-                    return getRunnerNameFromContent(notification.getContent());
+                    return getRunnerNameFromContent(notification);
                 }
             }
         }
         return "Unknown";
     }
     
-    private String getVendorNameFromContent(String content) {
-        String vendorPrefix = "vendor name: ";
-        int start = content.indexOf(vendorPrefix);
-        if (start == -1) {
-            return "";
-        }
-        start += vendorPrefix.length();
-        int end = content.indexOf("]", start);
-        if (end == -1) {
-            return "";
-        }
-        return content.substring(start, end).trim();
-    }
-
-    private String getRunnerNameFromContent(String content) {
-        String orderId = extractOrderIdFromContent(content);
+    private String getRunnerNameFromContent(Notification notification) {
+        String orderId = notification.getOrderId();
         int runnerId = runnerTaskDao.getRunnerIdByOrderId(orderId);
         User runner = userDao.getUserById(runnerId);
         return runner != null ? runner.getName() : "Unknown Runner";
-    }
-
-    private String extractOrderIdFromContent(String content) {
-        String orderPrefix = "[order id: ";
-        int start = content.indexOf(orderPrefix);
-        if (start == -1) {
-            return "";
-        }
-        start += orderPrefix.length();
-        int end = content.indexOf(",", start);
-        if (end == -1) {
-            return "";
-        }
-        return content.substring(start, end);
     }
     
     private void notificationsSidebarBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationsSidebarBtnMousePressed
@@ -2496,7 +2469,7 @@ public class CustomerForm extends javax.swing.JFrame {
             order.getVendorName(),
             order.getOrderDate().toString(), 
             order.getOrderTime().format(DateTimeFormatter.ofPattern("HH:mm a")),
-            String.format("RM %.2f", totalAmount), 
+            String.format("RM %.2f", totalAmount),
             order.getOrderStatus().toString(),
         };
     }
@@ -2573,8 +2546,6 @@ public class CustomerForm extends javax.swing.JFrame {
         // Parsing the time string with the appropriate format
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm a");
         LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2), timeFormatter);
-        
-        System.out.println(orderTime);
         
         List<Order> orderDetails = orderService.getOrderDetails(orderId, vendorName, orderDate, orderTime);
         showOrderDetailsPopup(orderDetails, vendorName);
@@ -2746,14 +2717,13 @@ public class CustomerForm extends javax.swing.JFrame {
     }
     
     private void notificationsTblMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationsTblMousePressed
-
         int selectedRow = notificationsTbl.getSelectedRow();
         if (selectedRow != -1) {
             int notificationId = (Integer) notificationsTbl.getValueAt(selectedRow, 0);
             Notification notification = notificationService.getNotificationById(notificationId);
 
             if (notification != null) {
-                if (notification.getNotificationType() == NotificationType.PUSH) {
+                if (notification.getNotificationType() == NotificationType.PUSH && notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED) {
                     String[] pushOptions = { "Takeaway", "Dine-in" };
                     int selection = JOptionPane.showOptionDialog(this, 
                             "Select an option for your order:", 
@@ -2764,44 +2734,49 @@ public class CustomerForm extends javax.swing.JFrame {
 
                     if (selection >= 0) {
                         String mode = pushOptions[selection];
-                        String orderIdStr = extractOrderIdFromContent(notification.getContent());
-                        String vendorName = getVendorNameFromContent(notification.getContent());
-                        int orderId = Integer.parseInt(orderIdStr);
+                        int orderId = Integer.parseInt(notification.getOrderId());
+                        selectedVendorName = notification.getVendorName();
 
-                        orderService.updateOrderMode(orderId, mode, vendorName);
+                        orderService.updateOrderMode(orderId, mode, selectedVendorName);
                     }
                 }
                 
-                if (isOrderAccepted(notification) && "View Receipt / Give Review".equals(notificationsTbl.getValueAt(selectedRow, 3))) {
-                    String[] notificationOptions  = {"View Receipt", "Give Review"};
-                    int selection = JOptionPane.showOptionDialog(this,
-                            "Select an option:",
-                            "Notification Action",
-                            JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE,
-                            null, notificationOptions , notificationOptions [0]);
+                if (isOrderAccepted(notification)) {
+                    boolean reviewExists = reviewService.hasReviewForOrder(Integer.parseInt(notification.getOrderId()), notification.getVendorName());
+                    int orderId = Integer.parseInt(notification.getOrderId());
+                    selectedVendorName = notification.getVendorName();
 
-                    String orderIdStr = extractOrderIdFromContent(notification.getContent());
-                    selectedVendorName = getVendorNameFromContent(notification.getContent());
-                    try {
-                        int orderId = Integer.parseInt(orderIdStr);
-                        if (selection == 0) {
-                            generateAndShowOrderReceipt(orderId, selectedVendorName);
-                        } else if (selection == 1) {
-                            displayVendorReviewDialog(orderId, selectedVendorName);
+                    if (!reviewExists) {
+                        // Show option dialog only if review does not exist
+                        String[] notificationOptions = {"View Receipt", "Give Review"};
+                        int selection = JOptionPane.showOptionDialog(this,
+                                "Select an option:",
+                                "Notification Action",
+                                JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE,
+                                null, notificationOptions, notificationOptions[0]);
+
+                        try {
+                            if (selection == 0) {
+                                generateAndShowOrderReceipt(orderId, selectedVendorName);
+                            } else if (selection == 1) {
+                                displayVendorReviewDialog(orderId, selectedVendorName);
+                            }
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(this, "Invalid order ID.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(this, "Invalid order ID.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        generateAndShowOrderReceipt(orderId, selectedVendorName);
                     }
                 }
                 
                 if ("Give Feedback".equals(notificationsTbl.getValueAt(selectedRow, 3))) {
-                    String content = notification.getContent();
-                    String orderIdStr = extractOrderIdFromContent(content);
-                    selectedVendorName = getVendorNameFromContent(content);
+                    int orderId = Integer.parseInt(notification.getOrderId());
+                    selectedVendorName = notification.getVendorName();
                     try {
-                        int orderId = Integer.parseInt(orderIdStr);
-                        displayRunnerFeedbackDialog(orderId, selectedVendorName);
+                        if (!runnerTaskDao.hasFeedbackForOrder(orderId, selectedVendorName)) {
+                            displayRunnerFeedbackDialog(orderId, selectedVendorName);
+                        }
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(this, "Invalid order ID.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
