@@ -46,7 +46,7 @@ public class ReviewDao extends APFoodDao<Review> {
         int id = Integer.parseInt(data[0].trim());
         String feedback = data[1].trim();
         int rating = Integer.parseInt(data[2].trim());
-        int orderId = Integer.parseInt(data[1].trim());
+        int orderId = Integer.parseInt(data[3].trim());
         
         return new Review(id, feedback, rating, orderId);
     }
