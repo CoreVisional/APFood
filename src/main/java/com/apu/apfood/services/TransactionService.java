@@ -17,6 +17,11 @@ public class TransactionService {
         this.transactionDao = transactionDao;
     }
     
+    public void addTransaction(int userId, double amount, String remark) {       
+        Transaction transaction = new Transaction(userId, amount, remark);
+        transactionDao.add(transaction);
+    }
+    
     public List<Transaction> getTransactions() {
         return transactionDao.getAllTransactions();
     }
@@ -33,5 +38,11 @@ public class TransactionService {
 
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(totalAmount);
+    }
+    
+    public boolean hasSufficientBalance(int userId, double orderAmount) {
+        String balanceStr = getTotalBalance(String.valueOf(userId));
+        double balance = Double.parseDouble(balanceStr);
+        return balance >= orderAmount;
     }
 }
