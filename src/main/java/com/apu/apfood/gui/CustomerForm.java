@@ -129,7 +129,7 @@ public class CustomerForm extends javax.swing.JFrame {
         updateCreditBalanceDisplay();
     }
     
-    public void populateVendorsTable() {
+    private void populateVendorsTable() {
         List<String> vendorNames = vendorService.getDistinctVendorNames();
         
         // Using the overloaded populateTable method with a rowMapper
@@ -138,14 +138,14 @@ public class CustomerForm extends javax.swing.JFrame {
         tableHelper.populateTable(vendorNames, vendorsTable, rowMapper, true);
         tableHelper.centerTableValues(vendorsTable);
     }
-    
-    public void updateCreditBalanceDisplay() {
+
+    private void updateCreditBalanceDisplay() {
         String balance = transactionService.getTotalBalance(String.valueOf(loggedInUserId));
         userCreditBalanceLabel1.setText("RM " + balance);
         userCreditBalanceLabel2.setText("RM " + balance);
     }
     
-    public void updateSubscriptionStatusDisplay() {
+    private void updateSubscriptionStatusDisplay() {
 
         if (isUserSubscribed) {
             subscriptionValidityPanel.setVisible(true);
@@ -1943,6 +1943,8 @@ public class CustomerForm extends javax.swing.JFrame {
     private void homeSidebarBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_homeSidebarBtnMousePressed
         guiHelper.panelSwitcher(homeSidebarBtn, contentPanel, "homePanel");
         setTitle("Home - APFood");
+        
+        updateCreditBalanceDisplay();
     }//GEN-LAST:event_homeSidebarBtnMousePressed
 
     private void cafeteriaSidebarBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cafeteriaSidebarBtnMousePressed
@@ -2012,12 +2014,11 @@ public class CustomerForm extends javax.swing.JFrame {
                                               value -> Double.valueOf(value.toString()));
     }
     
-    private void updateCostSummary() {
+    private double[] getTotalOrderCostDetails(String selectedOrderMode) {
         double subtotal = 0.0;
         double deliveryFee = 0.0;
         Map<String, Double> priceMap = createPriceMap();
 
-        // Calculate subtotal
         for (Object[] cartItem : cartItems) {
             String itemName = (String) cartItem[1];
             int quantity = (Integer) cartItem[2];
@@ -2025,16 +2026,24 @@ public class CustomerForm extends javax.swing.JFrame {
             subtotal += price * quantity;
         }
 
-        // Determine delivery fee if delivery mode is selected
-        String selectedOrderMode = (String) orderModesComboBox.getSelectedItem();
         if ("Delivery".equals(selectedOrderMode)) {
             String deliveryLocation = (String) deliveryLocationsComboBox.getSelectedItem();
             deliveryFee = OrderService.getDeliveryFee(deliveryLocation);
         }
 
-        // Calculate the discount amount
         double discountAmount = orderService.calculateDiscountAmount(subtotal, loggedInUserId);
-        double totalWithDiscount = subtotal - discountAmount + deliveryFee;
+        double grandTotal = subtotal - discountAmount + deliveryFee;
+
+        return new double[] { subtotal, discountAmount, deliveryFee, grandTotal };
+    }
+    
+    private void updateCostSummary() {
+        String selectedOrderMode = (String) orderModesComboBox.getSelectedItem();
+        double[] costDetails = getTotalOrderCostDetails(selectedOrderMode);
+        double subtotal = costDetails[0];
+        double discountAmount = costDetails[1];
+        double deliveryFee = costDetails[2];
+        double totalWithDiscount = costDetails[3];
 
         if (isUserSubscribed && "Delivery".equals(selectedOrderMode)) {
             guiHelper.panelSwitcher(costSummaryParentPanel, "costSummaryWithDeliveryAndDiscountPanel");
@@ -2247,14 +2256,23 @@ public class CustomerForm extends javax.swing.JFrame {
             Order newOrder = new Order(userId, menuId, quantity, remarks, selectedOrderMode, deliveryLocation);
             ordersToAdd.add(newOrder);
         }
+        
+        double totalOrderCost = getTotalOrderCostDetails(selectedOrderMode)[3];
+
+        if (!transactionService.hasSufficientBalance(userId, totalOrderCost)) {
+            JOptionPane.showMessageDialog(this, "Insufficient credit balance to place order.", "Insufficient Balance", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         // Add all orders using OrderService and pass the selected vendor name
         orderService.addOrders(ordersToAdd, selectedVendorName, userId);
+        
+        transactionService.addTransaction(userId, -totalOrderCost, "Food");
 
         // Clear the cart and update UI
         cartItems.clear();
         updateOrderCartTable();
-        updateCartUIElements();
+        updateCartUIElements();    
         JOptionPane.showMessageDialog(this, "Order Placed Successfully!");
     }//GEN-LAST:event_placeOrderBtnActionPerformed
 
