@@ -140,8 +140,7 @@ public class OrderDao extends APFoodDao<Order> {
 
         try {
             List<String[]> orders = fileHelper.readFile(orderFile.getPath());
-
-            for (int i = 1; i < orders.size(); i++) {
+            for (int i = 0; i < orders.size(); i++) {
                 String[] order = orders.get(i);
                 try {
                     int orderId = Integer.parseInt(order[1].trim());
