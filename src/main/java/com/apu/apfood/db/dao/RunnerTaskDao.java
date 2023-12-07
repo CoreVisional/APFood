@@ -136,9 +136,25 @@ public class RunnerTaskDao extends APFoodDao<User> {
     }
 
     public void addRunnerFeedback(int deliveryRunnerId, int orderId, String vendor, String feedback) {
-        String feedbackEntry = deliveryRunnerId + "| " + orderId + "| " + vendor + "| " + feedback; // Add newline here
+        String feedbackEntry = deliveryRunnerId + "| " + orderId + "| " + vendor + "| " + feedback;
         File feedbackFile = new File(BASE_PATH + RUNNER_FEEDBACK_FILEPATH);
         fileHelper.writeFile(RUNNER_FEEDBACK_FILEPATH, feedbackFile, FEEDBACK_HEADERS, true, feedbackEntry);
+    }
+    
+    public boolean hasFeedbackForOrder(int orderId, String vendorName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(BASE_PATH + RUNNER_FEEDBACK_FILEPATH))) {
+            br.readLine();
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\\| ");                
+                if (Integer.parseInt(values[2].trim()) == orderId && values[3].trim().equals(vendorName)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
+        return false;
     }
     
     public String getRunnerFeedback(String orderId, String vendorName) {
