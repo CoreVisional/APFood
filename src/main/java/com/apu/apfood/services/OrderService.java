@@ -2,8 +2,10 @@ package com.apu.apfood.services;
 
 import com.apu.apfood.db.dao.OrderDao;
 import com.apu.apfood.db.enums.DeliveryFee;
+import com.apu.apfood.db.enums.NotificationType;
 import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Menu;
+import com.apu.apfood.db.models.Notification;
 import com.apu.apfood.db.models.Order;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,11 +24,13 @@ public class OrderService {
     private final OrderDao orderDao;
     private final VendorService vendorService;
     private final SubscriptionService subscriptionService;
+    private final NotificationService notificationService;
 
-    public OrderService(OrderDao orderDao, VendorService vendorService, SubscriptionService subscriptionService) {
+    public OrderService(OrderDao orderDao, VendorService vendorService, SubscriptionService subscriptionService, NotificationService notificationService) {
         this.orderDao = orderDao;
         this.vendorService = vendorService;
         this.subscriptionService = subscriptionService;
+        this.notificationService = notificationService;
     }
     
     public void addOrders(List<Order> orders, String vendorName, int userId) {
@@ -41,6 +45,12 @@ public class OrderService {
         });
 
         orderDao.addOrders(orders, vendorName);
+
+        // Send notification to vendor with the necessary details
+        int orderId = orders.get(0).getOrderId();
+        String notificationContent = "Order has been placed [order id: " + orderId + ", vendor name: " + vendorName + "]";
+        Notification notification = new Notification(userId, notificationContent, NotificationType.TRANSACTIONAL);
+        notificationService.addNotification(notification);
     }
 
     public Map<String, List<Order>> getUserOrdersGrouped(int userId, List<OrderStatus> statuses) {
