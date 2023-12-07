@@ -357,27 +357,45 @@ public class VendorService {
                     notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
                 }
                 else if (orderStatus == OrderStatus.READY) {
-                    Object[][] result = runnerAvailabilityDao.getAllRunnerAvailability();
-                    for (Object[] row : result) {
-                        int runnerId = Integer.parseInt(String.valueOf(row[1]));
-                        runnerTaskDao.writeVendorTaskAssignment(orderId, runnerId, vendorName, orderDetail.getDeliveryLocation());
-
+                    String content = "Order is ready for " + orderDetail.getMode();
+                    if (orderDetail.getMode().equals("Delivery"))
+                    {
+                            Object[][] result = runnerAvailabilityDao.getAllRunnerAvailability();
+                            for (Object[] row : result) {
+                            int runnerId = Integer.parseInt(String.valueOf(row[1]));
+                            runnerTaskDao.writeVendorTaskAssignment(orderId, runnerId, vendorName, orderDetail.getDeliveryLocation());
+                            }
+                        content = "Order has been sent for delivery" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
                     }
-                    String content = "Order has been sent for delivery" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
                     notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
                 } 
                 else if (orderStatus == OrderStatus.DECLINED) {
                     String content = "Order has been cancelled" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
                     notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.TRANSACTIONAL.toString());
                     //If order is cancelled refund customer
-                    double fee = DeliveryFee.getFeeForBlock(orderDetail.getDeliveryLocation());
                     double totalPrice = getRevenueFromOrderDetails(orderDetail);
                      // Check if the user is subscribed and the total is at least RM 12.00 for the 10% discount
                     boolean isSubscribed = subscriptionService.isUserSubscribed(Integer.parseInt(orderDetail.getAccountId()));
                     double discountRate = (isSubscribed && totalPrice >= 12.00) ? 0.9 : 1.0; // Apply 10% discount if conditions are met
                     // Apply discount on items' total cost
                     totalPrice *= discountRate;
-                    totalPrice += fee;
+                    //If order mode is delivery refund the customer with the added deliveryfee
+                    if (orderDetail.getMode().equals("Delivery"))
+                    {
+                        double fee = 0.0;
+                        try
+                        {
+                            fee = DeliveryFee.getFeeForBlock(orderDetail.getDeliveryLocation());
+
+                        }
+                        catch (IllegalArgumentException ex)
+                        {
+                            JOptionPane.showMessageDialog(null, ex.getMessage(), "Delivery Location invalid", JOptionPane.WARNING_MESSAGE);
+                        }
+
+                        totalPrice += fee;
+                    }
+                    
                     transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Refund for [orderid: " + String.valueOf(orderId) + "]");
                 }
             }
