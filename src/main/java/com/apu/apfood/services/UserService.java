@@ -106,9 +106,9 @@ public class UserService {
         return userDao.getCustomerCreditDetails();
     }
 
-    public void addTopUpTransaction(String userId, String amount, String remark) {
-        transactionDao.writeTransaction(userId, amount, remark);
-        notificationDao.writeNotification(userId, "Credit top up [user id: " + userId + "]", "Unnotified", "Transactional");
+    public void addTopUpTransaction(String customerId, String adminId, String amount, String remark) {
+        transactionDao.writeTransaction(customerId, amount, remark);
+        notificationDao.writeNotification(customerId, "Credit top up [user id: " + adminId + "]", "Unnotified", "Transactional");
     }
 
     public static String sanitizeEmail(String email) {

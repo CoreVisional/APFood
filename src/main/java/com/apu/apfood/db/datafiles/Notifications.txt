@@ -30,7 +30,7 @@ id| userId| content| status| type
 29| 1| Order has been placed [order id: 10, vendor name: Picante]| Notified| Transactional
 30| 1| Order has been placed [order id: 11, vendor name: Picante]| Unnotified| Transactional
 31| 1| Order has been placed [order id: 12, vendor name: Picante]| Unnotified| Transactional
-32| 1| Order has been placed [order id: 13, vendor name: Picante]| Unnotified| Transactional
+32| 1| Order has been placed [order id: 13, vendor name: Picante]| Notified| Transactional
 33| 1| Order has been placed [order id: 14, vendor name: Picante]| Unnotified| Transactional
 34| 1| Credit top up [user id: 1]| Notified| Transactional
 35| 1| Credit top up [user id: 1]| Notified| Transactional
@@ -67,3 +67,57 @@ id| userId| content| status| type
 66| 1| Order has been accepted [order id: 1, vendor name: Picante]| Unnotified| Informational
 67| 1| Order has been sent for delivery [order id: 1, vendor name: Picante]| Unnotified| Informational
 68| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+69| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
+70| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
+71| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
+72| 1| Order has been placed [order id: 2, vendor name: Picante]| Unnotified| Transactional
+73| 1| Order has been cancelled [order id: 1, vendor name: Picante]| Unnotified| Transactional
+74| 1| Order has been placed [order id: 3, vendor name: Picante]| Unnotified| Transactional
+75| 1| Credit top up [user id: 1]| Notified| Transactional
+76| 1| Order has been placed [order id: 4, vendor name: Picante]| Unnotified| Transactional
+77| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
+78| 5| Credit top up [user id: 5]| Unnotified| Transactional
+79| 5| Credit top up [user id: 5]| Unnotified| Transactional
+80| 7| Credit top up [user id: 5]| Unnotified| Transactional
+81| 7| Credit top up [user id: 5]| Unnotified| Transactional
+82| 7| Credit top up [user id: 5]| Unnotified| Transactional
+83| 1| Credit top up [user id: 5]| Unnotified| Transactional
+84| 1| Credit top up [user id: 5]| Unnotified| Transactional
+85| 1| Credit top up [user id: 5]| Unnotified| Transactional
+86| 1| Credit top up [user id: 5]| Unnotified| Transactional
+87| 1| Credit top up [user id: 5]| Unnotified| Transactional
+88| 1| Credit top up [user id: 5]| Unnotified| Transactional
+89| 1| Credit top up [user id: 5]| Unnotified| Transactional
+90| 1| Credit top up [user id: 5]| Unnotified| Transactional
+91| 1| Credit top up [user id: 5]| Unnotified| Transactional
+92| 1| Credit top up [user id: 5]| Unnotified| Transactional
+93| 1| Credit top up [user id: 5]| Unnotified| Transactional
+94| 1| Credit top up [user id: 5]| Unnotified| Transactional
+95| 1| Credit top up [user id: 5]| Unnotified| Transactional
+96| 1| Credit top up [user id: 5]| Unnotified| Transactional
+97| 1| Credit top up [user id: 5]| Unnotified| Transactional
+98| 1| Credit top up [user id: 5]| Unnotified| Transactional
+99| 1| Credit top up [user id: 5]| Unnotified| Transactional
+100| 1| Credit top up [user id: 5]| Unnotified| Transactional
+101| 1| Credit top up [user id: 5]| Unnotified| Transactional
+102| 1| Credit top up [user id: 5]| Unnotified| Transactional
+103| 1| Credit top up [user id: 5]| Unnotified| Transactional
+104| 1| Credit top up [user id: 5]| Unnotified| Transactional
+105| 1| Credit top up [user id: 5]| Unnotified| Transactional
+106| 1| Credit top up [user id: 5]| Unnotified| Transactional
+107| 1| Credit top up [user id: 5]| Unnotified| Transactional
+108| 1| Credit top up [user id: 5]| Unnotified| Transactional
+109| 1| Credit top up [user id: 5]| Unnotified| Transactional
+110| 1| Credit top up [user id: 5]| Unnotified| Transactional
+111| 1| Credit top up [user id: 5]| Unnotified| Transactional
+112| 1| Credit top up [user id: 5]| Unnotified| Transactional
+113| 1| Credit top up [user id: 5]| Unnotified| Transactional
+114| 1| Credit top up [user id: 5]| Unnotified| Transactional
+115| 1| Credit top up [user id: 5]| Unnotified| Transactional
+116| 1| Credit top up [user id: 5]| Unnotified| Transactional
+117| 1| Credit top up [user id: 5]| Unnotified| Transactional
+118| 1| Credit top up [user id: 5]| Unnotified| Transactional
+119| 1| Order has been accepted [order id: 2, vendor name: Picante]| Unnotified| Informational
+120| 1| Order has been sent for delivery [order id: 2, vendor name: Picante]| Unnotified| Informational
+121| 1| Delivery ongoing [order id: 2, vendor name: Picante]| Notified| Informational
+122| 1| Delivery completed [order id: 2, vendor name: Picante]| Notified| Informational

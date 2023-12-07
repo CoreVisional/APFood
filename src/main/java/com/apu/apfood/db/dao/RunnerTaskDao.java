@@ -159,7 +159,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
     }
     
     public String getRunnerFeedback(String orderId, String vendorName) {
-        String feedback = "";
+        String feedback = "No feedback available";
         try {
             FileReader fr = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerFeedback.txt");
             BufferedReader br = new BufferedReader(fr);
