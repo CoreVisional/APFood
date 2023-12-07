@@ -30,7 +30,8 @@ public class Order extends BaseModel {
         this.deliveryLocation = deliveryLocation;
     }
 
-    public Order(int orderId, int userId, int menuId, int quantity, LocalDate orderDate, LocalTime orderTime, String remarks, String mode, OrderStatus orderStatus, String deliveryLocation, String discountAvailable) {
+    public Order(int id, int orderId, int userId, int menuId, int quantity, LocalDate orderDate, LocalTime orderTime, String remarks, String mode, OrderStatus orderStatus, String deliveryLocation, String discountAvailable) {
+        setId(id);
         this.orderId = orderId;
         this.userId = userId;
         this.menuId = menuId;
