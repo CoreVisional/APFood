@@ -7,6 +7,7 @@ import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Menu;
 import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
+import com.apu.apfood.gui.auth.AuthenticationManager;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
@@ -29,7 +30,8 @@ public class VendorForm extends javax.swing.JFrame {
     private String vendorName;
     private final Map<String, Integer> menuItemIdMap = new HashMap<>();
     private Map<Integer, OrderDetails> ordersMap = new HashMap<>();
-    
+    private AuthenticationManager authenticationManager = new AuthenticationManager();
+            
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
     GUIHelper guiHelper = new GUIHelper();
@@ -167,6 +169,7 @@ public class VendorForm extends javax.swing.JFrame {
         menuBtn = new javax.swing.JButton();
         revenueDashboardBtn = new javax.swing.JButton();
         notificationsBtn = new javax.swing.JButton();
+        vendorLogoutJButton = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
@@ -279,17 +282,29 @@ public class VendorForm extends javax.swing.JFrame {
         notificationsBtn.setText("Notifications");
         jPanel3.add(notificationsBtn);
 
+        vendorLogoutJButton.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        vendorLogoutJButton.setText("Log Out");
+        vendorLogoutJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vendorLogoutJButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
         sidePanelLayout.setHorizontalGroup(
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
+            .addGroup(sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jSeparator1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
+            .addGroup(sidePanelLayout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(vendorLogoutJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         sidePanelLayout.setVerticalGroup(
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -300,7 +315,9 @@ public class VendorForm extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(276, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
+                .addComponent(vendorLogoutJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -331,7 +348,7 @@ public class VendorForm extends javax.swing.JFrame {
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1090, Short.MAX_VALUE)
+                .addContainerGap(1093, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addGap(32, 32, 32)
                 .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -461,7 +478,7 @@ public class VendorForm extends javax.swing.JFrame {
                             .addGap(48, 48, 48)
                             .addComponent(saveAllBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(menuLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(172, Short.MAX_VALUE))
+                .addContainerGap(181, Short.MAX_VALUE))
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -654,7 +671,7 @@ public class VendorForm extends javax.swing.JFrame {
         orderHistoryPanelLayout.setHorizontalGroup(
             orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(orderHistoryPanelLayout.createSequentialGroup()
-                .addContainerGap(75, Short.MAX_VALUE)
+                .addContainerGap(84, Short.MAX_VALUE)
                 .addGroup(orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderHistoryPanelLayout.createSequentialGroup()
                         .addComponent(orderHistoryRefreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -775,7 +792,7 @@ public class VendorForm extends javax.swing.JFrame {
                             .addComponent(yearRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                             .addComponent(dayRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                         .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -871,14 +888,14 @@ public class VendorForm extends javax.swing.JFrame {
         notificationsPanelLayout.setHorizontalGroup(
             notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationsPanelLayout.createSequentialGroup()
-                .addContainerGap(210, Short.MAX_VALUE)
+                .addContainerGap(219, Short.MAX_VALUE)
                 .addGroup(notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(readNotificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(210, 210, 210))
             .addGroup(notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationsPanelLayout.createSequentialGroup()
-                    .addContainerGap(1173, Short.MAX_VALUE)
+                    .addContainerGap(1182, Short.MAX_VALUE)
                     .addComponent(notificationsRefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(55, 55, 55)))
         );
@@ -1022,6 +1039,10 @@ public class VendorForm extends javax.swing.JFrame {
         populateRevenueOrdersTable();
     }//GEN-LAST:event_dayAfterCmbBoxActionPerformed
 
+    private void vendorLogoutJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vendorLogoutJButtonActionPerformed
+        authenticationManager.logout(this);
+    }//GEN-LAST:event_vendorLogoutJButtonActionPerformed
+
    
     
     
@@ -1121,6 +1142,7 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JPanel topBarPanel;
     private javax.swing.JLabel totalRevenueLabel;
     private javax.swing.JLabel vendorLabel;
+    private javax.swing.JButton vendorLogoutJButton;
     private javax.swing.JComboBox<Integer> yearAfterCmbBox;
     private javax.swing.JComboBox<Integer> yearBeforeCmbBox;
     private javax.swing.JLabel yearRevenueLabel;

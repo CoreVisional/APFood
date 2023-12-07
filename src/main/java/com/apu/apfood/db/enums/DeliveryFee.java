@@ -29,6 +29,6 @@ public enum DeliveryFee {
             }
         }
         // Handle the case where no matching block name is found
-        throw new IllegalArgumentException("No matching block name found: " + blockName);
+        throw new IllegalArgumentException("No matching delivery location found: " + blockName);
     }
 }
