@@ -966,6 +966,13 @@ public class RunnerForm extends javax.swing.JFrame {
                 new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
                 });
         tableHelper.centerTableValues(deliveryHistoryJTable);
+        int[] columnWidths = {20, 20, 100, 50, 50, 50, 50, 50, 350}; // Set your desired widths
+        TableColumnModel columnModel = deliveryHistoryJTable.getColumnModel();
+
+        for (int i = 0; i < columnWidths.length; i++) {
+            TableColumn column = columnModel.getColumn(i);
+            column.setPreferredWidth(columnWidths[i]);
+        }
     }//GEN-LAST:event_deliveryHistoryNavBtnActionPerformed
 
     private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
