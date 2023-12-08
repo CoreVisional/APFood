@@ -16,4 +16,4 @@ id| userId| content| status| type
 15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
 16| 3| Order has been placed| Unnotified| Informational
 17| 3| Order has been accepted| Notified| Informational
-18| 1| Credit top up| Unnotified| Transactional
+18| 1| Credit top up [user id: 3, transaction id: 1]| Notified| Transactional
