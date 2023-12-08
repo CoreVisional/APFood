@@ -1702,7 +1702,7 @@ public class AdminForm extends javax.swing.JFrame {
                 double value = Double.parseDouble(currentBalance) + topUpAmount;
                 creditBalanceTextField.setText(String.valueOf(value));
 
-                int choice = JOptionPane.showConfirmDialog(this, "Do you want to generate a receipt?", "Generate receipt", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(this, "Do you want to view the receipt?", "View receipt", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     // Create the receipt content
                     String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: Top Up",
@@ -2025,7 +2025,7 @@ public class AdminForm extends javax.swing.JFrame {
                 notificationNameTextField.setText("");
                 notificationAmountTextField.setText("");
 
-                int choice = JOptionPane.showConfirmDialog(this, "Do you want to generate a receipt?", "Generate receipt", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(this, "Do you want to view the receipt?", "View receipt", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     // Create the receipt content
                     String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: Top Up",
