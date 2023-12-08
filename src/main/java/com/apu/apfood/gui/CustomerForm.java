@@ -416,6 +416,11 @@ public class CustomerForm extends javax.swing.JFrame {
                 subscriptionsSidebarBtnMousePressed(evt);
             }
         });
+        subscriptionsSidebarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscriptionsSidebarBtnActionPerformed(evt);
+            }
+        });
         jPanel3.add(subscriptionsSidebarBtn);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
@@ -3017,6 +3022,10 @@ public class CustomerForm extends javax.swing.JFrame {
 
         JOptionPane.showMessageDialog(this, scrollPane, selectedVendorName + " Reviews", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_viewReviewsFromMenuBtnMousePressed
+
+    private void subscriptionsSidebarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionsSidebarBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_subscriptionsSidebarBtnActionPerformed
     
     private void updateVendorMenuUIElements() {
         itemQtyLabel.setText(String.valueOf(menuItemQuantity));

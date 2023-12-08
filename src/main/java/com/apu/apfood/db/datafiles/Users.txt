@@ -12,3 +12,4 @@ id| userId| name| email| password| role
 11| 11| Adam Miths| adam@hotmail.com| ajshdgas@asdjasas| customer
 12| 12| Kiwi Fruit| Kiwi@gmail.com| 9123masd@asd....| vendor
 13| 13| Mango Tamago| Mago@gmail.com| 098712Dokie| vendor
+14| 14| Jane Doe| asd@asd.com| qweqweqwe| admin

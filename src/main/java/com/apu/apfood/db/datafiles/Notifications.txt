@@ -106,9 +106,9 @@ id| userId| content| status| type
 105| 1| Credit top up [user id: 5]| Unnotified| Transactional
 106| 1| Credit top up [user id: 5]| Unnotified| Transactional
 107| 1| Credit top up [user id: 5]| Unnotified| Transactional
-108| 1| Credit top up [user id: 5]| Unnotified| Transactional
+108| 1| Credit top up [user id: 5]| Notified| Transactional
 109| 1| Credit top up [user id: 5]| Unnotified| Transactional
-110| 1| Credit top up [user id: 5]| Unnotified| Transactional
+110| 1| Credit top up [user id: 5]| Notified| Transactional
 111| 1| Credit top up [user id: 5]| Unnotified| Transactional
 112| 1| Credit top up [user id: 5]| Unnotified| Transactional
 113| 1| Credit top up [user id: 5]| Unnotified| Transactional
@@ -121,3 +121,18 @@ id| userId| content| status| type
 120| 1| Order has been sent for delivery [order id: 2, vendor name: Picante]| Unnotified| Informational
 121| 1| Delivery ongoing [order id: 2, vendor name: Picante]| Notified| Informational
 122| 1| Delivery completed [order id: 2, vendor name: Picante]| Notified| Informational
+123| 8| Credit top up [transaction id: 75]| Unnotified| Transactional
+124| 8| Credit top up [transaction id: 76]| Unnotified| Transactional
+125| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 17.00]| Notified| Push
+126| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
+127| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
+128| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
+129| 1| Credit top up [transaction id: 77]| Unnotified| Transactional
+130| 1| Credit top up [transaction id: 78]| Unnotified| Transactional
+131| 1| Credit top up [transaction id: 79]| Unnotified| Transactional
+132| 1| Credit top up [transaction id: 80]| Unnotified| Transactional
+133| 1| Credit top up [transaction id: 81]| Unnotified| Transactional
+134| 1| Credit top up [transaction id: 82]| Unnotified| Transactional
+135| 1| Credit top up [transaction id: 83]| Notified| Transactional
+136| 1| Credit top up [transaction id: 84]| Notified| Transactional
+137| 1| Credit top up [transaction id: 85]| Notified| Transactional

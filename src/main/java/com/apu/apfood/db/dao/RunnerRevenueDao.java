@@ -14,6 +14,7 @@ public class RunnerRevenueDao extends APFoodDao<User> {
 
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt";
     private static final String HEADERS = "id| orderId| status| vendor| deliveryRunnerId\n";
+    
 
     public RunnerRevenueDao() {
         super(USER_FILEPATH, HEADERS);

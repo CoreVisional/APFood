@@ -1,5 +1,7 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.db.dao.NotificationDao;
+import com.apu.apfood.db.enums.NotificationStatus;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.exceptions.CustomValidationException;
 import com.apu.apfood.gui.auth.AuthenticationManager;
@@ -33,12 +35,14 @@ public class AdminForm extends javax.swing.JFrame {
     private Object[][] allRegisteredUsers;
     private Object[][] noAdminRegisteredUsers;
     private Object[][] allVendors;
+    private Object[][] transactionNotifications;
 
     // Instantiate helpers classes
     private final ImageHelper imageHelper = new ImageHelper();
     private final GUIHelper guiHelper = new GUIHelper();
     private final TableHelper tableHelper = new TableHelper();
     private final AuthenticationManager authManager = new AuthenticationManager();
+    private final NotificationDao notificationDao = new NotificationDao();
 
     /**
      * Creates new form VendorFrame
@@ -50,6 +54,7 @@ public class AdminForm extends javax.swing.JFrame {
         this.allRegisteredUsers = userService.getAllRegisteredUsers();
         this.noAdminRegisteredUsers = userService.getAllRegisteredUsers(true);
         this.allVendors = userService.getAllVendorNames();
+        this.transactionNotifications = userService.getAllRequestTopUpNotifications();
 
         initComponents();
         initCustomComponents();
@@ -62,6 +67,7 @@ public class AdminForm extends javax.swing.JFrame {
         guiHelper.panelSwitcher(registrationNavBtn, contentPanel, "adminRegistration");
         guiHelper.panelSwitcher(topUpCreditNavBtn, contentPanel, "adminTopUp");
         guiHelper.panelSwitcher(manageUsersNavBtn, contentPanel, "adminManageUsers");
+        guiHelper.panelSwitcher(notificationsNavBtn, contentPanel, "adminNotification");
 
         guiHelper.panelSwitcher(customerRoleSelectBtn, registrationFormPanel, "othersForm");
         guiHelper.panelSwitcher(runnerRoleSelectBtn, registrationFormPanel, "othersForm");
@@ -91,6 +97,7 @@ public class AdminForm extends javax.swing.JFrame {
         registrationNavBtn = new javax.swing.JButton();
         topUpCreditNavBtn = new javax.swing.JButton();
         manageUsersNavBtn = new javax.swing.JButton();
+        notificationsNavBtn = new javax.swing.JButton();
         adminLogoutJButton2 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
@@ -180,6 +187,22 @@ public class AdminForm extends javax.swing.JFrame {
         searchField = new javax.swing.JTextField();
         jLabel31 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
+        adminNotificationsPanel = new javax.swing.JPanel();
+        topUpPanel1 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        notificationsJTable = new javax.swing.JTable();
+        jLabel33 = new javax.swing.JLabel();
+        notificationSearchField = new javax.swing.JTextField();
+        jLabel34 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel36 = new javax.swing.JLabel();
+        notificationNameTextField = new javax.swing.JTextField();
+        jLabel37 = new javax.swing.JLabel();
+        notificationUserIdTextField = new javax.swing.JTextField();
+        jLabel38 = new javax.swing.JLabel();
+        notificationAmountTextField = new javax.swing.JTextField();
+        creditConfirmBtn1 = new javax.swing.JButton();
+        creditConfirmBtn2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -243,6 +266,18 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
         jPanel3.add(manageUsersNavBtn);
+
+        notificationsNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        notificationsNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        notificationsNavBtn.setText("Notifications");
+        notificationsNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        notificationsNavBtn.setFocusPainted(false);
+        notificationsNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationsNavBtnActionPerformed(evt);
+            }
+        });
+        jPanel3.add(notificationsNavBtn);
 
         adminLogoutJButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         adminLogoutJButton2.setForeground(new java.awt.Color(255, 255, 255));
@@ -1294,6 +1329,206 @@ public class AdminForm extends javax.swing.JFrame {
 
         contentPanel.add(adminManageUsersPanel, "adminManageUsers");
 
+        topUpPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        notificationsJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.transactionNotifications,
+            new String [] {
+                "ID", "Message"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        notificationsJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        notificationsJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        notificationsJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        notificationsJTable.setShowGrid(true);
+        JTableHeader notificationsJTableHeader = notificationsJTable.getTableHeader();
+        notificationsJTableHeader.setPreferredSize(new Dimension(20, 40));
+        notificationsJTable.setRowHeight(40);
+        tableHelper.centerTableValues(notificationsJTable);
+        notificationsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                notificationsJTableMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(notificationsJTable);
+
+        jLabel33.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel33.setText("Search");
+
+        notificationSearchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationSearchFieldActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout topUpPanel1Layout = new javax.swing.GroupLayout(topUpPanel1);
+        topUpPanel1.setLayout(topUpPanel1Layout);
+        topUpPanel1Layout.setHorizontalGroup(
+            topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topUpPanel1Layout.createSequentialGroup()
+                .addGroup(topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(topUpPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(notificationSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, topUpPanel1Layout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(60, Short.MAX_VALUE))
+        );
+        topUpPanel1Layout.setVerticalGroup(
+            topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topUpPanel1Layout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addGroup(topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel33))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
+        );
+
+        jLabel34.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel34.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel34.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel34.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel34.setText("Notifications");
+        jLabel34.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel36.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel36.setText("Name:");
+
+        notificationNameTextField.setEditable(false);
+        notificationNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        notificationNameTextField.setEnabled(false);
+
+        jLabel37.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel37.setText("User ID:");
+
+        notificationUserIdTextField.setEditable(false);
+        notificationUserIdTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        notificationUserIdTextField.setEnabled(false);
+
+        jLabel38.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel38.setText("Amount:");
+
+        notificationAmountTextField.setEditable(false);
+        notificationAmountTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        creditConfirmBtn1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        creditConfirmBtn1.setText("Reject");
+        creditConfirmBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                creditConfirmBtn1ActionPerformed(evt);
+            }
+        });
+
+        creditConfirmBtn2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        creditConfirmBtn2.setText("Approve");
+        creditConfirmBtn2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                creditConfirmBtn2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(creditConfirmBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(creditConfirmBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(notificationUserIdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                            .addComponent(notificationNameTextField)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(notificationAmountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(23, 23, 23))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationUserIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel37))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel36))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationAmountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel38))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(creditConfirmBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(creditConfirmBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(155, 155, 155))
+        );
+
+        javax.swing.GroupLayout adminNotificationsPanelLayout = new javax.swing.GroupLayout(adminNotificationsPanel);
+        adminNotificationsPanel.setLayout(adminNotificationsPanelLayout);
+        adminNotificationsPanelLayout.setHorizontalGroup(
+            adminNotificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                .addContainerGap(375, Short.MAX_VALUE)
+                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(352, 352, 352))
+            .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                .addGap(94, 94, 94)
+                .addComponent(topUpPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(37, 37, 37))
+        );
+        adminNotificationsPanelLayout.setVerticalGroup(
+            adminNotificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(adminNotificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(topUpPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                        .addGap(159, 159, 159)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(135, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(adminNotificationsPanel, "adminNotification");
+
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
@@ -1715,6 +1950,107 @@ public class AdminForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_topUpSearchFieldActionPerformed
 
+    private void notificationsJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationsJTableMouseClicked
+        int row = notificationsJTable.getSelectedRow();
+
+        String id = (String) notificationsJTable.getModel().getValueAt(row, 0);
+        String[] notificationDetails = userService.retrieveNotificationDetails(id);
+        String userId = notificationDetails[0];
+        String userName = notificationDetails[1];
+        String amount = notificationDetails[2];
+
+        notificationUserIdTextField.setText(userId);
+        notificationNameTextField.setText(userName);
+        notificationAmountTextField.setText(amount);
+
+    }//GEN-LAST:event_notificationsJTableMouseClicked
+
+    private void notificationSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationSearchFieldActionPerformed
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(notificationsJTable.getModel());
+        notificationsJTable.setRowSorter(sorter);
+
+        String text = notificationSearchField.getText();
+        if (text.trim().length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+        }
+    }//GEN-LAST:event_notificationSearchFieldActionPerformed
+
+    private void creditConfirmBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditConfirmBtn1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_creditConfirmBtn1ActionPerformed
+
+    private void notificationsNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationsNavBtnActionPerformed
+        tableHelper.refreshTable(notificationsJTable, userService.getAllRequestTopUpNotifications(), new String[]{"ID", "Message"});
+        tableHelper.centerTableValues(notificationsJTable);
+    }//GEN-LAST:event_notificationsNavBtnActionPerformed
+
+    private void creditConfirmBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditConfirmBtn2ActionPerformed
+        int row = notificationsJTable.getSelectedRow();
+
+        int notificationId = Integer.parseInt((String) notificationsJTable.getModel().getValueAt(row, 0));
+        String customerId = notificationUserIdTextField.getText();
+        String customerName = notificationNameTextField.getText();
+        String topUpText = notificationAmountTextField.getText();
+
+        // Check if any of the fields are empty
+        if (customerId.isEmpty() || customerName.isEmpty() || topUpText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                double topUpAmount = Double.parseDouble(topUpText);
+                userService.addTopUpTransaction(customerId, String.valueOf(adminUser.getId()), topUpText, "Top up");
+
+                notificationDao.updateNotificationStatus(notificationId, NotificationStatus.NOTIFIED);
+                tableHelper.refreshTable(notificationsJTable, userService.getAllRequestTopUpNotifications(), new String[]{"ID", "Message"});
+                tableHelper.centerTableValues(notificationsJTable);
+
+                notificationUserIdTextField.setText("");
+                notificationNameTextField.setText("");
+                notificationAmountTextField.setText("");
+
+                int choice = JOptionPane.showConfirmDialog(this, "Do you want to generate a receipt?", "Generate receipt", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    // Create the receipt content
+                    String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: Top Up",
+                            customerName,
+                            topUpAmount,
+                            LocalDate.now(),
+                            LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm a")));
+
+                    // Show the receipt in a popup
+                    JTextArea textArea = new JTextArea(receiptContent);
+                    textArea.setEditable(false);
+
+                    // Set a monospaced font and increase the font size
+                    textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+                    // Set the text area background and foreground colors
+                    textArea.setBackground(new Color(240, 240, 240)); // Light gray background
+                    textArea.setForeground(Color.BLACK); // Black text
+
+                    // Add padding to the text area
+                    textArea.setBorder(BorderFactory.createCompoundBorder(
+                            textArea.getBorder(),
+                            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+                    // Enable line wrapping and wrap by words
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(350, 150));
+                    JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_creditConfirmBtn2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1741,6 +2077,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel adminHomePanel;
     private javax.swing.JButton adminLogoutJButton2;
     private javax.swing.JPanel adminManageUsersPanel;
+    private javax.swing.JPanel adminNotificationsPanel;
     private javax.swing.JPanel adminRegistrationPanel;
     private javax.swing.JButton adminRoleSelectBtn;
     private javax.swing.JPanel adminTopUpCreditPanel;
@@ -1750,6 +2087,8 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel contentPanel;
     private javax.swing.JTextField creditBalanceTextField;
     private javax.swing.JButton creditConfirmBtn;
+    private javax.swing.JButton creditConfirmBtn1;
+    private javax.swing.JButton creditConfirmBtn2;
     private javax.swing.JTextField creditNameTextField;
     private javax.swing.JTextField creditTopUpTextField;
     private javax.swing.JTextField creditUserIdTextField;
@@ -1787,6 +2126,11 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
@@ -1795,8 +2139,10 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
@@ -1812,6 +2158,12 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel manageUsersPanel;
     private javax.swing.JLabel nameJLabel;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JTextField notificationAmountTextField;
+    private javax.swing.JTextField notificationNameTextField;
+    private javax.swing.JTextField notificationSearchField;
+    private javax.swing.JTextField notificationUserIdTextField;
+    private javax.swing.JTable notificationsJTable;
+    private javax.swing.JButton notificationsNavBtn;
     private javax.swing.JButton othersCreateUserBtn;
     private javax.swing.JTextField othersEmailTextField;
     private javax.swing.JTextField othersNameTextField;
@@ -1829,6 +2181,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel topBarPanel;
     private javax.swing.JButton topUpCreditNavBtn;
     private javax.swing.JPanel topUpPanel;
+    private javax.swing.JPanel topUpPanel1;
     private javax.swing.JTextField topUpSearchField;
     private javax.swing.JButton vendorCreateUserBtn;
     private javax.swing.JTextField vendorNameTextField;
