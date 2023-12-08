@@ -123,10 +123,10 @@ id| userId| content| status| type
 122| 1| Delivery completed [order id: 2, vendor name: Picante]| Notified| Informational
 123| 8| Credit top up [transaction id: 75]| Unnotified| Transactional
 124| 8| Credit top up [transaction id: 76]| Unnotified| Transactional
-125| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 17.00]| Notified| Push
-126| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
-127| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
-128| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
+125| 5| Adam Smith requests for a credit top-up [user id: 1, amount: RM 17.00]| Notified| Push
+126| 5| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
+127| 5| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
+128| 5| Adam Smith requests for a credit top-up [user id: 1, amount: RM 5.00]| Notified| Push
 129| 1| Credit top up [transaction id: 77]| Unnotified| Transactional
 130| 1| Credit top up [transaction id: 78]| Unnotified| Transactional
 131| 1| Credit top up [transaction id: 79]| Unnotified| Transactional
@@ -136,3 +136,11 @@ id| userId| content| status| type
 135| 1| Credit top up [transaction id: 83]| Notified| Transactional
 136| 1| Credit top up [transaction id: 84]| Notified| Transactional
 137| 1| Credit top up [transaction id: 85]| Notified| Transactional
+138| 1| Credit top up [user id:5, transaction id: 86]| Unnotified| Transactional
+139| 1| Credit top up [user id:5, transaction id: 87]| Unnotified| Transactional
+140| 1| Credit top up [user id:5, transaction id: 88]| Unnotified| Transactional
+141| 1| Credit top up [user id:5, transaction id: 89]| Unnotified| Transactional
+142| 1| Credit top up [user id:5, transaction id: 2]| Unnotified| Transactional
+143| 1| Credit top up [user id:5, transaction id: 3]| Unnotified| Transactional
+144| 1| Credit top up [user id:5, transaction id: 4]| Unnotified| Transactional
+145| 1| Credit top up [user id:5, transaction id: 5]| Unnotified| Transactional

@@ -201,8 +201,8 @@ public class AdminForm extends javax.swing.JFrame {
         notificationUserIdTextField = new javax.swing.JTextField();
         jLabel38 = new javax.swing.JLabel();
         notificationAmountTextField = new javax.swing.JTextField();
-        creditConfirmBtn1 = new javax.swing.JButton();
-        creditConfirmBtn2 = new javax.swing.JButton();
+        notificationRejectBtn = new javax.swing.JButton();
+        notificationConfirmBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -1089,8 +1089,8 @@ public class AdminForm extends javax.swing.JFrame {
                     .addComponent(creditTopUpTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel22))
                 .addGap(36, 36, 36)
-                .addComponent(creditConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addComponent(creditConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1434,19 +1434,19 @@ public class AdminForm extends javax.swing.JFrame {
         notificationAmountTextField.setEditable(false);
         notificationAmountTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        creditConfirmBtn1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        creditConfirmBtn1.setText("Reject");
-        creditConfirmBtn1.addActionListener(new java.awt.event.ActionListener() {
+        notificationRejectBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        notificationRejectBtn.setText("Reject");
+        notificationRejectBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                creditConfirmBtn1ActionPerformed(evt);
+                notificationRejectBtnActionPerformed(evt);
             }
         });
 
-        creditConfirmBtn2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        creditConfirmBtn2.setText("Approve");
-        creditConfirmBtn2.addActionListener(new java.awt.event.ActionListener() {
+        notificationConfirmBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        notificationConfirmBtn.setText("Approve");
+        notificationConfirmBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                creditConfirmBtn2ActionPerformed(evt);
+                notificationConfirmBtnActionPerformed(evt);
             }
         });
 
@@ -1458,9 +1458,9 @@ public class AdminForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(creditConfirmBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(notificationRejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(creditConfirmBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(notificationConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1492,8 +1492,8 @@ public class AdminForm extends javax.swing.JFrame {
                     .addComponent(jLabel38))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(creditConfirmBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(creditConfirmBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(notificationRejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(notificationConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(155, 155, 155))
         );
 
@@ -1977,16 +1977,26 @@ public class AdminForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_notificationSearchFieldActionPerformed
 
-    private void creditConfirmBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditConfirmBtn1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_creditConfirmBtn1ActionPerformed
+    private void notificationRejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationRejectBtnActionPerformed
+        int row = notificationsJTable.getSelectedRow();
+        int notificationId = Integer.parseInt((String) notificationsJTable.getModel().getValueAt(row, 0));
+        notificationDao.updateNotificationStatus(notificationId, NotificationStatus.NOTIFIED);
+
+        tableHelper.refreshTable(notificationsJTable, userService.getAllRequestTopUpNotifications(), new String[]{"ID", "Message"});
+        tableHelper.centerTableValues(notificationsJTable);
+
+        notificationUserIdTextField.setText("");
+        notificationNameTextField.setText("");
+        notificationAmountTextField.setText("");
+
+    }//GEN-LAST:event_notificationRejectBtnActionPerformed
 
     private void notificationsNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationsNavBtnActionPerformed
         tableHelper.refreshTable(notificationsJTable, userService.getAllRequestTopUpNotifications(), new String[]{"ID", "Message"});
         tableHelper.centerTableValues(notificationsJTable);
     }//GEN-LAST:event_notificationsNavBtnActionPerformed
 
-    private void creditConfirmBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creditConfirmBtn2ActionPerformed
+    private void notificationConfirmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationConfirmBtnActionPerformed
         int row = notificationsJTable.getSelectedRow();
 
         int notificationId = Integer.parseInt((String) notificationsJTable.getModel().getValueAt(row, 0));
@@ -2049,7 +2059,7 @@ public class AdminForm extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_creditConfirmBtn2ActionPerformed
+    }//GEN-LAST:event_notificationConfirmBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -2087,8 +2097,6 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel contentPanel;
     private javax.swing.JTextField creditBalanceTextField;
     private javax.swing.JButton creditConfirmBtn;
-    private javax.swing.JButton creditConfirmBtn1;
-    private javax.swing.JButton creditConfirmBtn2;
     private javax.swing.JTextField creditNameTextField;
     private javax.swing.JTextField creditTopUpTextField;
     private javax.swing.JTextField creditUserIdTextField;
@@ -2159,7 +2167,9 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel nameJLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JTextField notificationAmountTextField;
+    private javax.swing.JButton notificationConfirmBtn;
     private javax.swing.JTextField notificationNameTextField;
+    private javax.swing.JButton notificationRejectBtn;
     private javax.swing.JTextField notificationSearchField;
     private javax.swing.JTextField notificationUserIdTextField;
     private javax.swing.JTable notificationsJTable;

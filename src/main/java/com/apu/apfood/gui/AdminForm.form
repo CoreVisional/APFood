@@ -1286,8 +1286,8 @@
                                   <Component id="jLabel22" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
-                              <Component id="creditConfirmBtn" min="-2" pref="44" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                              <Component id="creditConfirmBtn" min="-2" pref="51" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jButton3" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
                                   <Component id="jButton1" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
@@ -1907,9 +1907,9 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <Component id="creditConfirmBtn1" min="-2" pref="134" max="-2" attributes="0"/>
+                                      <Component id="notificationRejectBtn" min="-2" pref="134" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="creditConfirmBtn2" min="-2" pref="134" max="-2" attributes="0"/>
+                                      <Component id="notificationConfirmBtn" min="-2" pref="134" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -1952,8 +1952,8 @@
                               </Group>
                               <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="creditConfirmBtn1" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
-                                  <Component id="creditConfirmBtn2" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+                                  <Component id="notificationRejectBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+                                  <Component id="notificationConfirmBtn" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="155" max="-2" attributes="0"/>
                           </Group>
@@ -2011,7 +2011,7 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JButton" name="creditConfirmBtn1">
+                    <Component class="javax.swing.JButton" name="notificationRejectBtn">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="18" style="0"/>
@@ -2019,10 +2019,10 @@
                         <Property name="text" type="java.lang.String" value="Reject"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="creditConfirmBtn1ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="notificationRejectBtnActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="creditConfirmBtn2">
+                    <Component class="javax.swing.JButton" name="notificationConfirmBtn">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="18" style="0"/>
@@ -2030,7 +2030,7 @@
                         <Property name="text" type="java.lang.String" value="Approve"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="creditConfirmBtn2ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="notificationConfirmBtnActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

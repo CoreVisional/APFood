@@ -160,7 +160,7 @@ public class UserService {
         Transaction lastTransaction = transactions.get(transactions.size() - 1);
         String transactionId = String.valueOf(lastTransaction.getId());
         System.out.println(transactionId);
-        notificationDao.writeNotification(customerId, "Credit top up [transaction id: " + transactionId + "]", "Unnotified", "Transactional");
+        notificationDao.writeNotification(customerId, "Credit top up [user id:" + adminId + ", transaction id: " + transactionId + "]", "Unnotified", "Transactional");
     }
 
     public static String sanitizeEmail(String email) {
