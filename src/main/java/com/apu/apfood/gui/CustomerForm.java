@@ -3030,7 +3030,34 @@ public class CustomerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_viewReviewsFromMenuBtnMousePressed
 
     private void topUpPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topUpPanelMousePressed
-        // TODO add your handling code here:
+        String topUpAmountStr = JOptionPane.showInputDialog(this, "Enter the amount to top up:", "Credit Top-Up Request", JOptionPane.PLAIN_MESSAGE);
+
+        if (topUpAmountStr != null && !topUpAmountStr.isEmpty()) {
+            try {
+                double topUpAmount = Double.parseDouble(topUpAmountStr);
+                if (topUpAmount <= 0) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                User nextAdmin = userService.getNextAdmin();
+                
+                System.out.println(nextAdmin);
+
+                if (nextAdmin != null) {
+                    String notificationContent = String.format("%s requests for a credit top-up [user id: %d, amount: RM %.2f]",
+                                                               loggedInUser.getName(), loggedInUser.getId(), topUpAmount);
+                    Notification topUpRequestNotification = new Notification(nextAdmin.getId(), notificationContent, NotificationType.PUSH);
+                    notificationDao.add(topUpRequestNotification);
+
+                    JOptionPane.showMessageDialog(this, "Top-up request sent successfully.", "Request Sent", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No admin available for top-up request.", "Admin Unavailable", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_topUpPanelMousePressed
     
     private void updateVendorMenuUIElements() {
