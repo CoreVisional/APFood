@@ -3,6 +3,8 @@ package com.apu.apfood.db.dao;
 import com.apu.apfood.db.models.User;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -20,6 +22,13 @@ public class UserDao extends APFoodDao<User> {
     
     public User getUserById(int id) {
         return getById(id);
+    }
+    
+    public List<User> getAllUsers() {
+        List<String[]> rawData = super.getAll();
+        return rawData.stream()
+                      .map(this::deserialize)
+                      .collect(Collectors.toList());
     }
 
     @Override
