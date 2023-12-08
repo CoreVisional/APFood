@@ -205,8 +205,7 @@ public class VendorService {
         Function<OrderDetails, Object[]> rowMapper = OrderDetails -> {
             int orderId = Integer.parseInt(OrderDetails.getOrderId());
             Feedback feedback = feedbackDao.getFeedbackFromOrderId(orderId, vendorName);
-            if (feedback == null)
-            {
+            if (feedback == null) {
                 feedback = new Feedback("No Feedback yet", 0, orderId);
             }
             return new Object[]{
@@ -352,50 +351,43 @@ public class VendorService {
             success = orderDao.updateOrderStatus(orderId, orderStatus, vendorName);
             if (success == true) {
                 String userId = userDao.getUserId(String.valueOf(table.getValueAt(selectedRow, 1)));
-                if (orderStatus == OrderStatus.ACCEPTED){
+                if (orderStatus == OrderStatus.ACCEPTED) {
                     String content = "Order has been accepted" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
                     notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
-                }
-                else if (orderStatus == OrderStatus.READY) {
+                } else if (orderStatus == OrderStatus.READY) {
                     String content = "Order is ready for " + orderDetail.getMode();
-                    if (orderDetail.getMode().equals("Delivery"))
-                    {
-                            Object[][] result = runnerAvailabilityDao.getAllRunnerAvailability();
-                            for (Object[] row : result) {
+                    if (orderDetail.getMode().equals("Delivery")) {
+                        Object[][] result = runnerAvailabilityDao.getAllRunnerAvailability();
+                        for (Object[] row : result) {
                             int runnerId = Integer.parseInt(String.valueOf(row[1]));
                             runnerTaskDao.writeVendorTaskAssignment(orderId, runnerId, vendorName, orderDetail.getDeliveryLocation());
-                            }
+                        }
                         content = "Order has been sent for delivery" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
                     }
                     notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.INFORMATIONAL.toString());
-                } 
-                else if (orderStatus == OrderStatus.DECLINED) {
+                } else if (orderStatus == OrderStatus.DECLINED) {
                     String content = "Order has been cancelled" + " [order id: " + String.valueOf(orderId + ", vendor name: " + vendorName + "]");
                     notificationDao.writeNotification(userId, content, NotificationStatus.UNNOTIFIED.toString(), NotificationType.TRANSACTIONAL.toString());
                     //If order is cancelled refund customer
                     double totalPrice = getRevenueFromOrderDetails(orderDetail);
-                     // Check if the user is subscribed and the total is at least RM 12.00 for the 10% discount
+                    // Check if the user is subscribed and the total is at least RM 12.00 for the 10% discount
                     boolean isSubscribed = subscriptionService.isUserSubscribed(Integer.parseInt(orderDetail.getAccountId()));
                     double discountRate = (isSubscribed && totalPrice >= 12.00) ? 0.9 : 1.0; // Apply 10% discount if conditions are met
                     // Apply discount on items' total cost
                     totalPrice *= discountRate;
                     //If order mode is delivery refund the customer with the added deliveryfee
-                    if (orderDetail.getMode().equals("Delivery"))
-                    {
+                    if (orderDetail.getMode().equals("Delivery")) {
                         double fee = 0.0;
-                        try
-                        {
+                        try {
                             fee = DeliveryFee.getFeeForBlock(orderDetail.getDeliveryLocation());
 
-                        }
-                        catch (IllegalArgumentException ex)
-                        {
+                        } catch (IllegalArgumentException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage(), "Delivery Location invalid", JOptionPane.WARNING_MESSAGE);
                         }
 
                         totalPrice += fee;
                     }
-                    
+
                     transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Refund for [orderid: " + String.valueOf(orderId) + "]");
                 }
             }
@@ -432,5 +424,16 @@ public class VendorService {
         for (int day = 1; day <= 31; day++) {
             dayComboBox.addItem(day);
         }
+    }
+
+    public int getVendorUserId(String vendorName) {
+        List<Vendor> allVendors = vendorDao.getAllVendors();
+
+        for (Vendor vendor : allVendors) {
+            if (vendor.getVendorName().equalsIgnoreCase(vendorName)) {
+                return vendor.getUserId();
+            }
+        }
+        return -1;
     }
 }

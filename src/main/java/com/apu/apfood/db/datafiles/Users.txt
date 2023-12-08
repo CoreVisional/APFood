@@ -1,15 +1,9 @@
 id| userId| name| email| password| role
-1| 1| Adam Smith| adam@gmail.com| qweqweqwe| customer
+1| 1| Adam Smith| adam@gmail.com| abcdef@1111| customer
 2| 2| Jane Doe| asd@asd.com| qweqweqwe| admin
-3| 3| Jack Kwan| jack@picante.apu.edu.my| abcderf| vendor
-4| 4| Howard Lim| picante@picante.apu.edu.my| abcd| vendor
-5| 5| Alice Johnson| alice@gmail.com| qweqweqwe| runner
-6| 6| Jane Doe| asd@asd.com| qweqweqwe| admin
-7| 7| Smy Smith| smy@gmail.com| smysmitherin| customer
-8| 8| Gil Bin| qwe@qwe.com| qweqweqwe| customer
-9| 9| Tamago Smoke| qwe@qwe.com| qweqweqwe| customer
-10| 10| Jane Doe| asd@asd.com| qweqweqwe| admin
-11| 11| Adam Miths| adam@hotmail.com| ajshdgas@asdjasas| customer
-12| 12| Kiwi Fruit| Kiwi@gmail.com| 9123masd@asd....| vendor
-13| 13| Mango Tamago| Mago@gmail.com| 098712Dokie| vendor
-14| 14| Jane Doe| asd@asd.com| qweqweqwe| admin
+3| 3| Jag Kwan| jack@picante.apu.edu.my| qweqweqwe| vendor
+4| 4| Howard Lim| picante@picante.apu.edu.my| qqqqqqqq| vendor
+5| 5| Alice Johnson| 123@123.com| qweqweqwe| runner
+6| 6| Jilbert Gustin| zxc@zxc.com| qweqweqwe| runner
+7| 7| Gil Bin| GIl@gmail.com| qweqweqwe| runner
+8| 8| Columbus| columbus@gmail.com| col12345| admin

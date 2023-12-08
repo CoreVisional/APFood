@@ -55,7 +55,7 @@ public class RunnerService {
         return orderMap;
     }
 
-    public void displayTask(String[] orderKeys, int orderListPanelIndex, Map<String, OrderDetails> deliveryTasks, javax.swing.JLabel taskCustomerNameJLabel, javax.swing.JLabel taskVendorNameJLabel, javax.swing.JLabel taskOrderIdJLabel, javax.swing.JTextArea taskOrderListJTextArea) {
+    public void displayTask(String[] orderKeys, int orderListPanelIndex, Map<String, OrderDetails> deliveryTasks, javax.swing.JLabel taskCustomerNameJLabel, javax.swing.JLabel taskVendorNameJLabel, javax.swing.JLabel taskOrderIdJLabel,  javax.swing.JLabel taskDeliveryLocationJLabel, javax.swing.JTextArea taskOrderListJTextArea) {
 
         UserDao ud = new UserDao();
 
@@ -68,6 +68,7 @@ public class RunnerService {
         taskCustomerNameJLabel.setText(customerName);
         taskVendorNameJLabel.setText(orderDetails.getVendorName());
         taskOrderIdJLabel.setText("#" + orderDetails.getOrderId());
+        taskDeliveryLocationJLabel.setText(orderDetails.getDeliveryLocation());
 
         StringBuilder foodItemsStringBuilder = new StringBuilder();
 

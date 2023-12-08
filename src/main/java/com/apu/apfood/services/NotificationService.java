@@ -40,8 +40,13 @@ public class NotificationService {
 
     private void extractDetailsFromContent(Notification notification) {
         String content = notification.getContent();
-        notification.setOrderId(extractOrderIdFromContent(content));
-        notification.setVendorName(extractVendorNameFromContent(content));
+        if (content.toLowerCase().contains("credit top up")) {
+            notification.setTransactionId(extractTransactionIdFromContent(content));
+            notification.setExtractedUserId(extractUserIdFromContent(content));
+        } else {
+            notification.setOrderId(extractOrderIdFromContent(content));
+            notification.setVendorName(extractVendorNameFromContent(content));
+        }
     }
 
     private String extractOrderIdFromContent(String content) {
@@ -94,5 +99,44 @@ public class NotificationService {
         }
 
         return amount;
+
+    }
+
+    private int extractTransactionIdFromContent(String content) {
+        String transactionIdPrefix = "transaction id: ";
+        int start = content.indexOf(transactionIdPrefix);
+        if (start == -1) {
+            return 0;
+        }
+        start += transactionIdPrefix.length();
+        int end = content.indexOf("]", start);
+        if (end == -1) {
+            return 0;
+        }
+
+        try {
+            return Integer.parseInt(content.substring(start, end).trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private int extractUserIdFromContent(String content) {
+        String userIdPrefix = "user id: ";
+        int start = content.indexOf(userIdPrefix);
+        if (start == -1) {
+            return 0;
+        }
+        start += userIdPrefix.length();
+        int end = content.indexOf(",", start);
+        if (end == -1) {
+            return 0;
+        }
+
+        try {
+            return Integer.parseInt(content.substring(start, end).trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

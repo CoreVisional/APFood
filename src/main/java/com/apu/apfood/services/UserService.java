@@ -26,6 +26,7 @@ public class UserService {
 
     public UserService() {
     }
+    private static int lastAssignedAdminId = 0;
 
     public UserService(UserDao userDao) {
         this.userDao = userDao;
@@ -181,5 +182,32 @@ public class UserService {
     public boolean isCustomer(int userId) {
         User user = userDao.getUserById(userId);
         return user != null && "customer".equalsIgnoreCase(user.getRole());
+    }
+    
+    public List<User> getAllAdmins() {
+        return userDao.getAllUsers().stream()
+                      .filter(user -> "admin".equalsIgnoreCase(user.getRole()))
+                      .collect(Collectors.toList());
+    }
+    
+    public User getNextAdmin() {
+        List<User> admins = getAllAdmins();
+        if (admins.isEmpty()) {
+            return null;
+        }
+
+        // Round-robin assignment
+        int nextAdminIndex = 0;
+        if (lastAssignedAdminId != 0) {
+            for (int i = 0; i < admins.size(); i++) {
+                if (admins.get(i).getId() == lastAssignedAdminId) {
+                    nextAdminIndex = (i + 1) % admins.size();
+                    break;
+                }
+            }
+        }
+
+        lastAssignedAdminId = admins.get(nextAdminIndex).getId();
+        return admins.get(nextAdminIndex);
     }
 }
