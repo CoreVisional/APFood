@@ -6,3 +6,4 @@ id| userId| name| email| password| role
 5| 5| Alice Johnson| 123@123.com| qweqweqwe| runner
 6| 6| Jilbert Gustin| zxc@zxc.com| qweqweqwe| runner
 7| 7| Gil Bin| zxcc@zxc.com| qweqweqwe| runner
+8| 8| Columbus| columbus@gmail.com| col12345| admin
