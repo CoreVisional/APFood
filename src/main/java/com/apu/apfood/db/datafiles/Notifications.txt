@@ -16,4 +16,8 @@ id| userId| content| status| type
 15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
 16| 3| Order has been placed| Unnotified| Informational
 17| 3| Order has been accepted| Notified| Informational
-18| 1| Credit top up [user id: 3, transaction id: 1]| Notified| Transactional
+18| 1| Credit top up [user id: 2, transaction id: 1]| Notified| Transactional
+19| 2| Adam Smith requests for a credit top-up [user id: 1, amount: RM 10.00]| Unnotified| Push
+20| 8| Adam Smith requests for a credit top-up [user id: 1, amount: RM 50.00]| Unnotified| Push
+21| 1| Order has been placed [order id: 7, vendor name: Picante]| Unnotified| Transactional
+22| 3| New order received [order id: 7, vendor name: Picante]| Unnotified| Transactional
