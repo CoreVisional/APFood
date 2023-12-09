@@ -159,7 +159,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
     }
     
     public String getRunnerFeedback(String orderId, String vendorName) {
-        String feedback = "";
+        String feedback = "No feedback available";
         try {
             FileReader fr = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerFeedback.txt");
             BufferedReader br = new BufferedReader(fr);
@@ -206,6 +206,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                             String accountId = rowArray2[2];
                             String foodId = rowArray2[3];
                             String quantity = rowArray2[4];
+                            String deliveryLocation = rowArray2[11];
 
                             // Read vendor's menu
                             FileReader fr3 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Menu.txt");
@@ -229,6 +230,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                                         orderDetails.setAccountId(accountId);
                                         orderDetails.setOrderId(orderId);
                                         orderDetails.setVendorName(vendorName);
+                                        orderDetails.setDeliveryLocation(deliveryLocation);
 
                                         orderMap.put(key, orderDetails);
                                     }

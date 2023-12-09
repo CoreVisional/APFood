@@ -1,5 +1,7 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.db.dao.NotificationDao;
+import com.apu.apfood.db.enums.NotificationStatus;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.exceptions.CustomValidationException;
 import com.apu.apfood.gui.auth.AuthenticationManager;
@@ -26,28 +28,33 @@ import javax.swing.table.TableRowSorter;
 
 public class AdminForm extends javax.swing.JFrame {
 
+    private User adminUser;
     private UserService userService = new UserService();
     private Object[][] customerBalance;
     private Object[][] runnerAvailabilityList;
     private Object[][] allRegisteredUsers;
     private Object[][] noAdminRegisteredUsers;
     private Object[][] allVendors;
+    private Object[][] transactionNotifications;
 
     // Instantiate helpers classes
     private final ImageHelper imageHelper = new ImageHelper();
     private final GUIHelper guiHelper = new GUIHelper();
     private final TableHelper tableHelper = new TableHelper();
     private final AuthenticationManager authManager = new AuthenticationManager();
+    private final NotificationDao notificationDao = new NotificationDao();
 
     /**
      * Creates new form VendorFrame
      */
     public AdminForm(User user) {
+        this.adminUser = user;
         this.customerBalance = userService.getCustomerBalance();
         this.runnerAvailabilityList = userService.getAllRunnerAvailability();
         this.allRegisteredUsers = userService.getAllRegisteredUsers();
         this.noAdminRegisteredUsers = userService.getAllRegisteredUsers(true);
         this.allVendors = userService.getAllVendorNames();
+        this.transactionNotifications = userService.getAllRequestTopUpNotifications();
 
         initComponents();
         initCustomComponents();
@@ -60,6 +67,7 @@ public class AdminForm extends javax.swing.JFrame {
         guiHelper.panelSwitcher(registrationNavBtn, contentPanel, "adminRegistration");
         guiHelper.panelSwitcher(topUpCreditNavBtn, contentPanel, "adminTopUp");
         guiHelper.panelSwitcher(manageUsersNavBtn, contentPanel, "adminManageUsers");
+        guiHelper.panelSwitcher(notificationsNavBtn, contentPanel, "adminNotification");
 
         guiHelper.panelSwitcher(customerRoleSelectBtn, registrationFormPanel, "othersForm");
         guiHelper.panelSwitcher(runnerRoleSelectBtn, registrationFormPanel, "othersForm");
@@ -89,6 +97,7 @@ public class AdminForm extends javax.swing.JFrame {
         registrationNavBtn = new javax.swing.JButton();
         topUpCreditNavBtn = new javax.swing.JButton();
         manageUsersNavBtn = new javax.swing.JButton();
+        notificationsNavBtn = new javax.swing.JButton();
         adminLogoutJButton2 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
@@ -143,6 +152,8 @@ public class AdminForm extends javax.swing.JFrame {
         topUpPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         customerCreditBalanceJTable = new javax.swing.JTable();
+        jLabel32 = new javax.swing.JLabel();
+        topUpSearchField = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
@@ -154,6 +165,10 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         creditTopUpTextField = new javax.swing.JTextField();
         creditConfirmBtn = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         adminManageUsersPanel = new javax.swing.JPanel();
         manageUsersPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -172,6 +187,22 @@ public class AdminForm extends javax.swing.JFrame {
         searchField = new javax.swing.JTextField();
         jLabel31 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
+        adminNotificationsPanel = new javax.swing.JPanel();
+        topUpPanel1 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        notificationsJTable = new javax.swing.JTable();
+        jLabel33 = new javax.swing.JLabel();
+        notificationSearchField = new javax.swing.JTextField();
+        jLabel34 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel36 = new javax.swing.JLabel();
+        notificationNameTextField = new javax.swing.JTextField();
+        jLabel37 = new javax.swing.JLabel();
+        notificationUserIdTextField = new javax.swing.JTextField();
+        jLabel38 = new javax.swing.JLabel();
+        notificationAmountTextField = new javax.swing.JTextField();
+        notificationRejectBtn = new javax.swing.JButton();
+        notificationConfirmBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -236,7 +267,20 @@ public class AdminForm extends javax.swing.JFrame {
         });
         jPanel3.add(manageUsersNavBtn);
 
-        adminLogoutJButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        notificationsNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        notificationsNavBtn.setForeground(new java.awt.Color(255, 255, 255));
+        notificationsNavBtn.setText("Notifications");
+        notificationsNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        notificationsNavBtn.setFocusPainted(false);
+        notificationsNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationsNavBtnActionPerformed(evt);
+            }
+        });
+        jPanel3.add(notificationsNavBtn);
+
+        adminLogoutJButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        adminLogoutJButton2.setForeground(new java.awt.Color(255, 255, 255));
         adminLogoutJButton2.setText("Log Out");
         adminLogoutJButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -250,14 +294,11 @@ public class AdminForm extends javax.swing.JFrame {
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(APFoodLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(adminLogoutJButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(APFoodLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
-            .addGroup(sidePanelLayout.createSequentialGroup()
-                .addGap(60, 60, 60)
-                .addComponent(adminLogoutJButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         sidePanelLayout.setVerticalGroup(
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,7 +340,7 @@ public class AdminForm extends javax.swing.JFrame {
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1090, Short.MAX_VALUE)
+                .addContainerGap(1084, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addGap(32, 32, 32)
                 .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -463,49 +504,51 @@ public class AdminForm extends javax.swing.JFrame {
         adminHomePanel.setLayout(adminHomePanelLayout);
         adminHomePanelLayout.setHorizontalGroup(
             adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(adminHomePanelLayout.createSequentialGroup()
-                .addGap(83, 83, 83)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
-                .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
-                        .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(51, 51, 51))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(205, 205, 205))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(375, Short.MAX_VALUE)
                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(352, 352, 352))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
-                .addGap(246, 246, 246)
+                .addGap(234, 234, 234)
                 .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(202, 202, 202))
+                .addGap(201, 201, 201))
+            .addGroup(adminHomePanelLayout.createSequentialGroup()
+                .addGap(86, 86, 86)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(66, 66, 66))
+                        .addGroup(adminHomePanelLayout.createSequentialGroup()
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap()))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, adminHomePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(211, 211, 211))))
         );
         adminHomePanelLayout.setVerticalGroup(
             adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(adminHomePanelLayout.createSequentialGroup()
                 .addGap(54, 54, 54)
                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(91, 91, 91)
+                .addGap(45, 45, 45)
                 .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel24)
                     .addComponent(jLabel25))
                 .addGap(29, 29, 29)
-                .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(adminHomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(adminHomePanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel23)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         contentPanel.add(adminHomePanel, "adminHome");
@@ -885,21 +928,41 @@ public class AdminForm extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(customerCreditBalanceJTable);
 
+        jLabel32.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel32.setText("Search");
+
+        topUpSearchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                topUpSearchFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout topUpPanelLayout = new javax.swing.GroupLayout(topUpPanel);
         topUpPanel.setLayout(topUpPanelLayout);
         topUpPanelLayout.setHorizontalGroup(
             topUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topUpPanelLayout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addGroup(topUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(topUpPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(topUpSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, topUpPanelLayout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
         topUpPanelLayout.setVerticalGroup(
             topUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topUpPanelLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topUpPanelLayout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addGroup(topUpPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(topUpSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel32))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addGap(22, 22, 22))
         );
 
         jLabel14.setBackground(new java.awt.Color(255, 255, 255));
@@ -931,7 +994,7 @@ public class AdminForm extends javax.swing.JFrame {
         creditBalanceTextField.setEnabled(false);
 
         jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel22.setText("Top Up:");
+        jLabel22.setText("Amount:");
 
         creditTopUpTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
@@ -943,32 +1006,75 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton3.setText("+10");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton1.setText("+20");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton2.setText("+30");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton4.setText("+40");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(creditConfirmBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(creditConfirmBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(creditUserIdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                                    .addComponent(creditNameTextField)
+                                    .addComponent(creditBalanceTextField)
+                                    .addComponent(creditTopUpTextField))))
+                        .addGap(23, 23, 23))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(creditUserIdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                            .addComponent(creditNameTextField)
-                            .addComponent(creditBalanceTextField)
-                            .addComponent(creditTopUpTextField))))
-                .addGap(23, 23, 23))
+                        .addComponent(jButton3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
+                        .addGap(24, 24, 24)
+                        .addComponent(jButton2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton4)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(16, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(creditUserIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel21))
@@ -984,9 +1090,15 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(creditTopUpTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel22))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addComponent(creditConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+                .addGap(36, 36, 36)
+                .addComponent(creditConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout adminTopUpCreditPanelLayout = new javax.swing.GroupLayout(adminTopUpCreditPanel);
@@ -1009,14 +1121,11 @@ public class AdminForm extends javax.swing.JFrame {
             .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
                 .addGap(54, 54, 54)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
                 .addGroup(adminTopUpCreditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(adminTopUpCreditPanelLayout.createSequentialGroup()
-                        .addGap(126, 126, 126)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(141, Short.MAX_VALUE))
+                    .addComponent(topUpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
         contentPanel.add(adminTopUpCreditPanel, "adminTopUp");
@@ -1222,6 +1331,206 @@ public class AdminForm extends javax.swing.JFrame {
 
         contentPanel.add(adminManageUsersPanel, "adminManageUsers");
 
+        topUpPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        notificationsJTable.setModel(new javax.swing.table.DefaultTableModel(
+            this.transactionNotifications,
+            new String [] {
+                "ID", "Message"
+            }
+        )
+        {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        notificationsJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
+        notificationsJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        notificationsJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        notificationsJTable.setShowGrid(true);
+        JTableHeader notificationsJTableHeader = notificationsJTable.getTableHeader();
+        notificationsJTableHeader.setPreferredSize(new Dimension(20, 40));
+        notificationsJTable.setRowHeight(40);
+        tableHelper.centerTableValues(notificationsJTable);
+        notificationsJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                notificationsJTableMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(notificationsJTable);
+
+        jLabel33.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel33.setText("Search");
+
+        notificationSearchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationSearchFieldActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout topUpPanel1Layout = new javax.swing.GroupLayout(topUpPanel1);
+        topUpPanel1.setLayout(topUpPanel1Layout);
+        topUpPanel1Layout.setHorizontalGroup(
+            topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topUpPanel1Layout.createSequentialGroup()
+                .addGroup(topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(topUpPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(notificationSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, topUpPanel1Layout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 715, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(60, Short.MAX_VALUE))
+        );
+        topUpPanel1Layout.setVerticalGroup(
+            topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topUpPanel1Layout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addGroup(topUpPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel33))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
+        );
+
+        jLabel34.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel34.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel34.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel34.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel34.setText("Notifications");
+        jLabel34.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel36.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel36.setText("Name:");
+
+        notificationNameTextField.setEditable(false);
+        notificationNameTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        notificationNameTextField.setEnabled(false);
+
+        jLabel37.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel37.setText("User ID:");
+
+        notificationUserIdTextField.setEditable(false);
+        notificationUserIdTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        notificationUserIdTextField.setEnabled(false);
+
+        jLabel38.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel38.setText("Amount:");
+
+        notificationAmountTextField.setEditable(false);
+        notificationAmountTextField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        notificationRejectBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        notificationRejectBtn.setText("Reject");
+        notificationRejectBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationRejectBtnActionPerformed(evt);
+            }
+        });
+
+        notificationConfirmBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        notificationConfirmBtn.setText("Approve");
+        notificationConfirmBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                notificationConfirmBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(notificationRejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(notificationConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(notificationUserIdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                            .addComponent(notificationNameTextField)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(notificationAmountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(23, 23, 23))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationUserIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel37))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel36))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationAmountTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel38))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(notificationRejectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(notificationConfirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(155, 155, 155))
+        );
+
+        javax.swing.GroupLayout adminNotificationsPanelLayout = new javax.swing.GroupLayout(adminNotificationsPanel);
+        adminNotificationsPanel.setLayout(adminNotificationsPanelLayout);
+        adminNotificationsPanelLayout.setHorizontalGroup(
+            adminNotificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                .addContainerGap(375, Short.MAX_VALUE)
+                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(352, 352, 352))
+            .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                .addGap(94, 94, 94)
+                .addComponent(topUpPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(37, 37, 37))
+        );
+        adminNotificationsPanelLayout.setVerticalGroup(
+            adminNotificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                .addGap(54, 54, 54)
+                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(adminNotificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(topUpPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(adminNotificationsPanelLayout.createSequentialGroup()
+                        .addGap(159, 159, 159)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(135, Short.MAX_VALUE))
+        );
+
+        contentPanel.add(adminNotificationsPanel, "adminNotification");
+
         mainPanel.add(contentPanel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
@@ -1387,13 +1696,13 @@ public class AdminForm extends javax.swing.JFrame {
             try {
                 double topUpAmount = Double.parseDouble(topUpText);
 
-                userService.addTopUpTransaction(customerId, topUpText, "Top up");
+                userService.addTopUpTransaction(customerId, String.valueOf(adminUser.getId()), topUpText, "Top up");
                 tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
                 tableHelper.centerTableValues(customerCreditBalanceJTable);
                 double value = Double.parseDouble(currentBalance) + topUpAmount;
                 creditBalanceTextField.setText(String.valueOf(value));
 
-                int choice = JOptionPane.showConfirmDialog(this, "Do you want to generate a receipt?", "Generate receipt", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(this, "Do you want to view the receipt?", "View receipt", JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     // Create the receipt content
                     String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: Top Up",
@@ -1493,6 +1802,7 @@ public class AdminForm extends javax.swing.JFrame {
         tableHelper.refreshTable(manageUsersJTable, userService.getAllRegisteredUsers(true), new String[]{
             "ID", "Name", "Email", "Password", "Role"
         });
+        tableHelper.centerTableValues(manageUsersJTable);
         manageUserIdTextField.setText("");
         manageUserNameTextField.setText("");
         manageUserEmailTextField.setText("");
@@ -1512,6 +1822,7 @@ public class AdminForm extends javax.swing.JFrame {
         tableHelper.refreshTable(manageUsersJTable, userService.getAllRegisteredUsers(true), new String[]{
             "ID", "Name", "Email", "Password", "Role"
         });
+        tableHelper.centerTableValues(manageUsersJTable);
         manageUserIdTextField.setText("");
         manageUserNameTextField.setText("");
         manageUserEmailTextField.setText("");
@@ -1531,8 +1842,229 @@ public class AdminForm extends javax.swing.JFrame {
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
-        // TODO add your handling code here:
+        tableHelper.refreshTable(runnerAvailabilityJTable, userService.getAllRunnerAvailability(), new String[]{"Name", "Delivery Runner Id", "Status"});
+        tableHelper.centerTableValues(runnerAvailabilityJTable);
     }//GEN-LAST:event_homeNavBtnActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        String customerId = creditUserIdTextField.getText();
+        String customerName = creditNameTextField.getText();
+        String currentBalance = creditBalanceTextField.getText();
+
+        // Check if any of the fields are empty
+        if (customerId.isEmpty() || customerName.isEmpty() || currentBalance.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+
+                userService.addTopUpTransaction(customerId, String.valueOf(adminUser.getId()), "40", "Top up");
+                tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
+                tableHelper.centerTableValues(customerCreditBalanceJTable);
+                double value = Double.parseDouble(currentBalance) + 40;
+                creditBalanceTextField.setText(String.valueOf(value));
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String customerId = creditUserIdTextField.getText();
+        String customerName = creditNameTextField.getText();
+        String currentBalance = creditBalanceTextField.getText();
+
+        // Check if any of the fields are empty
+        if (customerId.isEmpty() || customerName.isEmpty() || currentBalance.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+
+                userService.addTopUpTransaction(customerId, String.valueOf(adminUser.getId()), "10", "Top up");
+                tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
+                tableHelper.centerTableValues(customerCreditBalanceJTable);
+                double value = Double.parseDouble(currentBalance) + 10;
+                creditBalanceTextField.setText(String.valueOf(value));
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String customerId = creditUserIdTextField.getText();
+        String customerName = creditNameTextField.getText();
+        String currentBalance = creditBalanceTextField.getText();
+
+        // Check if any of the fields are empty
+        if (customerId.isEmpty() || customerName.isEmpty() || currentBalance.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+
+                userService.addTopUpTransaction(customerId, String.valueOf(adminUser.getId()), "20", "Top up");
+                tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
+                tableHelper.centerTableValues(customerCreditBalanceJTable);
+                double value = Double.parseDouble(currentBalance) + 20;
+                creditBalanceTextField.setText(String.valueOf(value));
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String customerId = creditUserIdTextField.getText();
+        String customerName = creditNameTextField.getText();
+        String currentBalance = creditBalanceTextField.getText();
+
+        // Check if any of the fields are empty
+        if (customerId.isEmpty() || customerName.isEmpty() || currentBalance.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+
+                userService.addTopUpTransaction(customerId, String.valueOf(adminUser.getId()), "30", "Top up");
+                tableHelper.refreshTable(customerCreditBalanceJTable, userService.getCustomerBalance(), new String[]{"Customer ID", "Customer Name", "Current Balance"});
+                tableHelper.centerTableValues(customerCreditBalanceJTable);
+                double value = Double.parseDouble(currentBalance) + 30;
+                creditBalanceTextField.setText(String.valueOf(value));
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void topUpSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topUpSearchFieldActionPerformed
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(customerCreditBalanceJTable.getModel());
+        customerCreditBalanceJTable.setRowSorter(sorter);
+
+        String text = topUpSearchField.getText();
+        if (text.trim().length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+        }
+    }//GEN-LAST:event_topUpSearchFieldActionPerformed
+
+    private void notificationsJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationsJTableMouseClicked
+        int row = notificationsJTable.getSelectedRow();
+
+        String id = (String) notificationsJTable.getModel().getValueAt(row, 0);
+        String[] notificationDetails = userService.retrieveNotificationDetails(id);
+        String userId = notificationDetails[0];
+        String userName = notificationDetails[1];
+        String amount = notificationDetails[2];
+
+        notificationUserIdTextField.setText(userId);
+        notificationNameTextField.setText(userName);
+        notificationAmountTextField.setText(amount);
+
+    }//GEN-LAST:event_notificationsJTableMouseClicked
+
+    private void notificationSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationSearchFieldActionPerformed
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(notificationsJTable.getModel());
+        notificationsJTable.setRowSorter(sorter);
+
+        String text = notificationSearchField.getText();
+        if (text.trim().length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+        }
+    }//GEN-LAST:event_notificationSearchFieldActionPerformed
+
+    private void notificationRejectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationRejectBtnActionPerformed
+        int row = notificationsJTable.getSelectedRow();
+        int notificationId = Integer.parseInt((String) notificationsJTable.getModel().getValueAt(row, 0));
+        notificationDao.updateNotificationStatus(notificationId, NotificationStatus.NOTIFIED);
+
+        tableHelper.refreshTable(notificationsJTable, userService.getAllRequestTopUpNotifications(), new String[]{"ID", "Message"});
+        tableHelper.centerTableValues(notificationsJTable);
+
+        notificationUserIdTextField.setText("");
+        notificationNameTextField.setText("");
+        notificationAmountTextField.setText("");
+
+    }//GEN-LAST:event_notificationRejectBtnActionPerformed
+
+    private void notificationsNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationsNavBtnActionPerformed
+        tableHelper.refreshTable(notificationsJTable, userService.getAllRequestTopUpNotifications(), new String[]{"ID", "Message"});
+        tableHelper.centerTableValues(notificationsJTable);
+    }//GEN-LAST:event_notificationsNavBtnActionPerformed
+
+    private void notificationConfirmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notificationConfirmBtnActionPerformed
+        int row = notificationsJTable.getSelectedRow();
+
+        int notificationId = Integer.parseInt((String) notificationsJTable.getModel().getValueAt(row, 0));
+        String customerId = notificationUserIdTextField.getText();
+        String customerName = notificationNameTextField.getText();
+        String topUpText = notificationAmountTextField.getText();
+
+        // Check if any of the fields are empty
+        if (customerId.isEmpty() || customerName.isEmpty() || topUpText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                double topUpAmount = Double.parseDouble(topUpText);
+                userService.addTopUpTransaction(customerId, String.valueOf(adminUser.getId()), topUpText, "Top up");
+
+                notificationDao.updateNotificationStatus(notificationId, NotificationStatus.NOTIFIED);
+                tableHelper.refreshTable(notificationsJTable, userService.getAllRequestTopUpNotifications(), new String[]{"ID", "Message"});
+                tableHelper.centerTableValues(notificationsJTable);
+
+                notificationUserIdTextField.setText("");
+                notificationNameTextField.setText("");
+                notificationAmountTextField.setText("");
+
+                int choice = JOptionPane.showConfirmDialog(this, "Do you want to view the receipt?", "View receipt", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    // Create the receipt content
+                    String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: Top Up",
+                            customerName,
+                            topUpAmount,
+                            LocalDate.now(),
+                            LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm a")));
+
+                    // Show the receipt in a popup
+                    JTextArea textArea = new JTextArea(receiptContent);
+                    textArea.setEditable(false);
+
+                    // Set a monospaced font and increase the font size
+                    textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+                    // Set the text area background and foreground colors
+                    textArea.setBackground(new Color(240, 240, 240)); // Light gray background
+                    textArea.setForeground(Color.BLACK); // Black text
+
+                    // Add padding to the text area
+                    textArea.setBorder(BorderFactory.createCompoundBorder(
+                            textArea.getBorder(),
+                            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+                    // Enable line wrapping and wrap by words
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(350, 150));
+                    JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Top up value should be numerical.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_notificationConfirmBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1560,6 +2092,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel adminHomePanel;
     private javax.swing.JButton adminLogoutJButton2;
     private javax.swing.JPanel adminManageUsersPanel;
+    private javax.swing.JPanel adminNotificationsPanel;
     private javax.swing.JPanel adminRegistrationPanel;
     private javax.swing.JButton adminRoleSelectBtn;
     private javax.swing.JPanel adminTopUpCreditPanel;
@@ -1577,6 +2110,10 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel emailJLabel;
     private javax.swing.JTextField emailTextField;
     private javax.swing.JButton homeNavBtn;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1601,6 +2138,12 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
@@ -1609,8 +2152,10 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
@@ -1626,6 +2171,14 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel manageUsersPanel;
     private javax.swing.JLabel nameJLabel;
     private javax.swing.JTextField nameTextField;
+    private javax.swing.JTextField notificationAmountTextField;
+    private javax.swing.JButton notificationConfirmBtn;
+    private javax.swing.JTextField notificationNameTextField;
+    private javax.swing.JButton notificationRejectBtn;
+    private javax.swing.JTextField notificationSearchField;
+    private javax.swing.JTextField notificationUserIdTextField;
+    private javax.swing.JTable notificationsJTable;
+    private javax.swing.JButton notificationsNavBtn;
     private javax.swing.JButton othersCreateUserBtn;
     private javax.swing.JTextField othersEmailTextField;
     private javax.swing.JTextField othersNameTextField;
@@ -1643,6 +2196,8 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JPanel topBarPanel;
     private javax.swing.JButton topUpCreditNavBtn;
     private javax.swing.JPanel topUpPanel;
+    private javax.swing.JPanel topUpPanel1;
+    private javax.swing.JTextField topUpSearchField;
     private javax.swing.JButton vendorCreateUserBtn;
     private javax.swing.JTextField vendorNameTextField;
     private javax.swing.JPanel vendorRegistrationPanel;

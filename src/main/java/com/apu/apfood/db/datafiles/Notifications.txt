@@ -1,69 +1,7 @@
 id| userId| content| status| type
-1| 1| Order has been placed [order id: 1, vendor name: Modesto]| Notified| Transactional
-2| 1| Order has been accepted [order id: 1, vendor name: Modesto]| Notified| Informational
-3| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
-4| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
-5| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
-6| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
-7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
-8| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
-9| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
-10| 1| Credit top up [user id: 1]| Notified| Transactional
-11| 12| Credit top up [user id: 12]| Unnotified| Transactional
-12| 12| Credit top up [user id: 12]| Unnotified| Transactional
-13| 12| Credit top up [user id: 12]| Unnotified| Transactional
-14| 12| Credit top up [user id: 12]| Unnotified| Transactional
-15| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
-16| 3| Order has been placed| Notified| Informational
-17| 3| Order has been accepted| Notified| Informational
-18| 1| Credit top up| Notified| Transactional
-19| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
-20| 1| Order has been placed [order id: 5, vendor name: Picante]| Notified| Transactional
-21| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
-22| 1| Order has been placed [order id: 5, vendor name: Picante]| Notified| Transactional
-23| 1| Order has been placed [order id: 5, vendor name: Picante]| Notified| Transactional
-24| 1| Order has been placed [order id: 5, vendor name: Picante]| Unnotified| Transactional
-25| 1| Order has been placed [order id: 6, vendor name: Picante]| Unnotified| Transactional
-26| 1| Order has been placed [order id: 7, vendor name: Picante]| Notified| Transactional
-27| 1| Order has been placed [order id: 8, vendor name: Picante]| Unnotified| Transactional
-28| 1| Order has been placed [order id: 9, vendor name: Picante]| Unnotified| Transactional
-29| 1| Order has been placed [order id: 10, vendor name: Picante]| Notified| Transactional
-30| 1| Order has been placed [order id: 11, vendor name: Picante]| Unnotified| Transactional
-31| 1| Order has been placed [order id: 12, vendor name: Picante]| Unnotified| Transactional
-32| 1| Order has been placed [order id: 13, vendor name: Picante]| Unnotified| Transactional
-33| 1| Order has been placed [order id: 14, vendor name: Picante]| Unnotified| Transactional
-34| 1| Credit top up [user id: 1]| Notified| Transactional
-35| 1| Credit top up [user id: 1]| Notified| Transactional
-36| 1| Credit top up [user id: 1]| Notified| Transactional
-37| 1| Credit top up [user id: 1]| Notified| Transactional
-38| 1| Order has been placed [order id: 1, vendor name: Modesto]| Unnotified| Transactional
-39| 1| Order has been placed [order id: 1, vendor name: Modesto]| Unnotified| Transactional
-40| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-41| 1| Order has been accepted [order id: 1, vendor name: Picante]| Unnotified| Informational
-42| 1| Order has been sent for delivery [order id: 1, vendor name: Picante]| Unnotified| Informational
-43| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-44| 1| Order has been accepted [order id: 1, vendor name: Picante]| Unnotified| Informational
-45| 1| Order has been sent for delivery [order id: 1, vendor name: Picante]| Unnotified| Informational
-46| 1| Order has been placed [order id: 2, vendor name: Picante]| Unnotified| Transactional
-47| 1| Order has been accepted [order id: 2, vendor name: Picante]| Unnotified| Informational
-48| 1| Order has been sent for delivery [order id: 2, vendor name: Picante]| Unnotified| Informational
-49| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-50| 1| Credit top up [user id: 1]| Unnotified| Transactional
-51| 1| Credit top up [user id: 1]| Unnotified| Transactional
-52| 1| Credit top up [user id: 1]| Unnotified| Transactional
-53| 1| Credit top up [user id: 1]| Unnotified| Transactional
-54| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-55| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-56| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-57| 1| Order has been placed [order id: 2, vendor name: Picante]| Unnotified| Transactional
-58| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-59| 1| Order has been placed [order id: 2, vendor name: Picante]| Unnotified| Transactional
-60| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-61| 1| Order has been placed [order id: 1, vendor name: Picante]| Unnotified| Transactional
-62| 1| Credit top up [user id: 1]| Unnotified| Transactional
-63| 1| Credit top up [user id: 1]| Unnotified| Transactional
-64| 1| Credit top up [user id: 1]| Unnotified| Transactional
-65| 1| Order has been placed [order id: 2, vendor name: Picante]| Unnotified| Transactional
-66| 1| Order has been accepted [order id: 1, vendor name: Picante]| Unnotified| Informational
-67| 1| Order has been sent for delivery [order id: 1, vendor name: Picante]| Unnotified| Informational
-68| 1| Delivery ongoing [order id: 1, vendor name: Picante]| Unnotified| Informational
+1| 1| Credit top up [user id:5, transaction id: 1]| Unnotified| Transactional
+2| 1| Credit top up [user id:5, transaction id: 2]| Unnotified| Transactional
+3| 1| Credit top up [user id:5, transaction id: 3]| Unnotified| Transactional
+4| 1| Credit top up [user id:5, transaction id: 4]| Unnotified| Transactional
+5| 1| Credit top up [user id:5, transaction id: 5]| Unnotified| Transactional
+6| 1| Credit top up [user id:5, transaction id: 6]| Unnotified| Transactional

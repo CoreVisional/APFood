@@ -38,6 +38,8 @@ public class OrderService {
             return;
         }
 
+        int vendorUserId = vendorService.getVendorUserId(vendorName);
+
         boolean isUserSubscribed = subscriptionService.isUserSubscribed(userId);
 
         orders.forEach(order -> {
@@ -46,11 +48,16 @@ public class OrderService {
 
         orderDao.addOrders(orders, vendorName);
 
-        // Send notification to vendor with the necessary details
+        // Send notification to the customer
         int orderId = orders.get(0).getOrderId();
-        String notificationContent = "Order has been placed [order id: " + orderId + ", vendor name: " + vendorName + "]";
-        Notification notification = new Notification(userId, notificationContent, NotificationType.TRANSACTIONAL);
-        notificationService.addNotification(notification);
+        String customerNotificationContent = "Order has been placed [order id: " + orderId + ", vendor name: " + vendorName + "]";
+        notificationService.addNotification(new Notification(userId, customerNotificationContent, NotificationType.TRANSACTIONAL));
+
+        // Send notification to the vendor
+        if (vendorUserId != -1) { // Check if vendor user ID was found
+            String vendorNotificationContent = "New order received [order id: " + orderId + ", vendor name: " + vendorName + "]";
+            notificationService.addNotification(new Notification(vendorUserId, vendorNotificationContent, NotificationType.TRANSACTIONAL));
+        }
     }
 
     public Map<String, List<Order>> getUserOrdersGrouped(int userId, List<OrderStatus> statuses) {

@@ -4,8 +4,13 @@ import com.apu.apfood.db.dao.NotificationDao;
 import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.TransactionDao;
 import com.apu.apfood.db.dao.UserDao;
+import com.apu.apfood.db.enums.NotificationStatus;
+import com.apu.apfood.db.models.Notification;
+import com.apu.apfood.db.models.Transaction;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.exceptions.CustomValidationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -17,9 +22,11 @@ public class UserService {
     private final RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
     private final TransactionDao transactionDao = new TransactionDao();
     private final NotificationDao notificationDao = new NotificationDao();
+    private final NotificationService notificationService = new NotificationService(notificationDao);
 
     public UserService() {
     }
+    private static int lastAssignedAdminId = 0;
 
     public UserService(UserDao userDao) {
         this.userDao = userDao;
@@ -46,6 +53,48 @@ public class UserService {
 
     public Object[][] getAllVendorNames() {
         return userDao.getAllVendor();
+    }
+
+    public Object[][] getAllRequestTopUpNotifications() {
+        List<Notification> allNotifications = notificationDao.getAllNotifications();
+        List<Object[]> creditTopUpNotifications = allNotifications.stream()
+                .filter(notification -> notification.getContent().contains("requests for a credit top-up"))
+                .filter(notification -> notification.getNotificationStatus().equals(NotificationStatus.UNNOTIFIED))
+                .map(notification -> {
+                    String content = notification.getContent();
+                    String formattedContent = content.substring(0, content.indexOf("[")).trim();
+                    formattedContent = formattedContent.substring(0, formattedContent.lastIndexOf(" "));
+                    String amount = content.replaceAll(".*amount: (RM [\\d.]+).*", "$1"); // Extracts the amount part
+
+                    return new Object[]{
+                        String.valueOf(notification.getId()),
+                        formattedContent + " of " + amount,};
+                })
+                .collect(Collectors.toList());
+
+        // Convert to Object[][]
+        Object[][] creditTopUpNotificationsArray = new Object[creditTopUpNotifications.size()][];
+        for (int i = 0; i < creditTopUpNotifications.size(); i++) {
+            creditTopUpNotificationsArray[i] = creditTopUpNotifications.get(i);
+        }
+
+        return creditTopUpNotificationsArray;
+
+    }
+
+    public String[] retrieveNotificationDetails(String notificationId) {
+        List<Notification> allNotifications = notificationDao.getAllNotifications();
+        Notification creditTopUpNotifications = allNotifications.stream()
+                .filter(notification -> notification.getId() == Integer.parseInt(notificationId))
+                .findFirst()
+                .orElse(null); // Returns null if no matching notification is found
+        String notificationContent = creditTopUpNotifications.getContent();
+        String userId = notificationService.extractUserId(notificationContent);
+        String amount = notificationService.extractAmount(notificationContent);
+        String userName = userDao.getUserName(userId);
+        
+        
+        return new String[]{userId, userName, amount};
     }
 
     public void removeUser(String id) {
@@ -106,9 +155,13 @@ public class UserService {
         return userDao.getCustomerCreditDetails();
     }
 
-    public void addTopUpTransaction(String userId, String amount, String remark) {
-        transactionDao.writeTransaction(userId, amount, remark);
-        notificationDao.writeNotification(userId, "Credit top up [user id: " + userId + "]", "Unnotified", "Transactional");
+    public void addTopUpTransaction(String customerId, String adminId, String amount, String remark) {
+        transactionDao.writeTransaction(customerId, amount, remark);
+        List<Transaction> transactions = transactionDao.getAllTransactions();
+        Transaction lastTransaction = transactions.get(transactions.size() - 1);
+        String transactionId = String.valueOf(lastTransaction.getId());
+        System.out.println(transactionId);
+        notificationDao.writeNotification(customerId, "Credit top up [user id: " + adminId + ", transaction id: " + transactionId + "]", "Unnotified", "Transactional");
     }
 
     public static String sanitizeEmail(String email) {
@@ -129,5 +182,32 @@ public class UserService {
     public boolean isCustomer(int userId) {
         User user = userDao.getUserById(userId);
         return user != null && "customer".equalsIgnoreCase(user.getRole());
+    }
+    
+    public List<User> getAllAdmins() {
+        return userDao.getAllUsers().stream()
+                      .filter(user -> "admin".equalsIgnoreCase(user.getRole()))
+                      .collect(Collectors.toList());
+    }
+    
+    public User getNextAdmin() {
+        List<User> admins = getAllAdmins();
+        if (admins.isEmpty()) {
+            return null;
+        }
+
+        // Round-robin assignment
+        int nextAdminIndex = 0;
+        if (lastAssignedAdminId != 0) {
+            for (int i = 0; i < admins.size(); i++) {
+                if (admins.get(i).getId() == lastAssignedAdminId) {
+                    nextAdminIndex = (i + 1) % admins.size();
+                    break;
+                }
+            }
+        }
+
+        lastAssignedAdminId = admins.get(nextAdminIndex).getId();
+        return admins.get(nextAdminIndex);
     }
 }

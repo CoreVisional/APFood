@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -30,6 +32,13 @@ public class UserDao extends APFoodDao<User> {
     
     public User getUserById(int id) {
         return getById(id);
+    }
+    
+    public List<User> getAllUsers() {
+        List<String[]> rawData = super.getAll();
+        return rawData.stream()
+                      .map(this::deserialize)
+                      .collect(Collectors.toList());
     }
 
     @Override

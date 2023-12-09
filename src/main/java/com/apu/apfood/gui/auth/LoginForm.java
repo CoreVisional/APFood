@@ -59,6 +59,7 @@ public class LoginForm extends javax.swing.JFrame {
         emailInput = new javax.swing.JTextField();
         emailLabel = new javax.swing.JLabel();
         passwordInput = new javax.swing.JPasswordField();
+        showPasswordJCheckBox = new javax.swing.JCheckBox();
 
         jMenu1.setText("jMenu1");
 
@@ -126,6 +127,13 @@ public class LoginForm extends javax.swing.JFrame {
         passwordInput.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         passwordInput.setToolTipText("************");
 
+        showPasswordJCheckBox.setText("Show Password");
+        showPasswordJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showPasswordJCheckBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -138,16 +146,15 @@ public class LoginForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(passwordInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(emailInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(emailInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(signInBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(238, 238, 238))))
+                        .addComponent(signInBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(showPasswordJCheckBox, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(238, 238, 238))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,7 +169,9 @@ public class LoginForm extends javax.swing.JFrame {
                 .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(passwordInput, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
+                .addGap(11, 11, 11)
+                .addComponent(showPasswordJCheckBox)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(signInBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -195,7 +204,7 @@ public class LoginForm extends javax.swing.JFrame {
         } else if (userObject.getRole().equals("customer")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new CustomerForm();
+            new CustomerForm(userObject); // Should pass in userObject
         } else if (userObject.getRole().equals("runner")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
@@ -212,6 +221,16 @@ public class LoginForm extends javax.swing.JFrame {
         emailInput.setText("");
         passwordInput.setText("");
     }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void showPasswordJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPasswordJCheckBoxActionPerformed
+        if (showPasswordJCheckBox.isSelected()) {
+            // If the checkbox is checked, show the password
+            passwordInput.setEchoChar((char) 0); // Display characters as is (no masking)
+        } else {
+            // If the checkbox is unchecked, hide the password
+            passwordInput.setEchoChar('*'); // Show password as asterisks (masked)
+        }
+    }//GEN-LAST:event_showPasswordJCheckBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -275,6 +294,7 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField passwordInput;
     private javax.swing.JLabel passwordLabel;
+    private javax.swing.JCheckBox showPasswordJCheckBox;
     private javax.swing.JButton signInBtn;
     // End of variables declaration//GEN-END:variables
 }

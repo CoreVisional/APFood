@@ -9,7 +9,7 @@ import com.apu.apfood.db.models.common.BaseModel;
  * @author Alex
  */
 public class Notification extends BaseModel {
-    private int userId;
+    private int userId, extractedUserId, transactionId;
     private String orderId, vendorName, content;
     private NotificationStatus notificationStatus = NotificationStatus.UNNOTIFIED;
     private NotificationType notificationType;
@@ -46,6 +46,22 @@ public class Notification extends BaseModel {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public int getExtractedUserId() {
+        return extractedUserId;
+    }
+
+    public void setExtractedUserId(int extractedUserId) {
+        this.extractedUserId = extractedUserId;
+    }
+
+    public int getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
     }
     
     public String getVendorName() {

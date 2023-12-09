@@ -105,13 +105,15 @@ public class CustomerForm extends javax.swing.JFrame {
     
     private final List<Object[]> cartItems = new ArrayList<>();
 
-    private int loggedInUserId;
+    private final User loggedInUser;
     private boolean isUserSubscribed;
     
     /**
      * Creates new form VendorFrame
+     * @param user The logged-in user object
      */
-    public CustomerForm() {
+    public CustomerForm(User user) {
+        this.loggedInUser = user;
         initComponents();
         initCustomComponents();
         
@@ -119,9 +121,7 @@ public class CustomerForm extends javax.swing.JFrame {
     }
 
     private void initCustomComponents () {
-        
-        loggedInUserId = 1;
-        isUserSubscribed = subscriptionService.isUserSubscribed(loggedInUserId);
+        isUserSubscribed = subscriptionService.isUserSubscribed(loggedInUser.getId());
         
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
@@ -143,7 +143,7 @@ public class CustomerForm extends javax.swing.JFrame {
     }
 
     private void updateCreditBalanceDisplay() {
-        String balance = transactionService.getTotalBalance(String.valueOf(loggedInUserId));
+        String balance = transactionService.getTotalBalance(String.valueOf(loggedInUser.getId()));
         userCreditBalanceLabel1.setText("RM " + balance);
         userCreditBalanceLabel2.setText("RM " + balance);
     }
@@ -155,7 +155,7 @@ public class CustomerForm extends javax.swing.JFrame {
             subscriptionStatusLabel.setText("Active");
             subscriptionStatusLabel.setForeground(new Color(0, 128, 0)); // Set text color to green
 
-            Subscription latestSubscription = subscriptionService.getLatestActiveSubscription(loggedInUserId);
+            Subscription latestSubscription = subscriptionService.getLatestActiveSubscription(loggedInUser.getId());
             if (latestSubscription != null) {
                 subscriptionValidityLabel.setText(latestSubscription.getSubscriptionEndDate().toString());
             }
@@ -185,6 +185,8 @@ public class CustomerForm extends javax.swing.JFrame {
         financeSidebarBtn = new javax.swing.JButton();
         notificationsSidebarBtn = new javax.swing.JButton();
         subscriptionsSidebarBtn = new javax.swing.JButton();
+        jPanel46 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         userFullNameLabel = new javax.swing.JLabel();
@@ -416,7 +418,22 @@ public class CustomerForm extends javax.swing.JFrame {
                 subscriptionsSidebarBtnMousePressed(evt);
             }
         });
+        subscriptionsSidebarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscriptionsSidebarBtnActionPerformed(evt);
+            }
+        });
         jPanel3.add(subscriptionsSidebarBtn);
+
+        jPanel46.setOpaque(false);
+        jPanel46.setLayout(new java.awt.BorderLayout());
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Logout");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.setFocusPainted(false);
+        jPanel46.add(jButton1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -424,10 +441,11 @@ public class CustomerForm extends javax.swing.JFrame {
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(apfoodTxtLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel46, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(apfoodTxtLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
         );
         sidePanelLayout.setVerticalGroup(
@@ -439,7 +457,9 @@ public class CustomerForm extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(428, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 362, Short.MAX_VALUE)
+                .addComponent(jPanel46, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -533,7 +553,6 @@ public class CustomerForm extends javax.swing.JFrame {
         userCreditBalanceLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         userCreditBalanceLabel1.setForeground(new java.awt.Color(255, 255, 255));
         userCreditBalanceLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        userCreditBalanceLabel1.setText("RM 0.00");
         userCreditBalanceLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
         jPanel22.add(userCreditBalanceLabel1, java.awt.BorderLayout.CENTER);
 
@@ -1539,6 +1558,11 @@ public class CustomerForm extends javax.swing.JFrame {
 
         topUpPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true), null));
         topUpPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        topUpPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                topUpPanelMousePressed(evt);
+            }
+        });
         topUpPanel.setLayout(new java.awt.BorderLayout(-20, 0));
 
         jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1566,7 +1590,6 @@ public class CustomerForm extends javax.swing.JFrame {
         userCreditBalanceLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         userCreditBalanceLabel2.setForeground(new java.awt.Color(255, 255, 255));
         userCreditBalanceLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        userCreditBalanceLabel2.setText("RM 0.00");
         userCreditBalanceLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
         jPanel36.add(userCreditBalanceLabel2, java.awt.BorderLayout.CENTER);
 
@@ -1576,11 +1599,11 @@ public class CustomerForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Amount", "Transaction Date", "Transaction Time", "Remarks", ""
+                "Amount", "Transaction Date", "Transaction Time", "Remarks"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Double.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+                java.lang.Double.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1590,11 +1613,6 @@ public class CustomerForm extends javax.swing.JFrame {
         transactionsTbl.setRowHeight(30);
         transactionsTbl.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         transactionsTbl.setShowGrid(true);
-        transactionsTbl.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                transactionsTblMousePressed(evt);
-            }
-        });
         jScrollPane5.setViewportView(transactionsTbl);
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
@@ -2046,7 +2064,7 @@ public class CustomerForm extends javax.swing.JFrame {
             deliveryFee = OrderService.getDeliveryFee(deliveryLocation);
         }
 
-        double discountAmount = orderService.calculateDiscountAmount(subtotal, loggedInUserId);
+        double discountAmount = orderService.calculateDiscountAmount(subtotal, loggedInUser.getId());
         double grandTotal = subtotal - discountAmount + deliveryFee;
 
         return new double[] { subtotal, discountAmount, deliveryFee, grandTotal };
@@ -2335,7 +2353,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
         // Prepare table data
         List<Object[]> tableData = transactions.stream()
-            .filter(transaction -> transaction.getUserId() == loggedInUserId)
+            .filter(transaction -> transaction.getUserId() == loggedInUser.getId())
             .map(transaction -> new Object[]{
                 String.format("RM %.2f", transaction.getAmount()),
                 transaction.getTransactionOn(),
@@ -2411,20 +2429,29 @@ public class CustomerForm extends javax.swing.JFrame {
         } else if (notification.getContent().toLowerCase().contains("delivery completed")) {
             boolean feedbackGiven = runnerTaskDao.hasFeedbackForOrder(Integer.parseInt(notification.getOrderId()), notification.getVendorName());       
             return feedbackGiven ? "Feedback Given" : "Give Feedback";
+        } else if (notification.getContent().toLowerCase().contains("credit top up")) {
+            return "Top Up Receipt Available to View";
         }
         return "";
+    }
+    
+
+    private String getUserFriendlyNotificationContent(String content) {
+        content = content.replaceAll("\\[order id: \\d+, vendor name: [^\\]]+\\]", "");
+        content = content.replaceAll("\\[user id: \\d+, transaction id: \\d+\\]", "");
+        return content;
     }
 
     private void displayNotifications() {
         List<Notification> notifications = notificationService.getNotifications()
                                                                .stream()
-                                                               .filter(notification -> notification.getUserId() == loggedInUserId)
+                                                               .filter(notification -> notification.getUserId() == loggedInUser.getId())
                                                                .collect(Collectors.toList());
         List<Object[]> tableData = new ArrayList<>();
 
         for (Notification notification : notifications) {
             String senderName = determineSenderName(notification);
-            String userFriendlyContent = notification.getContent().replaceAll("\\[order id: \\d+, vendor name: [^\\]]+\\]", "");
+            String userFriendlyContent = getUserFriendlyNotificationContent(notification.getContent());
             String actionText = getNotificationActionText(notification);
 
             tableData.add(new Object[] { notification.getId(), senderName, userFriendlyContent, actionText });
@@ -2748,6 +2775,44 @@ public class CustomerForm extends javax.swing.JFrame {
         }
     }
     
+    private void showCreditTopUpReceipt(Transaction transaction, int adminUserId) {
+        String userName = userDao.getUserById(transaction.getUserId()).getName();
+        String adminName = userDao.getUserById(adminUserId).getName();
+
+        // Create the receipt content
+        String receiptContent = String.format(
+            "Top-up for: %s\nTop-up by: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: %s",
+            userName, adminName, transaction.getAmount(), 
+            transaction.getTransactionOn(), 
+            transaction.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")),
+            transaction.getRemarks()
+        );
+
+        // Show the receipt in a popup
+        JTextArea textArea = new JTextArea(receiptContent);
+        textArea.setEditable(false);
+
+        // Set a monospaced font and increase the font size
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+        // Set the text area background and foreground colors
+        textArea.setBackground(new Color(240, 240, 240)); // Light gray background
+        textArea.setForeground(Color.BLACK); // Black text
+
+        // Add padding to the text area
+        textArea.setBorder(BorderFactory.createCompoundBorder(
+            textArea.getBorder(), 
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        // Enable line wrapping and wrap by words
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(350, 150));
+        JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     private void notificationsTblMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notificationsTblMousePressed
         int selectedRow = notificationsTbl.getSelectedRow();
         if (selectedRow != -1) {
@@ -2770,6 +2835,23 @@ public class CustomerForm extends javax.swing.JFrame {
                         selectedVendorName = notification.getVendorName();
 
                         orderService.updateOrderMode(orderId, mode, selectedVendorName);
+                    }
+                }
+                
+                if (notification.getContent().contains("Credit top up")) {
+                    int adminUserId = notification.getExtractedUserId();
+                    int transactionId = notification.getTransactionId();
+                    
+                    // Retrieve the transaction based on the extracted IDs
+                    Transaction transaction = transactionService.getTransactions().stream()
+                        .filter(t -> t.getId() == transactionId && t.getUserId() == loggedInUser.getId())
+                        .findFirst()
+                        .orElse(null);
+
+                    if (transaction != null) {
+                        showCreditTopUpReceipt(transaction, adminUserId);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Transaction not found.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
                 
@@ -2852,70 +2934,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private void searchVendorMenuTxtFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchVendorMenuTxtFieldKeyReleased
         tableHelper.searchTable(vendorMenuTbl, searchVendorMenuTxtField.getText(), new int[] {1});
     }//GEN-LAST:event_searchVendorMenuTxtFieldKeyReleased
-    
-    private void showCreditTopUpReceipt(Transaction transaction) {
-        // Get the user's name
-        String userName = userDao.getUserById(transaction.getUserId()).getName();
-
-        // Create the receipt content
-        String receiptContent = String.format("User: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: %s",
-                                              userName, transaction.getAmount(), 
-                                              transaction.getTransactionOn(), 
-                                              transaction.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")),
-                                              transaction.getRemarks());
-
-        // Show the receipt in a popup
-        JTextArea textArea = new JTextArea(receiptContent);
-        textArea.setEditable(false);
-
-        // Set a monospaced font and increase the font size
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-
-        // Set the text area background and foreground colors
-        textArea.setBackground(new Color(240, 240, 240)); // Light gray background
-        textArea.setForeground(Color.BLACK); // Black text
-
-        // Add padding to the text area
-        textArea.setBorder(BorderFactory.createCompoundBorder(
-            textArea.getBorder(), 
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-
-        // Enable line wrapping and wrap by words
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(350, 150));
-        JOptionPane.showMessageDialog(this, scrollPane, "Payment Receipt", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
-    private void transactionsTblMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_transactionsTblMousePressed
-
-        int selectedRow = transactionsTbl.getSelectedRow();
-
-        if (selectedRow != -1) {
-            String receiptText = (String) transactionsTbl.getValueAt(selectedRow, 4);
-            if ("Top Up Receipt Available to View".equals(receiptText)) {
-                double amount = Double.parseDouble(((String) transactionsTbl.getValueAt(selectedRow, 0)).replace("RM ", ""));
-                LocalDate date = (LocalDate) transactionsTbl.getValueAt(selectedRow, 1);
-                LocalTime time = LocalTime.parse((String) transactionsTbl.getValueAt(selectedRow, 2), DateTimeFormatter.ofPattern("HH:mm a"));
-
-                // Find the matching transaction
-                Transaction transaction = transactionService.getTransactions().stream()
-                    .filter(t -> t.getUserId() == loggedInUserId && t.getAmount() == amount && 
-                                 t.getTransactionOn().equals(date) && t.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")).equals(time.format(DateTimeFormatter.ofPattern("HH:mm a"))))
-                    .findFirst()
-                    .orElse(null);
-
-                if (transaction != null) {
-                    showCreditTopUpReceipt(transaction);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Transaction not found.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
-    }//GEN-LAST:event_transactionsTblMousePressed
-
+        
     private void markAllAsReadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_markAllAsReadBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_markAllAsReadBtnActionPerformed
@@ -2931,7 +2950,7 @@ public class CustomerForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "You already have an active subscription.", "Subscription", JOptionPane.INFORMATION_MESSAGE);
         } else {
             // Add the subscription for the user
-            subscriptionService.addSubscription(loggedInUserId);
+            subscriptionService.addSubscription(loggedInUser.getId());
 
             // Update user's credit balance display
             updateCreditBalanceDisplay();
@@ -3017,6 +3036,40 @@ public class CustomerForm extends javax.swing.JFrame {
 
         JOptionPane.showMessageDialog(this, scrollPane, selectedVendorName + " Reviews", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_viewReviewsFromMenuBtnMousePressed
+
+    private void subscriptionsSidebarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionsSidebarBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_subscriptionsSidebarBtnActionPerformed
+    private void topUpPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topUpPanelMousePressed
+        String topUpAmountStr = JOptionPane.showInputDialog(this, "Enter the amount to top up:", "Credit Top-Up Request", JOptionPane.PLAIN_MESSAGE);
+
+        if (topUpAmountStr != null && !topUpAmountStr.isEmpty()) {
+            try {
+                double topUpAmount = Double.parseDouble(topUpAmountStr);
+                if (topUpAmount <= 0) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                User nextAdmin = userService.getNextAdmin();
+                
+                System.out.println(nextAdmin);
+
+                if (nextAdmin != null) {
+                    String notificationContent = String.format("%s requests for a credit top-up [user id: %d, amount: RM %.2f]",
+                                                               loggedInUser.getName(), loggedInUser.getId(), topUpAmount);
+                    Notification topUpRequestNotification = new Notification(nextAdmin.getId(), notificationContent, NotificationType.PUSH);
+                    notificationDao.add(topUpRequestNotification);
+
+                    JOptionPane.showMessageDialog(this, "Top-up request sent successfully.", "Request Sent", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No admin available for top-up request.", "Admin Unavailable", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_topUpPanelMousePressed
     
     private void updateVendorMenuUIElements() {
         itemQtyLabel.setText(String.valueOf(menuItemQuantity));
@@ -3082,7 +3135,8 @@ public class CustomerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CustomerForm().setVisible(true);
+                User mockUser = new User(1, "Adam Smith", "qwe@qwe.com", "qweqweqwe".toCharArray(), "customer");
+                new CustomerForm(mockUser).setVisible(true);
             }
         });
     }
@@ -3112,6 +3166,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JButton increaseItemQtyBtn;
     private javax.swing.JLabel itemQtyLabel;
     private javax.swing.JTextArea itemRemarksTxtArea;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -3191,6 +3246,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel43;
     private javax.swing.JPanel jPanel44;
     private javax.swing.JPanel jPanel45;
+    private javax.swing.JPanel jPanel46;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
