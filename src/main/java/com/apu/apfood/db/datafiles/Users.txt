@@ -4,5 +4,5 @@ id| userId| name| email| password| role
 3| 3| Jack Kwan| jack@picante.apu.edu.my| jack@pass123| vendor
 4| 4| Howard Lim| picante@picante.apu.edu.my| HowardLim@qqqq| vendor
 5| 5| Alice Johnson| alice@gmail.com| alicejon| runner
-6| 7| Gil Bin| gil@gmail.com| GilBin@runner789| runner
+6| 6| Gil Bin| gil@gmail.com| GilBin@runner789| runner
 7| 7| Columbus| columbus@gmail.com| columbuscool| admin
