@@ -291,9 +291,9 @@ public class VendorService {
 
     public void populateNotificationsTable(JTable notificationsTable, int userId) {
         List<Notification> notificationList = notificationDao.getNotificationList();
-        // Filter notification with the correct userId and if it is unnotified
+        // Filter notification with the vendorName and if it is unnotified
         notificationList = notificationList.stream()
-                .filter(notification -> notification.getUserId() == userId && notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED)
+                .filter(notification -> notification.getContent().contains(vendorName) && vendorDao.getVendorName(notification.getUserId()).equals(vendorName) && notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED)
                 .collect(Collectors.toList());
         Function<Notification, Object[]> rowMapper = notification -> {
             return new Object[]{

@@ -13,12 +13,20 @@ import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
 import com.apu.apfood.services.VendorService;
 import com.formdev.flatlaf.FlatDarculaLaf;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 public class VendorForm extends javax.swing.JFrame {
@@ -224,6 +232,7 @@ public class VendorForm extends javax.swing.JFrame {
         dayAfterCmbBox = new javax.swing.JComboBox<>();
         jLabel13 = new javax.swing.JLabel();
         totalRevenueLabel = new javax.swing.JLabel();
+        generateReportBtn = new javax.swing.JButton();
         notificationsPanel = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         notificationsTable = new javax.swing.JTable();
@@ -774,6 +783,14 @@ public class VendorForm extends javax.swing.JFrame {
         totalRevenueLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalRevenueLabel.setText("jLabel14");
 
+        generateReportBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        generateReportBtn.setText("Generate Report");
+        generateReportBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateReportBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout revenueDashboardPanelLayout = new javax.swing.GroupLayout(revenueDashboardPanel);
         revenueDashboardPanel.setLayout(revenueDashboardPanelLayout);
         revenueDashboardPanelLayout.setHorizontalGroup(
@@ -785,13 +802,15 @@ public class VendorForm extends javax.swing.JFrame {
                         .addComponent(totalRevenueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
                         .addGap(55, 55, 55)
-                        .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                            .addComponent(monthRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(yearRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                            .addComponent(dayRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                                .addComponent(monthRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(yearRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                                .addComponent(dayRevenueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(generateReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                         .addGroup(revenueDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -829,7 +848,9 @@ public class VendorForm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(yearRevenueLabel))
+                        .addComponent(yearRevenueLabel)
+                        .addGap(41, 41, 41)
+                        .addComponent(generateReportBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(revenueDashboardPanelLayout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addComponent(jLabel12)
@@ -1043,6 +1064,44 @@ public class VendorForm extends javax.swing.JFrame {
         authenticationManager.logout(this);
     }//GEN-LAST:event_vendorLogoutJButtonActionPerformed
 
+    private void generateReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateReportBtnActionPerformed
+        // TODO add your handling code here:
+        int choice = JOptionPane.showConfirmDialog(this, "Do you want to generate a report?", "Generate report", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    // Create the report content
+                    String reportContent = String.format("Yearly Amount: RM %.2f\nMonthly Amount: RM %.2f\nDaily Amount: RM %.2f\nDate: %s\nTime: %s",
+                            Double.parseDouble(yearRevenueLabel.getText()),
+                            Double.parseDouble(yearRevenueLabel.getText())/12,
+                            Double.parseDouble(yearRevenueLabel.getText())/365,
+                            LocalDate.now(),
+                            LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm a")));
+
+                    // Show the report in a popup
+                    JTextArea textArea = new JTextArea(reportContent);
+                    textArea.setEditable(false);
+
+                    // Set a monospaced font and increase the font size
+                    textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+                    // Set the text area background and foreground colors
+                    textArea.setBackground(new Color(240, 240, 240)); // Light gray background
+                    textArea.setForeground(Color.BLACK); // Black text
+
+                    // Add padding to the text area
+                    textArea.setBorder(BorderFactory.createCompoundBorder(
+                            textArea.getBorder(),
+                            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+                    // Enable line wrapping and wrap by words
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(350, 150));
+                    JOptionPane.showMessageDialog(this, scrollPane, "Report", JOptionPane.INFORMATION_MESSAGE);
+                }
+    }//GEN-LAST:event_generateReportBtnActionPerformed
+
    
     
     
@@ -1085,6 +1144,7 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JButton declineBtn;
     private javax.swing.JButton declineBtn1;
     private javax.swing.JLabel emailLabel;
+    private javax.swing.JButton generateReportBtn;
     private javax.swing.JButton homeNavBtn;
     private javax.swing.JPanel homePanel;
     private javax.swing.JTable incomingOrdersTable;
