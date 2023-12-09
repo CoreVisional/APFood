@@ -17,10 +17,15 @@ public class GUIHelper {
         jframe.getContentPane().requestFocusInWindow();
     }
         
-    public void buttonPanelSwitcher(JButton button, JPanel parentPanel, String targetPanel) {
+    public void panelSwitcher(JButton button, JPanel parentPanel, String targetPanel) {
         button.addActionListener((ActionEvent e) -> {
             CardLayout card = (CardLayout)parentPanel.getLayout();
             card.show(parentPanel, targetPanel);
         });
+    }
+    
+    public void panelSwitcher(JPanel parentPanel, String targetPanel) {
+        CardLayout card = (CardLayout) parentPanel.getLayout();
+        card.show(parentPanel, targetPanel);
     }
 }

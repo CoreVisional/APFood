@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.apu.apfood.db.dao;
+    package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.models.User;
 import java.io.BufferedReader;
@@ -17,7 +13,8 @@ import java.time.LocalDate;
 public class RunnerRevenueDao extends APFoodDao<User> {
 
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt";
-    private static final String HEADERS = "id| deliveryRunnerID| status\n";
+    private static final String HEADERS = "id| orderId| status| vendor| deliveryRunnerId\n";
+    
 
     public RunnerRevenueDao() {
         super(USER_FILEPATH, HEADERS);
@@ -26,6 +23,11 @@ public class RunnerRevenueDao extends APFoodDao<User> {
     @Override
     protected String serialize(User user) {
         return user.getName() + "| " + user.getEmail() + "| " + new String(user.getPassword()) + user.getRole() + "\n";
+    }
+    
+    @Override
+    protected User deserialize(String[] data) {
+        return null;
     }
 
     @Override
