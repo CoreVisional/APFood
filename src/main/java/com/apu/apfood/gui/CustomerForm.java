@@ -42,11 +42,13 @@ import java.awt.Insets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -119,11 +121,14 @@ public class CustomerForm extends javax.swing.JFrame {
 
     private void initCustomComponents () {
         isUserSubscribed = subscriptionService.isUserSubscribed(loggedInUser.getId());
+        userFullNameLabel.setText(loggedInUser.getName());
+        userEmailLabel.setText(loggedInUser.getEmail());
         
         imageHelper.setFrameIcon(this, "/icons/apu-logo.png");
         GUIHelper.JFrameSetup(this);
         
         // Calling methods to populate tables
+        populateOngoingOrderDeliveryTable();
         populateVendorsTable();
         
         updateCreditBalanceDisplay();
@@ -137,6 +142,43 @@ public class CustomerForm extends javax.swing.JFrame {
         
         tableHelper.populateTable(vendorNames, vendorsTable, rowMapper, true);
         tableHelper.centerTableValues(vendorsTable);
+    }
+    
+    private void populateOngoingOrderDeliveryTable() {
+        Map<String, Set<String>> ongoingOrdersMap = runnerTaskDao.getOngoingDeliveriesForUser(loggedInUser.getId());
+
+        // Create a list for table data
+        List<Object[]> tableData = new ArrayList<>();
+
+        for (Map.Entry<String, Set<String>> entry : ongoingOrdersMap.entrySet()) {
+            String orderId = entry.getKey();
+            for (String vendorName : entry.getValue()) {
+                List<Order> orders = orderDao.getByOrderIdAndVendorName(Integer.parseInt(orderId), vendorName);
+                orders.removeIf(order -> order.getUserId() != loggedInUser.getId()); // Filter orders not belonging to the logged-in user
+
+                if (!orders.isEmpty()) {
+                    Order representativeOrder = orders.get(0); // Use any order to represent common attributes
+
+                    // Format date and time for display
+                    String orderDate = representativeOrder.getOrderDate().toString();
+                    String orderTime = representativeOrder.getOrderTime().truncatedTo(ChronoUnit.MINUTES).toString();
+
+                    // Calculate total amount including delivery fee
+                    double totalAmount = orderService.calculateTotalAmountForGroupedOrders(orders, vendorName, loggedInUser.getId());
+
+                    // Add a row to the table data
+                    tableData.add(new Object[] {
+                        vendorName,
+                        orderDate,
+                        orderTime,
+                        String.format("RM %.2f", totalAmount)
+                    });
+                }
+            }
+        }
+
+        tableHelper.populateTable(tableData, ongoingOrderDeliveryTbl, row -> row);
+        tableHelper.centerTableValues(ongoingOrderDeliveryTbl);
     }
 
     private void updateCreditBalanceDisplay() {
@@ -203,7 +245,10 @@ public class CustomerForm extends javax.swing.JFrame {
         historyBtn = new javax.swing.JButton();
         jPanel21 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        ongoingOrderDeliveryTbl = new javax.swing.JTable();
+        jPanel47 = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        ongoingOrderDeliveryTbl1 = new javax.swing.JTable();
         historyPanel = new javax.swing.JPanel();
         historyContentPanel = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
@@ -553,7 +598,7 @@ public class CustomerForm extends javax.swing.JFrame {
         historyBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         historyBtn.setForeground(new java.awt.Color(255, 255, 255));
         historyBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/history-icon.png"))); // NOI18N
-        historyBtn.setText(" History");
+        historyBtn.setText(" Order History");
         historyBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         historyBtn.setPreferredSize(new java.awt.Dimension(100, 35));
         historyBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -563,10 +608,10 @@ public class CustomerForm extends javax.swing.JFrame {
         });
         jPanel10.add(historyBtn, java.awt.BorderLayout.CENTER);
 
-        jPanel21.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ongoing Orders", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel21.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ongoing Deliveries", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
 
-        jTable1.setForeground(new java.awt.Color(255, 255, 255));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        ongoingOrderDeliveryTbl.setForeground(new java.awt.Color(255, 255, 255));
+        ongoingOrderDeliveryTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -589,7 +634,9 @@ public class CustomerForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable1);
+        ongoingOrderDeliveryTbl.setRowHeight(30);
+        ongoingOrderDeliveryTbl.setShowGrid(true);
+        jScrollPane2.setViewportView(ongoingOrderDeliveryTbl);
 
         javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
         jPanel21.setLayout(jPanel21Layout);
@@ -604,7 +651,54 @@ public class CustomerForm extends javax.swing.JFrame {
             jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel21Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel47.setBackground(new java.awt.Color(255, 204, 0));
+
+        ongoingOrderDeliveryTbl1.setForeground(new java.awt.Color(255, 255, 255));
+        ongoingOrderDeliveryTbl1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vendor", "Order Date", "Order Time", "Total"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        ongoingOrderDeliveryTbl1.setRowHeight(30);
+        ongoingOrderDeliveryTbl1.setShowGrid(true);
+        jScrollPane7.setViewportView(ongoingOrderDeliveryTbl1);
+
+        javax.swing.GroupLayout jPanel47Layout = new javax.swing.GroupLayout(jPanel47);
+        jPanel47.setLayout(jPanel47Layout);
+        jPanel47Layout.setHorizontalGroup(
+            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel47Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane7)
+                .addContainerGap())
+        );
+        jPanel47Layout.setVerticalGroup(
+            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel47Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -620,8 +714,9 @@ public class CustomerForm extends javax.swing.JFrame {
                         .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(400, 400, 400)
                         .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 366, Short.MAX_VALUE)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 336, Short.MAX_VALUE)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
@@ -633,7 +728,9 @@ public class CustomerForm extends javax.swing.JFrame {
                     .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -926,6 +1023,7 @@ public class CustomerForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        vendorMenuTbl.setRowHeight(30);
         vendorMenuTbl.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         vendorMenuTbl.setShowGrid(true);
         vendorMenuTbl.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2033,7 +2131,7 @@ public class CustomerForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_increaseItemQtyBtnActionPerformed
     
-    private Map<String, Double> createPriceMap() {
+    private Map<String, Double> createTablePriceMap() {
         return tableHelper.createTableMap(vendorMenuTbl, 1, 3, 
                                               Object::toString, 
                                               value -> Double.valueOf(value.toString()));
@@ -2042,7 +2140,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private double[] getTotalOrderCostDetails(String selectedOrderMode) {
         double subtotal = 0.0;
         double deliveryFee = 0.0;
-        Map<String, Double> priceMap = createPriceMap();
+        Map<String, Double> priceMap = createTablePriceMap();
 
         for (Object[] cartItem : cartItems) {
             String itemName = (String) cartItem[1];
@@ -2258,7 +2356,6 @@ public class CustomerForm extends javax.swing.JFrame {
     
     private void placeOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeOrderBtnActionPerformed
 
-        int userId = 1; // Assuming a fixed user ID for demonstration
         String selectedOrderMode = (String) orderModesComboBox.getSelectedItem();
         String deliveryLocation = (String) deliveryLocationsComboBox.getSelectedItem();
 
@@ -2281,21 +2378,21 @@ public class CustomerForm extends javax.swing.JFrame {
             int quantity = (Integer) cartItem[2];
             String remarks = (String) cartItem[3];
 
-            Order newOrder = new Order(userId, menuId, quantity, remarks, selectedOrderMode, deliveryLocation);
+            Order newOrder = new Order(loggedInUser.getId(), menuId, quantity, remarks, selectedOrderMode, deliveryLocation);
             ordersToAdd.add(newOrder);
         }
         
         double totalOrderCost = getTotalOrderCostDetails(selectedOrderMode)[3];
 
-        if (!transactionService.hasSufficientBalance(userId, totalOrderCost)) {
+        if (!transactionService.hasSufficientBalance(loggedInUser.getId(), totalOrderCost)) {
             JOptionPane.showMessageDialog(this, "Insufficient credit balance to place order.", "Insufficient Balance", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         // Add all orders using OrderService and pass the selected vendor name
-        orderService.addOrders(ordersToAdd, selectedVendorName, userId);
+        orderService.addOrders(ordersToAdd, selectedVendorName, loggedInUser.getId());
         
-        transactionService.addTransaction(userId, -totalOrderCost, "Food");
+        transactionService.addTransaction(loggedInUser.getId(), -totalOrderCost, "Food");
 
         // Clear the cart and update UI
         cartItems.clear();
@@ -2499,7 +2596,7 @@ public class CustomerForm extends javax.swing.JFrame {
         setTitle("History - APFood");
         
         int userId = 1; // User ID for demonstration
-        List<OrderStatus> statuses = Arrays.asList(OrderStatus.ACCEPTED, OrderStatus.DECLINED);
+        List<OrderStatus> statuses = Arrays.asList(OrderStatus.READY, OrderStatus.DECLINED, OrderStatus.CANCELLED);
 
         Map<String, List<Order>> groupedOrders = orderService.getUserOrdersGrouped(userId, statuses);
         List<Object[]> tableData = new ArrayList<>();
@@ -2523,7 +2620,7 @@ public class CustomerForm extends javax.swing.JFrame {
             order.getOrderId(),
             order.getVendorName(),
             order.getOrderDate().toString(), 
-            order.getOrderTime().format(DateTimeFormatter.ofPattern("HH:mm a")),
+            order.getOrderTime().format(DateTimeFormatter.ofPattern("HH:mm")),
             String.format("RM %.2f", totalAmount),
             order.getOrderStatus().toString(),
         };
@@ -2648,7 +2745,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
     private void generateAndShowOrderReceipt(int orderId, String vendorName) {
         // Fetch order details
-        List<Order> orders = orderDao.getByOrderIdAndVendorName(orderId, vendorName);
+        List<Order> orders = orderService.getByOrderIdAndVendorName(orderId, vendorName);
 
         if (orders.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Order details not found.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -2813,7 +2910,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
             if (notification != null) {
                 if (notification.getNotificationType() == NotificationType.PUSH && notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED) {
-                    String[] pushOptions = { "Takeaway", "Dine-in" };
+                    String[] pushOptions = { "Takeaway", "Dine-in", "Cancel Order" };
                     int selection = JOptionPane.showOptionDialog(this, 
                             "Select an option for your order:", 
                             "Order Option", 
@@ -2821,12 +2918,35 @@ public class CustomerForm extends javax.swing.JFrame {
                             JOptionPane.INFORMATION_MESSAGE, 
                             null, pushOptions, pushOptions[0]);
 
-                    if (selection >= 0) {
+                    if (selection == 0 || selection == 1) { // Takeaway or Dine-in
                         String mode = pushOptions[selection];
                         int orderId = Integer.parseInt(notification.getOrderId());
                         selectedVendorName = notification.getVendorName();
 
+                        // Fetch order details
+                        List<Order> orders = orderService.getByOrderIdAndVendorName(orderId, selectedVendorName);
+
+                        // Check if the original order mode was Delivery and refund the delivery fee
+                        if (!orders.isEmpty() && "Delivery".equals(orders.get(0).getMode())) {
+                            double deliveryFeeToRefund = orderService.calculateOrderDeliveryFee(orderId, selectedVendorName);
+                            transactionService.processRefund(loggedInUser.getId(), deliveryFeeToRefund, "Delivery Fee Refund");
+                        }
+
+                        // Update order mode to Takeaway or Dine-in
                         orderService.updateOrderMode(orderId, mode, selectedVendorName);
+                    } else if (selection == 2) { // "Cancel Order" selected
+                        int orderId = Integer.parseInt(notification.getOrderId());
+                        selectedVendorName = notification.getVendorName();
+
+                        // Fetch order details for refund calculation
+                        List<Order> orders = orderService.getByOrderIdAndVendorName(orderId, selectedVendorName);
+                        double amountToRefund = orderService.calculateTotalAmountForGroupedOrders(orders, selectedVendorName, loggedInUser.getId());
+
+                        // Cancel the order and process the refund
+                        orderService.cancelOrder(orderId, selectedVendorName);
+                        transactionService.processRefund(loggedInUser.getId(), amountToRefund, "Order Refund");
+
+                        JOptionPane.showMessageDialog(this, "Order cancelled. Refund processed.", "Order Cancelled", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
                 
@@ -3236,6 +3356,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel44;
     private javax.swing.JPanel jPanel45;
     private javax.swing.JPanel jPanel46;
+    private javax.swing.JPanel jPanel47;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -3248,15 +3369,17 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton markAllAsReadBtn;
     private javax.swing.JPanel notificationsPanel;
     private javax.swing.JButton notificationsSidebarBtn;
     private javax.swing.JTable notificationsTbl;
+    private javax.swing.JTable ongoingOrderDeliveryTbl;
+    private javax.swing.JTable ongoingOrderDeliveryTbl1;
     private javax.swing.JTable orderCartTbl;
     private javax.swing.JButton orderHistoryBackBtn;
     private javax.swing.JTable orderHistoryTbl;
