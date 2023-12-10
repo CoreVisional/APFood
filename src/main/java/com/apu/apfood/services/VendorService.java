@@ -6,6 +6,7 @@ import com.apu.apfood.db.models.Menu;
 import com.apu.apfood.db.models.Vendor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,5 +48,10 @@ public class VendorService {
         }
 
         return -1;
+    }
+    
+    public Map<Integer, Double> getMenuPriceMap(String vendorName) {
+        List<Menu> menuItems = menuDao.getAllMenuItems(vendorName);
+        return menuItems.stream().collect(Collectors.toMap(Menu::getId, Menu::getPrice));
     }
 }
