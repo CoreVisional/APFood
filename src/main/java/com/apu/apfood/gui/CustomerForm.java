@@ -26,10 +26,11 @@ import com.apu.apfood.db.models.Review;
 import com.apu.apfood.db.models.Subscription;
 import com.apu.apfood.db.models.Transaction;
 import com.apu.apfood.db.models.User;
+import com.apu.apfood.gui.auth.AuthenticationManager;
 import com.apu.apfood.helpers.TableHelper;
 import com.apu.apfood.services.NotificationService;
 import com.apu.apfood.services.OrderService;
-import com.apu.apfood.services.FeedbackService;
+import com.apu.apfood.services.ReviewService;
 import com.apu.apfood.services.SubscriptionService;
 import com.apu.apfood.services.TransactionService;
 import com.apu.apfood.services.UserService;
@@ -93,14 +94,15 @@ public class CustomerForm extends javax.swing.JFrame {
     NotificationService notificationService = new NotificationService(notificationDao);
     TransactionService transactionService = new TransactionService(transactionDao);
     SubscriptionService subscriptionService = new SubscriptionService(subscriptionDao, transactionDao);
-    FeedbackService reviewService = new FeedbackService(reviewDao, userDao, userService);
-//    ReviewService reviewService = new ReviewService(reviewDao, userDao, userService);
+    ReviewService reviewService = new ReviewService(reviewDao, userDao, userService);
     OrderService orderService = new OrderService(orderDao, vendorService, subscriptionService, notificationService);
     
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
     TableHelper tableHelper = new TableHelper();
     GUIHelper guiHelper = new GUIHelper();
+    
+    AuthenticationManager authManager = new AuthenticationManager();
     
     // Menu Item count
     private int menuItemQuantity = 0;
@@ -118,8 +120,6 @@ public class CustomerForm extends javax.swing.JFrame {
         this.loggedInUser = user;
         initComponents();
         initCustomComponents();
-        
-        
     }
 
     private void initCustomComponents () {
@@ -228,7 +228,7 @@ public class CustomerForm extends javax.swing.JFrame {
         notificationsSidebarBtn = new javax.swing.JButton();
         subscriptionsSidebarBtn = new javax.swing.JButton();
         jPanel46 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        logoutBtn = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         userFullNameLabel = new javax.swing.JLabel();
@@ -463,22 +463,22 @@ public class CustomerForm extends javax.swing.JFrame {
                 subscriptionsSidebarBtnMousePressed(evt);
             }
         });
-        subscriptionsSidebarBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                subscriptionsSidebarBtnActionPerformed(evt);
-            }
-        });
         jPanel3.add(subscriptionsSidebarBtn);
 
         jPanel46.setOpaque(false);
         jPanel46.setLayout(new java.awt.BorderLayout());
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Logout");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.setFocusPainted(false);
-        jPanel46.add(jButton1, java.awt.BorderLayout.CENTER);
+        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        logoutBtn.setForeground(new java.awt.Color(255, 255, 255));
+        logoutBtn.setText("Logout");
+        logoutBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        logoutBtn.setFocusPainted(false);
+        logoutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutBtnActionPerformed(evt);
+            }
+        });
+        jPanel46.add(logoutBtn, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -3157,9 +3157,6 @@ public class CustomerForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, scrollPane, selectedVendorName + " Reviews", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_viewReviewsFromMenuBtnMousePressed
 
-    private void subscriptionsSidebarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionsSidebarBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_subscriptionsSidebarBtnActionPerformed
     private void topUpPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topUpPanelMousePressed
         String topUpAmountStr = JOptionPane.showInputDialog(this, "Enter the amount to top up:", "Credit Top-Up Request", JOptionPane.PLAIN_MESSAGE);
 
@@ -3190,6 +3187,10 @@ public class CustomerForm extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_topUpPanelMousePressed
+
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        authManager.logout(this);
+    }//GEN-LAST:event_logoutBtnActionPerformed
     
     private void updateVendorMenuUIElements() {
         itemQtyLabel.setText(String.valueOf(menuItemQuantity));
@@ -3286,7 +3287,6 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JButton increaseItemQtyBtn;
     private javax.swing.JLabel itemQtyLabel;
     private javax.swing.JTextArea itemRemarksTxtArea;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -3384,6 +3384,7 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JButton logoutBtn;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton markAllAsReadBtn;
     private javax.swing.JPanel notificationsPanel;
