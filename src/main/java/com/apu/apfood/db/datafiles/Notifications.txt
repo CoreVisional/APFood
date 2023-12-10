@@ -3,7 +3,7 @@ id| userId| content| status| type
 2| 1| Order has been accepted [order id: 1, vendor name: Modesto]| Notified| Informational
 3| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
 4| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
-5| 1| Delivery declined [order id: 2, vendor name: Modesto]| Unnotified| Push
+5| 1| Delivery declined [order id: 2, vendor name: Modesto]| Notified| Push
 6| 2| Delivery completed [order id: 2, vendor name: Modesto]| Unnotified| Informational
 7| 1| Delivery ongoing [order id: 1, vendor name: Modesto]| Notified| Informational
 8| 2| Delivery ongoing [order id: 2, vendor name: Modesto]| Unnotified| Informational
@@ -29,3 +29,5 @@ id| userId| content| status| type
 28| 2| New order received [order id: 3, vendor name: Picante]| Unnotified| Transactional
 29| 1| Order has been placed [order id: 3, vendor name: Picante]| Unnotified| Transactional
 30| 2| New order received [order id: 3, vendor name: Picante]| Unnotified| Transactional
+31| 1| Order has been placed [order id: 3, vendor name: Picante]| Unnotified| Transactional
+32| 2| New order received [order id: 3, vendor name: Picante]| Unnotified| Transactional
