@@ -122,6 +122,8 @@ public class VendorForm extends javax.swing.JFrame {
     
     public void setupHomePage()
     {
+        populateIncomingOrdersTable();
+        populateNotificationsTable();
         ordersLabel.setText("Incoming Orders: " + incomingOrdersTable.getRowCount());
         notificationsLabel.setText("Unread Notifications: " + notificationsTable.getRowCount());
     }
@@ -214,6 +216,7 @@ public class VendorForm extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         orderHistoryTable = new javax.swing.JTable();
         orderHistoryRefreshBtn1 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
         revenueDashboardPanel = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -238,6 +241,7 @@ public class VendorForm extends javax.swing.JFrame {
         notificationsTable = new javax.swing.JTable();
         readNotificationBtn = new javax.swing.JButton();
         notificationsRefreshBtn = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -285,6 +289,11 @@ public class VendorForm extends javax.swing.JFrame {
 
         revenueDashboardBtn.setForeground(new java.awt.Color(255, 255, 255));
         revenueDashboardBtn.setText("Revenue Dashboard");
+        revenueDashboardBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                revenueDashboardBtnActionPerformed(evt);
+            }
+        });
         jPanel3.add(revenueDashboardBtn);
 
         notificationsBtn.setForeground(new java.awt.Color(255, 255, 255));
@@ -652,14 +661,14 @@ public class VendorForm extends javax.swing.JFrame {
 
         orderHistoryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "OrderId", "Customer Name", "Items", "Quantity", "Remark", "Date", "Time", "Mode", "Rating", "Feedback"
+                "OrderId", "Customer Name", "Items", "Quantity", "Remark", "Date", "Time", "Mode", "Rating", "Feedback", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -675,14 +684,19 @@ public class VendorForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel6.setText("Order History");
+
         javax.swing.GroupLayout orderHistoryPanelLayout = new javax.swing.GroupLayout(orderHistoryPanel);
         orderHistoryPanel.setLayout(orderHistoryPanelLayout);
         orderHistoryPanelLayout.setHorizontalGroup(
             orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(orderHistoryPanelLayout.createSequentialGroup()
                 .addContainerGap(84, Short.MAX_VALUE)
-                .addGroup(orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderHistoryPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(orderHistoryRefreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(21, 21, 21))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderHistoryPanelLayout.createSequentialGroup()
@@ -692,9 +706,15 @@ public class VendorForm extends javax.swing.JFrame {
         orderHistoryPanelLayout.setVerticalGroup(
             orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(orderHistoryPanelLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(orderHistoryRefreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(orderHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(orderHistoryPanelLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(orderHistoryRefreshBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderHistoryPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel6)
+                        .addGap(29, 29, 29)))
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(189, Short.MAX_VALUE))
         );
@@ -904,15 +924,20 @@ public class VendorForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel7.setText("Notifications");
+
         javax.swing.GroupLayout notificationsPanelLayout = new javax.swing.GroupLayout(notificationsPanel);
         notificationsPanel.setLayout(notificationsPanelLayout);
         notificationsPanelLayout.setHorizontalGroup(
             notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationsPanelLayout.createSequentialGroup()
                 .addContainerGap(219, Short.MAX_VALUE)
-                .addGroup(notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(readNotificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addGroup(notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(readNotificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(210, 210, 210))
             .addGroup(notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationsPanelLayout.createSequentialGroup()
@@ -923,7 +948,9 @@ public class VendorForm extends javax.swing.JFrame {
         notificationsPanelLayout.setVerticalGroup(
             notificationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationsPanelLayout.createSequentialGroup()
-                .addContainerGap(120, Short.MAX_VALUE)
+                .addContainerGap(77, Short.MAX_VALUE)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(readNotificationBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -957,8 +984,13 @@ public class VendorForm extends javax.swing.JFrame {
 
     private void saveAllBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAllBtnActionPerformed
         // TODO add your handling code here:
-        List<Menu> menus = vs.convertJTableToMenuList(menuTable);
-        vs.updateMenuItems(vendorName, menus);
+        try {
+            List<Menu> menus = vs.convertJTableToMenuList(menuTable);
+            vs.updateMenuItems(vendorName, menus);
+        } catch (NumberFormatException ex) {
+            // Handle the parsing error
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveAllBtnActionPerformed
 
     private void AddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddBtnActionPerformed
@@ -1102,6 +1134,12 @@ public class VendorForm extends javax.swing.JFrame {
                 }
     }//GEN-LAST:event_generateReportBtnActionPerformed
 
+    private void revenueDashboardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueDashboardBtnActionPerformed
+        // TODO add your handling code here:
+        populateRevenueDashboard();
+        populateRevenueOrdersTable();
+    }//GEN-LAST:event_revenueDashboardBtnActionPerformed
+
    
     
     
@@ -1157,6 +1195,8 @@ public class VendorForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel3;

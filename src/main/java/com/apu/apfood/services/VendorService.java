@@ -115,7 +115,16 @@ public class VendorService {
             int id = Integer.parseInt(model.getValueAt(i, idColumnIndex).toString());
             String menuName = model.getValueAt(i, 1).toString(); // Assuming 1 is the index of the menuName column
             String menuType = model.getValueAt(i, 2).toString(); // Assuming 2 is the index of the menuType column
-            double price = Double.parseDouble(model.getValueAt(i, 3).toString()); // Assuming 3 is the index of the price column
+            double price = 0.0;
+            try 
+            {
+                price = Double.parseDouble(model.getValueAt(i, 3).toString()); // Assuming 3 is the index of the price column
+            } 
+            catch (NumberFormatException e) 
+            {
+                // Throw the error
+                throw new NumberFormatException("Price value (" + model.getValueAt(i, 3).toString() + ") for the menu:" + menuName + " contains letters or isn't a number");
+            }
 
             Menu menu = new Menu(id, menuName, menuType, price);
             menuList.add(menu);
@@ -149,6 +158,7 @@ public class VendorService {
                 orderDetails.setOrderDate(order.getOrderDate().toString());
                 orderDetails.setOrderTime(order.getOrderTime().toString());
                 orderDetails.setDeliveryLocation(order.getDeliveryLocation());
+                orderDetails.setOrderStatus(order.getOrderStatus().toString());
                 String foodName = menuDao.getFoodName(vendorName, order.getMenuId());
                 double price = menuDao.getFoodPrice(vendorName, order.getMenuId());
                 orderDetails.addFoodDetails(foodName, String.valueOf(order.getMenuId()), String.valueOf(order.getQuantity()), order.getRemarks(), price);
@@ -201,7 +211,12 @@ public class VendorService {
     }
 
     public void populateOrderHistoryTable(JTable orderHistoryTable) {
-        RefreshOrderMap(OrderStatus.READY);
+        //Get orders from txt file and filter by ACCEPTED or DECLINE orderstatuses
+        List<Order> orderList = orderDao.getOrderListfromVendor(vendorName);
+        orderList = orderList.stream()
+                .filter(order -> order.getOrderStatus() == OrderStatus.READY || order.getOrderStatus() == OrderStatus.DECLINED)
+                .collect(Collectors.toList());
+        RefreshOrderMap(orderList);
         Function<OrderDetails, Object[]> rowMapper = OrderDetails -> {
             int orderId = Integer.parseInt(OrderDetails.getOrderId());
             Feedback feedback = feedbackDao.getFeedbackFromOrderId(orderId, vendorName);
@@ -218,7 +233,8 @@ public class VendorService {
                 OrderDetails.getOrderTime().toString().split("\\.")[0],
                 OrderDetails.getMode(),
                 feedback.getRating(),
-                feedback.getFeedback()
+                feedback.getFeedback(),
+                OrderDetails.getOrderStatus()
             };
         };
         tableHelper.populateTable(new ArrayList<>(ordersMap.values()), orderHistoryTable, rowMapper, false);
@@ -297,7 +313,7 @@ public class VendorService {
         Function<Notification, Object[]> rowMapper = notification -> {
             return new Object[]{
                 notification.getId(),
-                notification.getContent(),
+                formatNotificationContent(notification.getContent()),
                 notification.getNotificationType(),
                 notification.getNotificationStatus()
             };
@@ -307,6 +323,25 @@ public class VendorService {
         tableHelper.SetupTableSorter(notificationsTable);
     }
 
+    public String formatNotificationContent(String content)
+    {
+        // Find the index of "[order id:" in the content
+        int startIndex = content.indexOf("[order id:");
+
+        // Check if the substring is found
+        if (startIndex != -1) {
+            // Find the index of the corresponding "]"
+            int endIndex = content.indexOf("]", startIndex);
+
+            // Check if the closing "]" is found
+            if (endIndex != -1) {
+                // Extract the substring from the content
+                content = content.substring(0, startIndex) + content.substring(startIndex, content.indexOf(",", startIndex)) + "]";
+            } 
+        }
+        return content;
+    }
+    
     public double getRevenueFromOrderDetails(OrderDetails orderDetail) {
         double revenue = 0.0;
         for (FoodDetails foodDetail : orderDetail.getFoodDetailsList()) {
