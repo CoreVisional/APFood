@@ -45,4 +45,11 @@ public class TransactionService {
         double balance = Double.parseDouble(balanceStr);
         return balance >= orderAmount;
     }
+    
+    public void processRefund(int userId, double amount, String remark) {
+        if (amount > 0) {
+            Transaction refundTransaction = new Transaction(userId, amount, remark);
+            transactionDao.add(refundTransaction);
+        }
+    }
 }
