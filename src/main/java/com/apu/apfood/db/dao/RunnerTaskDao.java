@@ -13,8 +13,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -549,6 +551,26 @@ public class RunnerTaskDao extends APFoodDao<User> {
             e.printStackTrace(System.out);
         }
         return -1;
+    }
+    
+    public Map<String, Set<String>> getOngoingDeliveriesForUser(int userId) {
+        Map<String, Set<String>> ongoingOrdersMap = new HashMap<>();
+        try (BufferedReader brRunnerDelivery = new BufferedReader(new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt"))) {
+            String lineRunnerDelivery;
+            brRunnerDelivery.readLine(); // Skip header line
+            while ((lineRunnerDelivery = brRunnerDelivery.readLine()) != null) {
+                String[] deliveryValues = lineRunnerDelivery.split("\\|");
+                if ("Ongoing".equals(deliveryValues[2].trim())) {
+                    String orderId = deliveryValues[1].trim();
+                    String vendorName = deliveryValues[3].trim();
+
+                    ongoingOrdersMap.computeIfAbsent(orderId, k -> new HashSet<>()).add(vendorName);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
+        return ongoingOrdersMap;
     }
 
     public static void main(String[] args) {
