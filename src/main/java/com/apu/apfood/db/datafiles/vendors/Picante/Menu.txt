@@ -1,4 +1,4 @@
-id| name| type| price
-1| Nasi Lemak| food| 5.5
-2| Mee Raja| food| 4.5
-3| Limau Ais| drink| 4.5
+id| name| type| prices
+1| Nasi Lemak| food| 5.50
+2| Mee Raja| food| 4.50
+3| Limau Ais| drink| 4.50

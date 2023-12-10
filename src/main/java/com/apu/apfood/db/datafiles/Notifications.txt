@@ -23,3 +23,9 @@ id| userId| content| status| type
 22| 3| New order received [order id: 7, vendor name: Picante]| Unnotified| Transactional
 23| 1| Order has been placed [order id: 3, vendor name: Picante]| Unnotified| Transactional
 24| 3| New order received [order id: 3, vendor name: Picante]| Unnotified| Transactional
+25| 1| Order has been placed [order id: 3, vendor name: Picante]| Unnotified| Transactional
+26| 2| New order received [order id: 3, vendor name: Picante]| Unnotified| Transactional
+27| 1| Order has been placed [order id: 3, vendor name: Picante]| Unnotified| Transactional
+28| 2| New order received [order id: 3, vendor name: Picante]| Unnotified| Transactional
+29| 1| Order has been placed [order id: 3, vendor name: Picante]| Unnotified| Transactional
+30| 2| New order received [order id: 3, vendor name: Picante]| Unnotified| Transactional
