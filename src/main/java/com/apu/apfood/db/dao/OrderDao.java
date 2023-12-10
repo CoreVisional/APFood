@@ -2,8 +2,6 @@ package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Order;
-import com.apu.apfood.db.models.OrderDetails;
-import com.apu.apfood.helpers.FileHelper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +22,6 @@ public class OrderDao extends APFoodDao<Order> {
 
     private static final String ORDER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/vendors/";
     private static final String HEADERS = "id| orderId| userId| menuId| quantity| orderDate| orderTime| remarks| mode| orderStatus| hasDiscount| deliveryLocation\n";
-    private FileHelper fileHelper = new FileHelper();
 
     public OrderDao() {
         super(ORDER_FILEPATH, HEADERS);
