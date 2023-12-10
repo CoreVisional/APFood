@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
- 
-@author Bryan, Alex*/
+ * 
+ * @author Alex
+ */
 public class SubscriptionDao extends APFoodDao<Subscription> {
 
     private static final String SUBSCRIPTIONS_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/Subscriptions.txt";
