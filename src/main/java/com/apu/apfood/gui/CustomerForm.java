@@ -2655,10 +2655,7 @@ public class CustomerForm extends javax.swing.JFrame {
         
         String vendorName = (String) orderHistoryTbl.getValueAt(selectedRow, 0);
         LocalDate orderDate = LocalDate.parse((String) orderHistoryTbl.getValueAt(selectedRow, 1));
-
-        // Parsing the time string with the appropriate format
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm a");
-        LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2), timeFormatter);
+        LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2));
         
         List<Order> orderDetails = orderService.getOrderDetails(orderId, vendorName, orderDate, orderTime);
         showOrderDetailsPopup(orderDetails, vendorName);
