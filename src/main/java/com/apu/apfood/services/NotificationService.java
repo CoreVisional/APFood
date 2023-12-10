@@ -1,6 +1,8 @@
 package com.apu.apfood.services;
 
 import com.apu.apfood.db.dao.NotificationDao;
+import com.apu.apfood.db.enums.NotificationStatus;
+import com.apu.apfood.db.enums.NotificationType;
 import com.apu.apfood.db.models.Notification;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -100,6 +102,18 @@ public class NotificationService {
 
         return amount;
 
+    }
+    
+    public void markAllNotificationsAsRead(int userId) {
+        List<Notification> notifications = notificationDao.getAllNotifications();
+        notifications.stream()
+            .filter(notification -> notification.getUserId() == userId &&
+                                    notification.getNotificationType() != NotificationType.PUSH &&
+                                    notification.getNotificationStatus() == NotificationStatus.UNNOTIFIED)
+            .forEach(notification -> {
+                notification.setNotificationStatus(NotificationStatus.NOTIFIED);
+                notificationDao.update(notification);
+            });
     }
 
     private int extractTransactionIdFromContent(String content) {
