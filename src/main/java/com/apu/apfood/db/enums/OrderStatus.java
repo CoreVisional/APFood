@@ -10,7 +10,8 @@ public enum OrderStatus {
     READY,
     ACCEPTED,
     PENDING,
-    DECLINED;
+    DECLINED,
+    CANCELLED;
     
     @Override
     public String toString() {

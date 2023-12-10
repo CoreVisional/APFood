@@ -128,4 +128,24 @@ public class OrderService {
     public void updateOrderMode(int orderId, String newMode, String vendorName) {
         orderDao.updateOrderMode(orderId, newMode, vendorName);
     }
+    
+    public void cancelOrder(int orderId, String vendorName) {
+        List<Order> orders = orderDao.getByOrderIdAndVendorName(orderId, vendorName);
+        orders.forEach(order -> {
+            order.setOrderStatus(OrderStatus.CANCELLED);
+            orderDao.update(order);
+        });
+    }
+    
+    public List<Order> getByOrderIdAndVendorName(int orderId, String vendorName) {
+        return orderDao.getByOrderIdAndVendorName(orderId, vendorName);
+    }
+    
+    public double calculateOrderDeliveryFee(int orderId, String vendorName) {
+        List<Order> orders = orderDao.getByOrderIdAndVendorName(orderId, vendorName);
+        if (!orders.isEmpty() && "Delivery".equals(orders.get(0).getMode())) {
+            return getDeliveryFee(orders.get(0).getDeliveryLocation());
+        }
+        return 0.0;
+    }
 }

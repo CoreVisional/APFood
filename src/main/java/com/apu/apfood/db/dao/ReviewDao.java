@@ -34,6 +34,29 @@ public class ReviewDao extends APFoodDao<Review> {
                        .collect(Collectors.toList());
     }
     
+    public List<Review> getAllReviews(String vendorName) {
+
+        List<String[]> rawData = super.getAll();
+        
+        return rawData.stream()
+                       .map(this::deserialize)
+                       .collect(Collectors.toList());
+    }
+    
+    public Review getReviewsFromOrderId(int orderId, String vendorName)
+    {
+        List<Review> reviews = getAllReviews(vendorName);
+        for (Review review : reviews)
+        {
+            if (review.getOrderId() == orderId)
+            {
+                return review;
+            }
+        }
+        //If there is no matching orderId
+        return null;
+    }
+    
     @Override
     protected String serialize(Review review) {
         return review.getFeedback() + "| " +

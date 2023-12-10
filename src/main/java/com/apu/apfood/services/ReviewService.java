@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
  *
  * @author Alex
  */
-public class FeedbackService {
+public class ReviewService {
     
     private final ReviewDao reviewDao;
     private final UserDao userDao;
     private final UserService userService;
     
-    public FeedbackService(ReviewDao reviewDao, UserDao userDao, UserService userService) {
+    public ReviewService(ReviewDao reviewDao, UserDao userDao, UserService userService) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.userService = userService;

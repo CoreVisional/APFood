@@ -1,11 +1,11 @@
 package com.apu.apfood.services;
 
-import com.apu.apfood.db.dao.FeedbackDao;
 import com.apu.apfood.db.dao.NotificationDao;
 import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.db.dao.MenuDao;
 import com.apu.apfood.db.dao.OrderDao;
+import com.apu.apfood.db.dao.ReviewDao;
 import com.apu.apfood.db.dao.RunnerAvailabilityDao;
 import com.apu.apfood.db.dao.RunnerTaskDao;
 import com.apu.apfood.db.dao.SubscriptionDao;
@@ -15,15 +15,13 @@ import com.apu.apfood.db.enums.DeliveryFee;
 import com.apu.apfood.db.enums.NotificationStatus;
 import com.apu.apfood.db.enums.NotificationType;
 import com.apu.apfood.db.enums.OrderStatus;
-import com.apu.apfood.db.models.Feedback;
 import com.apu.apfood.db.models.FoodDetails;
 import com.apu.apfood.db.models.Menu;
 import com.apu.apfood.db.models.Notification;
 import com.apu.apfood.db.models.Order;
 import com.apu.apfood.db.models.OrderDetails;
+import com.apu.apfood.db.models.Review;
 import com.apu.apfood.db.models.Vendor;
-import com.apu.apfood.helpers.GUIHelper;
-import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,7 +53,7 @@ public class VendorService {
     private VendorDao vendorDao = new VendorDao();
     private MenuDao menuDao = new MenuDao();
     private OrderDao orderDao = new OrderDao();
-    private FeedbackDao feedbackDao = new FeedbackDao();
+    private ReviewDao reviewDao = new ReviewDao();
     private TransactionDao transactionDao = new TransactionDao();
     private RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
     private RunnerAvailabilityDao runnerAvailabilityDao = new RunnerAvailabilityDao();
@@ -219,9 +217,9 @@ public class VendorService {
         RefreshOrderMap(orderList);
         Function<OrderDetails, Object[]> rowMapper = OrderDetails -> {
             int orderId = Integer.parseInt(OrderDetails.getOrderId());
-            Feedback feedback = feedbackDao.getFeedbackFromOrderId(orderId, vendorName);
-            if (feedback == null) {
-                feedback = new Feedback("No Feedback yet", 0, orderId);
+            Review review = reviewDao.getReviewsFromOrderId(orderId, vendorName);
+            if (review == null) {
+                review = new Review("No Feedback yet", 0, orderId);
             }
             return new Object[]{
                 OrderDetails.getOrderId(),
@@ -232,9 +230,8 @@ public class VendorService {
                 OrderDetails.getOrderDate(),
                 OrderDetails.getOrderTime().toString().split("\\.")[0],
                 OrderDetails.getMode(),
-                feedback.getRating(),
-                feedback.getFeedback(),
-                OrderDetails.getOrderStatus()
+                review.getRating(),
+                review.getFeedback()
             };
         };
         tableHelper.populateTable(new ArrayList<>(ordersMap.values()), orderHistoryTable, rowMapper, false);
@@ -470,5 +467,10 @@ public class VendorService {
             }
         }
         return -1;
+    }
+    
+    public Map<Integer, Double> getMenuPriceMap(String vendorName) {
+        List<Menu> menuItems = menuDao.getAllMenuItems(vendorName);
+        return menuItems.stream().collect(Collectors.toMap(Menu::getId, Menu::getPrice));
     }
 }
