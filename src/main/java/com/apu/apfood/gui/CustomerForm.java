@@ -2978,6 +2978,8 @@ public class CustomerForm extends javax.swing.JFrame {
                     JScrollBar scrollBar = jScrollPane3.getVerticalScrollBar();
                     int scrollPosition = scrollBar.getValue();
 
+                    displayNotifications();
+                    
                     // Restore the scroll position
                     SwingUtilities.invokeLater(() -> scrollBar.setValue(scrollPosition));
 
