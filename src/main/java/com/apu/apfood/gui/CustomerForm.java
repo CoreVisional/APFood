@@ -135,6 +135,7 @@ public class CustomerForm extends javax.swing.JFrame {
         populateVendorsTable();
         
         updateCreditBalanceDisplay();
+        updateSubscriptionButton();
     }
     
     private void populateVendorsTable() {
@@ -249,9 +250,6 @@ public class CustomerForm extends javax.swing.JFrame {
         jPanel21 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         ongoingOrderDeliveryTbl = new javax.swing.JTable();
-        jPanel47 = new javax.swing.JPanel();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        ongoingOrderDeliveryTbl1 = new javax.swing.JTable();
         historyPanel = new javax.swing.JPanel();
         historyContentPanel = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
@@ -659,54 +657,7 @@ public class CustomerForm extends javax.swing.JFrame {
             jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel21Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel47.setBackground(new java.awt.Color(255, 204, 0));
-
-        ongoingOrderDeliveryTbl1.setForeground(new java.awt.Color(255, 255, 255));
-        ongoingOrderDeliveryTbl1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Vendor", "Order Date", "Order Time", "Total"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        ongoingOrderDeliveryTbl1.setRowHeight(30);
-        ongoingOrderDeliveryTbl1.setShowGrid(true);
-        jScrollPane7.setViewportView(ongoingOrderDeliveryTbl1);
-
-        javax.swing.GroupLayout jPanel47Layout = new javax.swing.GroupLayout(jPanel47);
-        jPanel47.setLayout(jPanel47Layout);
-        jPanel47Layout.setHorizontalGroup(
-            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel47Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane7)
-                .addContainerGap())
-        );
-        jPanel47Layout.setVerticalGroup(
-            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel47Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -723,8 +674,7 @@ public class CustomerForm extends javax.swing.JFrame {
                         .addGap(400, 400, 400)
                         .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 336, Short.MAX_VALUE)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
@@ -736,9 +686,7 @@ public class CustomerForm extends javax.swing.JFrame {
                     .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel47, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1836,6 +1784,11 @@ public class CustomerForm extends javax.swing.JFrame {
         refreshNotificationBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/refresh-icon.png"))); // NOI18N
         refreshNotificationBtn.setText(" Refresh");
         refreshNotificationBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        refreshNotificationBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshNotificationBtnActionPerformed(evt);
+            }
+        });
         jPanel19.add(refreshNotificationBtn, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
@@ -3025,8 +2978,6 @@ public class CustomerForm extends javax.swing.JFrame {
                     JScrollBar scrollBar = jScrollPane3.getVerticalScrollBar();
                     int scrollPosition = scrollBar.getValue();
 
-                    displayNotifications(); // Refresh the table
-
                     // Restore the scroll position
                     SwingUtilities.invokeLater(() -> scrollBar.setValue(scrollPosition));
 
@@ -3056,27 +3007,41 @@ public class CustomerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_searchVendorMenuTxtFieldKeyReleased
         
     private void markAllAsReadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_markAllAsReadBtnActionPerformed
-        // TODO add your handling code here:
+        notificationService.markAllNotificationsAsRead(loggedInUser.getId());
+        
+        displayNotifications();
     }//GEN-LAST:event_markAllAsReadBtnActionPerformed
 
     private void searchNotificationTxtFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchNotificationTxtFieldKeyReleased
         tableHelper.searchTable(notificationsTbl, searchNotificationTxtField.getText(), new int[] { 1, 2 });
     }//GEN-LAST:event_searchNotificationTxtFieldKeyReleased
 
-    private void subscribeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscribeBtnActionPerformed
+    private void updateSubscriptionButton() {
+        Subscription latestSubscription = subscriptionService.getLatestActiveSubscription(loggedInUser.getId());
+        LocalDate today = LocalDate.now();
 
-        // Use the service layer to check for active subscription
-        if (isUserSubscribed) {
-            JOptionPane.showMessageDialog(this, "You already have an active subscription.", "Subscription", JOptionPane.INFORMATION_MESSAGE);
+        if (latestSubscription != null && !today.isAfter(latestSubscription.getSubscriptionEndDate())) {
+            // User is currently subscribed
+            subscribeBtn.setText("Subscribed");
+            subscribeBtn.setEnabled(false);
+        } else if (subscriptionService.hasUserEverSubscribed(loggedInUser.getId())) {
+            // User's subscription has expired
+            subscribeBtn.setText("Renew Subscription");
+            subscribeBtn.setEnabled(true);
         } else {
-            // Add the subscription for the user
-            subscriptionService.addSubscription(loggedInUser.getId());
-
-            // Update user's credit balance display
-            updateCreditBalanceDisplay();
-
-            JOptionPane.showMessageDialog(this, "Subscription successful. Enjoy your benefits!", "Subscription", JOptionPane.INFORMATION_MESSAGE);
+            // User has never subscribed or subscription data is not available
+            subscribeBtn.setText("Subscribe");
+            subscribeBtn.setEnabled(true);
         }
+    }
+    
+    private void subscribeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscribeBtnActionPerformed
+        if ("Subscribe".equals(subscribeBtn.getText()) || "Renew Subscription".equals(subscribeBtn.getText())) {
+            subscriptionService.addSubscription(loggedInUser.getId());
+            JOptionPane.showMessageDialog(this, "Subscription successful. Enjoy your benefits!", "Subscription", JOptionPane.INFORMATION_MESSAGE);
+            updateCreditBalanceDisplay();
+        }
+        updateSubscriptionButton(); // Update the button after the action
     }//GEN-LAST:event_subscribeBtnActionPerformed
 
     private List<Map<String, String>> fetchVendorReviews(String vendorName) {
@@ -3191,6 +3156,10 @@ public class CustomerForm extends javax.swing.JFrame {
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
         authManager.logout(this);
     }//GEN-LAST:event_logoutBtnActionPerformed
+
+    private void refreshNotificationBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshNotificationBtnActionPerformed
+        displayNotifications();
+    }//GEN-LAST:event_refreshNotificationBtnActionPerformed
     
     private void updateVendorMenuUIElements() {
         itemQtyLabel.setText(String.valueOf(menuItemQuantity));
@@ -3367,7 +3336,6 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel44;
     private javax.swing.JPanel jPanel45;
     private javax.swing.JPanel jPanel46;
-    private javax.swing.JPanel jPanel47;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -3380,7 +3348,6 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator1;
@@ -3391,7 +3358,6 @@ public class CustomerForm extends javax.swing.JFrame {
     private javax.swing.JButton notificationsSidebarBtn;
     private javax.swing.JTable notificationsTbl;
     private javax.swing.JTable ongoingOrderDeliveryTbl;
-    private javax.swing.JTable ongoingOrderDeliveryTbl1;
     private javax.swing.JTable orderCartTbl;
     private javax.swing.JButton orderHistoryBackBtn;
     private javax.swing.JTable orderHistoryTbl;

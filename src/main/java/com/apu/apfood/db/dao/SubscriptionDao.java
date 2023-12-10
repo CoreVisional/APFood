@@ -31,7 +31,7 @@ public class SubscriptionDao extends APFoodDao<Subscription> {
     protected String serialize(Subscription subscription) {
         return subscription.getUserId() + "| " +
                subscription.getSubscriptionStartDate() + "| " +
-               subscription.getSubscriptionEndDate() + "| " + "\n";
+               subscription.getSubscriptionEndDate() + "\n";
     }
 
     @Override
