@@ -3,8 +3,6 @@ package com.apu.apfood.db.dao;
 import com.apu.apfood.db.enums.NotificationStatus;
 import com.apu.apfood.db.enums.NotificationType;
 import com.apu.apfood.db.models.Notification;
-import com.apu.apfood.db.models.User;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
