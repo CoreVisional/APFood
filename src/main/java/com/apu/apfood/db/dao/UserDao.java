@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -119,7 +118,7 @@ public class UserDao extends APFoodDao<User> {
             }
             br.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
 
         return customerId;
