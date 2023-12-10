@@ -47,6 +47,23 @@ public class OrderDao extends APFoodDao<Order> {
                 .flatMap(vendorFolder -> processVendorFolder(vendorFolder, userId, statuses).stream())
                 .collect(Collectors.toList());
     }
+    
+    public List<Order> getByOrderId(int orderId) {
+        File vendorsDir = new File(BASE_PATH + "/src/main/java/com/apu/apfood/db/datafiles/vendors/");
+        return Arrays.stream(vendorsDir.listFiles())
+                .filter(File::isDirectory)
+                .flatMap(vendorFolder -> processVendorFolderForOrderId(vendorFolder, orderId).stream())
+                .collect(Collectors.toList());
+    }
+
+    private List<Order> processVendorFolderForOrderId(File vendorFolder, int orderId) {
+        updateFilePath(vendorFolder.getName());
+        return super.getAll().stream()
+                .map(this::deserialize)
+                .filter(order -> order != null && order.getOrderId() == orderId)
+                .peek(order -> order.setVendorName(vendorFolder.getName()))
+                .collect(Collectors.toList());
+    }
 
     private List<Order> processVendorFolder(File vendorFolder, int userId, List<OrderStatus> statuses) {
         updateFilePath(vendorFolder.getName());
