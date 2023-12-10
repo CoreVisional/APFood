@@ -1,10 +1,4 @@
 id| orderId| userId| menuId| quantity| orderDate| orderTime| remarks| mode| orderStatus| hasDiscount| deliveryLocation
-1| 1| 1| 1| 1| 2023-12-08| 03:12:08.042255300| | Delivery| Pending| yes| Block A
-2| 2| 1| 2| 1| 2023-12-08| 03:12:17.965479900| | Delivery| Pending| yes| Block B
-3| 3| 1| 3| 1| 2023-12-08| 03:12:27.811713800| | Delivery| Pending| yes| Block D
-4| 4| 1| 1| 2| 2023-12-08| 03:12:40.617783700| | Delivery| Pending| yes| Block E
-5| 4| 1| 2| 2| 2023-12-08| 03:12:40.618787400| | Delivery| Pending| yes| Block E
-6| 5| 1| 1| 1| 2023-12-08| 03:45:51.462300400| | Delivery| Pending| yes| Block A
-7| 6| 1| 1| 1| 2023-12-08| 03:48:16.173854| | Delivery| Pending| yes| Block D
-8| 6| 1| 3| 2| 2023-12-08| 03:48:16.174915900| | Delivery| Pending| yes| Block D
-9| 7| 1| 1| 2| 2023-12-08| 20:09:04.338085900| | Delivery| Pending| yes| Block D
+1| 1| 1| 1| 1| 2023-12-08| 03:12:08.042255300| | Delivery| Accepted| yes| Block A
+1| 1| 1| 2| 1| 2023-12-08| 03:12:08.042255300| | Delivery| Accepted| yes| Block A
+2| 2| 2| 2| 1| 2023-12-08| 03:12:17.965479900| | Delivery| Pending| yes| Block B
