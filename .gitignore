@@ -52,3 +52,17 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+nbproject/
+
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
