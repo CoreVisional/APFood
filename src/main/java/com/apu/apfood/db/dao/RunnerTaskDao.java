@@ -1,5 +1,6 @@
 package com.apu.apfood.db.dao;
 
+import com.apu.apfood.db.enums.TaskStatus;
 import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.FileHelper;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
     private static final String FEEDBACK_HEADERS = "id| deliveryRunnerId| orderId| vendor| feedback\n";
     
     private static final String USER_FILEPATH = "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerTaskAssignment.txt";
-    private static final String HEADERS = "id| orderId| deliveryRunnerId| status| vendorName\n";
+    private static final String HEADERS = "id| orderId| deliverRunnerId| status| vendor| location\n";
 
     private UserDao userDao = new UserDao();
     private NotificationDao notificationDao = new NotificationDao();
@@ -88,16 +90,15 @@ public class RunnerTaskDao extends APFoodDao<User> {
                             String accountId = rowArray2[2];
                             String date = rowArray2[5];
                             String time = rowArray2[6];
-                            
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSS");
-                            LocalTime parsedTime = LocalTime.parse(time, formatter);
+
+                            LocalTime parsedTime = LocalTime.parse(time);
                             int hours = parsedTime.getHour();
                             int minutes = parsedTime.getMinute();
                             // Formatting minutes to have leading zeros if necessary
                             String formattedMinutes = String.format("%02d", minutes);
                             String formattedTime = hours + ":" + formattedMinutes; // Concatenating hours and formatted minutes
-                            
-                            String customerName = userDao.getCustomerName(accountId);
+
+                            String customerName = userDao.getUserName(accountId);
 
                             FileReader fr3 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt");
                             BufferedReader br3 = new BufferedReader(fr3);
@@ -113,7 +114,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                                     // Populate table row
                                     String[] row = {deliveryId, orderId, customerName, vendorName, location, date, formattedTime, deliveryStatus, feedback};
                                     rows.add(row);
-
+                                    break;
                                 }
                             }
                             br3.close();
@@ -160,7 +161,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
     }
     
     public String getRunnerFeedback(String orderId, String vendorName) {
-        String feedback = "";
+        String feedback = "No feedback available";
         try {
             FileReader fr = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerFeedback.txt");
             BufferedReader br = new BufferedReader(fr);
@@ -207,6 +208,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                             String accountId = rowArray2[2];
                             String foodId = rowArray2[3];
                             String quantity = rowArray2[4];
+                            String deliveryLocation = rowArray2[11];
 
                             // Read vendor's menu
                             FileReader fr3 = new FileReader(BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\vendors\\" + vendorName + "\\Menu.txt");
@@ -230,6 +232,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                                         orderDetails.setAccountId(accountId);
                                         orderDetails.setOrderId(orderId);
                                         orderDetails.setVendorName(vendorName);
+                                        orderDetails.setDeliveryLocation(deliveryLocation);
 
                                         orderMap.put(key, orderDetails);
                                     }
@@ -304,6 +307,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
 
                 if (rowArray[2].equals(String.valueOf(user.getId())) && rowArray[3].equals("Pending")) {
                     String key = vendorName + "-" + orderId;
+                    System.out.println(key);
                     orderKeys.add(key);
                 }
             }
@@ -315,7 +319,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
         return orderKeys.toArray(new String[0]);
     }
 
-    public void changeTaskAssignmentStatus(User user, String state, String inputOrderId) {
+    public void changeTaskAssignmentStatus(User user, String state, String inputOrderId, String vendorName) {
         List<String> updatedLines = new ArrayList<>();
 
         try {
@@ -334,7 +338,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     String status = rowArray[3];
                     String vendor = rowArray[4];
                     String location = rowArray[5];
-                    if (rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId()))) {
+                    if (rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId())) && rowArray[4].equals(vendorName)) {
                         status = state;
                     }
                     updatedLines.add(id + "| " + orderId + "| " + deliveryRunnerId + "| " + status + "| " + vendor + "| " + location);
@@ -353,6 +357,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
                 // Close the BufferedWriter to save the changes
                 bw.close();
             } else if (state.equals("Accepted")) {
+                boolean stateUpdated = false;
                 while ((line = br.readLine()) != null) {
                     String[] rowArray = line.split("\\| ");
                     String id = rowArray[0];
@@ -361,9 +366,10 @@ public class RunnerTaskDao extends APFoodDao<User> {
                     String status = rowArray[3];
                     String vendor = rowArray[4];
                     String location = rowArray[5];
-                    if (rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId()))) {
+                    if (!stateUpdated && rowArray[1].equals(inputOrderId) && rowArray[2].equals(String.valueOf(user.getId())) && rowArray[3].equals("Pending")) {
                         // Current runner's status for this task set to "Accepted"
                         status = state;
+                        stateUpdated = true;
                     } else if (rowArray[1].equals(inputOrderId) && !rowArray[2].equals(String.valueOf(user.getId()))) {
                         // All other runners status for this task are set to "Declined".
                         status = "Declined";
@@ -409,16 +415,19 @@ public class RunnerTaskDao extends APFoodDao<User> {
         }
 
         if (isNoRunnerLeft) {
-            // If no runner left send notification to customer
-            notificationDao.writeNotification(userId + "| " + "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]" + "| Not Notified| Push");
 
+            String content = "Delivery runner not found [order id: " + inputOrderId + ", vendor name: " + vendorName + "]";
+            String status = "Unnotified";
+            String type = "Push";
+            // If no runner left send notification to customer
+            notificationDao.writeNotification(userId, content, status, type);
         }
     }
 
     public void addRunnerDeliveryRecord(String orderId, String vendorName, String userId) {
         String runnerDeliveryFilePath = BASE_PATH + "\\src\\main\\java\\com\\apu\\apfood\\db\\datafiles\\RunnerDelivery.txt";
         FileHelper fileHelper = new FileHelper();
-        fileHelper.writeFile(runnerDeliveryFilePath, new File(runnerDeliveryFilePath), HEADERS, orderId + "| Ongoing| " + vendorName + "| " + userId);
+        fileHelper.writeFile(runnerDeliveryFilePath, new File(runnerDeliveryFilePath), "id| orderId| status| vendor| deliveryRunnerId", true, orderId + "| Ongoing| " + vendorName + "| " + userId);
     }
 
     public void updateDeliveryStatus(String inputOrderId, String inputVendorName) {
@@ -460,7 +469,7 @@ public class RunnerTaskDao extends APFoodDao<User> {
             // Write the updated lines to the file
             for (String updatedLine : updatedLines) {
                 bw.write(updatedLine);
-                bw.newLine(); // Add a newline character to separate lines
+                bw.newLine();
             }
 
             // Close the BufferedWriter to save the changes
@@ -519,8 +528,8 @@ public class RunnerTaskDao extends APFoodDao<User> {
                         String[] rowArray2 = row2.split("\\| ");
                         if (rowArray2[1].equals(orderId) && rowArray2[4].equals(vendorName)) {
                             String location = rowArray2[5];
-                            String customerId = userDao.getCustomerId(orderId, vendorName);
-                            String customerName = userDao.getCustomerName(customerId);
+                            String customerId = userDao.getUserId(orderId, vendorName);
+                            String customerName = userDao.getUserName(customerId);
 
                             taskDetails.add(location);
                             taskDetails.add(orderId);
@@ -573,6 +582,13 @@ public class RunnerTaskDao extends APFoodDao<User> {
         return ongoingOrdersMap;
     }
 
+    public void writeVendorTaskAssignment(int orderId, int runnerId, String vendorName, String deliveryLocation)
+    {
+        String task  = orderId + "| " + runnerId + "| " + TaskStatus.PENDING.toString() + "| " + vendorName + "| " + deliveryLocation;
+        this.fileHelper.writeFile(filePath, new File(filePath), HEADERS, true, task);
+    }
+    
+    
     public static void main(String[] args) {
         RunnerTaskDao runnerTaskDao = new RunnerTaskDao();
         runnerTaskDao.getOrderList(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner"));

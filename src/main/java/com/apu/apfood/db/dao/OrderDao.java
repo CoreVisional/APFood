@@ -2,7 +2,13 @@ package com.apu.apfood.db.dao;
 
 import com.apu.apfood.db.enums.OrderStatus;
 import com.apu.apfood.db.models.Order;
+import com.apu.apfood.db.models.OrderDetails;
+import com.apu.apfood.helpers.FileHelper;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -15,18 +21,19 @@ import java.util.stream.Collectors;
  * @author Alex
  */
 public class OrderDao extends APFoodDao<Order> {
-    
-    private static final String ORDER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/vendors/";   
+
+    private static final String ORDER_FILEPATH = "/src/main/java/com/apu/apfood/db/datafiles/vendors/";
     private static final String HEADERS = "id| orderId| userId| menuId| quantity| orderDate| orderTime| remarks| mode| orderStatus| hasDiscount| deliveryLocation\n";
-    
+    private FileHelper fileHelper = new FileHelper();
+
     public OrderDao() {
-        
+        super(ORDER_FILEPATH, HEADERS);
     }
-    
+
     public OrderDao(String vendorName) {
         super(ORDER_FILEPATH, HEADERS);
     }
-    
+
     public void updateFilePath(String vendorName) {
         this.filePath = getFullPath(ORDER_FILEPATH + vendorName + "/Orders.txt");
     }
@@ -39,7 +46,7 @@ public class OrderDao extends APFoodDao<Order> {
             super.add(order);
         }
     }
-    
+
     public List<Order> getUserOrders(int userId, List<OrderStatus> statuses) {
         File vendorsDir = new File(BASE_PATH + "/src/main/java/com/apu/apfood/db/datafiles/vendors/");
         return Arrays.stream(vendorsDir.listFiles())
@@ -73,7 +80,7 @@ public class OrderDao extends APFoodDao<Order> {
                 .peek(order -> order.setVendorName(vendorFolder.getName()))
                 .collect(Collectors.toList());
     }
-    
+
     public void updateOrderMode(int orderId, String newMode, String vendorName) {
         // Update the file path to point to the specific vendor's Orders.txt
         updateFilePath(vendorName);
@@ -88,22 +95,22 @@ public class OrderDao extends APFoodDao<Order> {
             }
         }
     }
-    
+
     @Override
     protected String serialize(Order order) {
-        return order.getOrderId() + "| " + 
-               order.getUserId() + "| " + 
-               order.getMenuId() + "| " + 
-               order.getQuantity() + "| " + 
-               order.getOrderDate() + "| " + 
-               order.getOrderTime() + "| " + 
-               order.getRemarks() + "| " + 
-               order.getMode() + "| " + 
-               order.getOrderStatus() + "| " +
-               order.isDiscountAvailable() + "| " +
-               order.getDeliveryLocation() + "\n";
+        return order.getOrderId() + "| "
+                + order.getUserId() + "| "
+                + order.getMenuId() + "| "
+                + order.getQuantity() + "| "
+                + order.getOrderDate() + "| "
+                + order.getOrderTime() + "| "
+                + order.getRemarks() + "| "
+                + order.getMode() + "| "
+                + order.getOrderStatus() + "| "
+                + order.isDiscountAvailable() + "| "
+                + order.getDeliveryLocation() + "\n";
     }
-    
+
     @Override
     protected Order deserialize(String[] data) {
         int id = Integer.parseInt(data[0].trim());
@@ -114,14 +121,14 @@ public class OrderDao extends APFoodDao<Order> {
         LocalDate orderDate = LocalDate.parse(data[5].trim());
         LocalTime orderTime = LocalTime.parse(data[6].trim());
         String remarks = data[7].trim();
-        String orderMode = data[8].trim();
+        String mode = data[8].trim();
         OrderStatus orderStatus = OrderStatus.valueOf(data[9].trim().toUpperCase());
         String hasDiscount = data[10].trim();
         String deliveryLocation = data[11].trim();
 
-        return new Order(id, orderId, userId, menuId, quantity, orderDate, orderTime, remarks, orderMode, orderStatus, deliveryLocation, hasDiscount);
+        return new Order(id, orderId, userId, menuId, quantity, orderDate, orderTime, remarks, mode, orderStatus, deliveryLocation, hasDiscount);
     }
-    
+
     @Override
     public void update(Order orderToUpdate) {
         List<Order> orders = getAllOrders();
@@ -143,7 +150,7 @@ public class OrderDao extends APFoodDao<Order> {
 
         fileHelper.updateFile(filePath, HEADERS, serializedOrders);
     }
-    
+
     private int generateUniqueOrderId(String vendorName) {
         int maxOrderId = 0;
 
@@ -172,20 +179,57 @@ public class OrderDao extends APFoodDao<Order> {
 
         return maxOrderId + 1;
     }
-    
+
+    public List<Order> getOrderListfromVendor(String vendorName) {
+        this.filePath = getFullPath(ORDER_FILEPATH + vendorName + "/Orders.txt");
+        List<String[]> rawData = super.getAll();
+        List<Order> orders = rawData.stream()
+                .map(this::deserialize)
+                .collect(Collectors.toList());
+
+        return orders;
+
+    }
+
+    public boolean updateOrderStatus(int orderId, OrderStatus orderStatus, String vendorName) {
+        boolean success = false;
+        this.filePath = getFullPath(ORDER_FILEPATH + vendorName + "/Orders.txt");
+        List<String[]> rawData = super.getAll();
+        List<Order> orders = rawData.stream()
+                .map(this::deserialize)
+                .collect(Collectors.toList());
+        try {
+            // Open the file with WRITE mode, which truncates the file to size 0
+            Files.newBufferedWriter(Path.of(filePath), StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+        }
+        String[] lines = new String[orders.size()];
+        for (int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
+            if (order.getOrderId() == orderId) {
+                order.setOrderStatus(orderStatus);
+                success = true;
+            }
+            String serializedData = serialize(order);
+            fileHelper.writeFile(filePath, new File(filePath), HEADERS, serializedData);
+        }
+        return success;
+    }
+
     public List<Order> getAllOrders() {
         List<Order> rawData = super.getAll().stream()
-                                   .map(this::deserialize)
-                                   .collect(Collectors.toList());
-        
+                .map(this::deserialize)
+                .collect(Collectors.toList());
+
         return rawData;
     }
 
     public List<Order> getByOrderIdAndVendorName(int orderId, String vendorName) {
         updateFilePath(vendorName);
         return getAll().stream()
-                       .map(this::deserialize)
-                       .filter(order -> order.getOrderId() == orderId)
-                       .collect(Collectors.toList());
+                .map(this::deserialize)
+                .filter(order -> order.getOrderId() == orderId)
+                .collect(Collectors.toList());
     }
 }

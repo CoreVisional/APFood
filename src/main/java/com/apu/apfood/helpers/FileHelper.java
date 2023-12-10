@@ -69,10 +69,10 @@ public class FileHelper {
     public void writeFile(String filename, File file, String headers, String... varargs) {
         writeFile(filename, file, headers, false, varargs);
     }
-    
+
     public List<String[]> readFile(String filename) {
         List<String[]> dataList = new ArrayList();
-        
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             reader.readLine(); // Skip header
@@ -83,7 +83,7 @@ public class FileHelper {
         } catch (IOException e) {
             e.printStackTrace(System.out);
         }
-        
+
         return dataList;
     }
     

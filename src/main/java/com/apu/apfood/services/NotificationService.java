@@ -3,23 +3,25 @@ package com.apu.apfood.services;
 import com.apu.apfood.db.dao.NotificationDao;
 import com.apu.apfood.db.models.Notification;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author Alex
  */
 public class NotificationService {
-    
+
     private final NotificationDao notificationDao;
-    
+
     public NotificationService(NotificationDao notificationDao) {
         this.notificationDao = notificationDao;
     }
-    
+
     public void addNotification(Notification notification) {
         notificationDao.add(notification);
     }
-    
+
     public List<Notification> getNotifications() {
         List<Notification> notifications = notificationDao.getAllNotifications();
         notifications.forEach(this::extractDetailsFromContent);
@@ -31,11 +33,11 @@ public class NotificationService {
         extractDetailsFromContent(notification);
         return notification;
     }
-    
+
     public void updateNotification(Notification notification) {
         notificationDao.update(notification);
     }
-    
+
     private void extractDetailsFromContent(Notification notification) {
         String content = notification.getContent();
         if (content.toLowerCase().contains("credit top up")) {
@@ -74,7 +76,31 @@ public class NotificationService {
         }
         return content.substring(start, end).trim();
     }
-    
+
+    public static String extractUserId(String input) {
+        String userId = null;
+        Pattern pattern = Pattern.compile("user id: (\\d+)");
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            userId = matcher.group(1);
+        }
+
+        return userId;
+    }
+
+    public static String extractAmount(String input) {
+        String amount = null;
+        Pattern pattern = Pattern.compile("amount: RM ([\\d.]+)");
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            amount = matcher.group(1);
+        }
+
+        return amount;
+
+    }
 
     private int extractTransactionIdFromContent(String content) {
         String transactionIdPrefix = "transaction id: ";
@@ -106,7 +132,7 @@ public class NotificationService {
         if (end == -1) {
             return 0;
         }
- 
+
         try {
             return Integer.parseInt(content.substring(start, end).trim());
         } catch (NumberFormatException e) {

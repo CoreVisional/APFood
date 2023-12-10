@@ -21,4 +21,14 @@ public enum DeliveryFee {
     public double getFee() {
         return fee;
     }
+    
+    public static double getFeeForBlock(String blockName) {
+        for (DeliveryFee deliveryFee : values()) {
+            if (deliveryFee.name().equalsIgnoreCase(blockName.trim().replace(" ", "_"))) {
+                return deliveryFee.getFee();
+            }
+        }
+        // Handle the case where no matching block name is found
+        throw new IllegalArgumentException("No matching delivery location found: " + blockName);
+    }
 }

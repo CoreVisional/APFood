@@ -60,7 +60,7 @@ public class TransactionDao extends APFoodDao<Transaction> {
     public void writeTransaction(String userId, String amount, String remark) {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
-        fileHelper.writeFile(filePath, new File(filePath), HEADERS, userId + "| " + amount + "| " + currentDate + "| " + currentTime + "| " + remark);
+        fileHelper.writeFile(filePath, new File(filePath), HEADERS, true, userId + "| " + amount + "| " + currentDate + "| " + currentTime + "| " + remark);
     }
 
     public String getTotalBalance(String inputUserId) {

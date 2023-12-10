@@ -1,8 +1,10 @@
 package com.apu.apfood.gui;
 
+import com.apu.apfood.db.dao.RunnerRevenueDao;
 import com.apu.apfood.db.dao.UserDao;
 import com.apu.apfood.db.models.OrderDetails;
 import com.apu.apfood.db.models.User;
+import com.apu.apfood.gui.auth.AuthenticationManager;
 import com.apu.apfood.helpers.GUIHelper;
 import com.apu.apfood.helpers.ImageHelper;
 import com.apu.apfood.helpers.TableHelper;
@@ -10,6 +12,7 @@ import com.apu.apfood.services.RunnerService;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.List;
 import java.util.Map;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -24,7 +27,9 @@ public class RunnerForm extends javax.swing.JFrame {
     private Map<String, OrderDetails> deliveryTasks;
     private String[] orderKeys;
     private int orderListPanelIndex = 0;
-    
+    private RunnerRevenueDao runnerRevenueDao = new RunnerRevenueDao();
+    private AuthenticationManager authenticationManager = new AuthenticationManager();
+
     // Instantiate helpers classes
     ImageHelper imageHelper = new ImageHelper();
     GUIHelper guiHelper = new GUIHelper();
@@ -44,14 +49,18 @@ public class RunnerForm extends javax.swing.JFrame {
         initCustomComponents();
 
         // Set revenue values
-        rs.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
+        this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
 
         // Delivery Task 
         if (rs.checkOngoingTask(user)) {
             // If runner has ongoing task display a new card
             CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
             card.show(runnerTaskPanel, "RunnerOngoingTask");
-            rs.displayOngoingTaskDetails(user, ongCustomerNameJLabel, ongLocationJLabel, ongOrderIdJLabel, ongVendorNameJLabel);
+            List<String> taskDetails = rs.displayOngoingTaskDetails(user);
+            ongLocationJLabel.setText(taskDetails.get(0));
+            ongOrderIdJLabel.setText("#" + taskDetails.get(1));
+            ongVendorNameJLabel.setText(taskDetails.get(2));
+            ongCustomerNameJLabel.setText(taskDetails.get(3));
         } else {
             this.deliveryTasks = rs.getDeliveryTask(user);
             this.orderKeys = rs.getOrderKeys(user);
@@ -60,7 +69,7 @@ public class RunnerForm extends javax.swing.JFrame {
                 CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
                 card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
             } else {
-                rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+                rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel,taskDeliveryLocationJLabel, taskOrderListJTextArea);
                 CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
                 card.show(runnerTaskPanel, "RunnerPendingTask");
             }
@@ -71,10 +80,8 @@ public class RunnerForm extends javax.swing.JFrame {
         guiHelper.panelSwitcher(deliveryHistoryNavBtn, contentPanel, "RunnerTaskHistory");
         guiHelper.panelSwitcher(revenueNavBtn, contentPanel, "RunnerRevenue");
 
-        roleLabel.setText("Delivery Runner");
         nameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
-
     }
 
     private void initCustomComponents() {
@@ -98,16 +105,13 @@ public class RunnerForm extends javax.swing.JFrame {
         homeNavBtn = new javax.swing.JButton();
         deliveryHistoryNavBtn = new javax.swing.JButton();
         revenueNavBtn = new javax.swing.JButton();
-        roleLabel = new javax.swing.JLabel();
+        runnerLogoutJButton2 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         topBarPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
         runnerHomePanel = new javax.swing.JPanel();
         runnerTaskPanel = new javax.swing.JPanel();
@@ -143,6 +147,7 @@ public class RunnerForm extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         taskVendorNameJLabel = new javax.swing.JLabel();
         taskOrderIdJLabel = new javax.swing.JLabel();
+        taskDeliveryLocationJLabel = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         runnerTaskHistoryPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -164,6 +169,12 @@ public class RunnerForm extends javax.swing.JFrame {
         yearlyRevenueJLabel1 = new javax.swing.JLabel();
         todayRevenueJLabel = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Home - APFood");
@@ -185,6 +196,7 @@ public class RunnerForm extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridLayout(5, 1, 0, 30));
 
+        homeNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         homeNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         homeNavBtn.setText("Home");
         homeNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -196,6 +208,7 @@ public class RunnerForm extends javax.swing.JFrame {
         });
         jPanel3.add(homeNavBtn);
 
+        deliveryHistoryNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         deliveryHistoryNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         deliveryHistoryNavBtn.setText("Delivery History");
         deliveryHistoryNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -207,16 +220,26 @@ public class RunnerForm extends javax.swing.JFrame {
         });
         jPanel3.add(deliveryHistoryNavBtn);
 
+        revenueNavBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         revenueNavBtn.setForeground(new java.awt.Color(255, 255, 255));
         revenueNavBtn.setText("Revenue");
         revenueNavBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         revenueNavBtn.setFocusPainted(false);
+        revenueNavBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                revenueNavBtnActionPerformed(evt);
+            }
+        });
         jPanel3.add(revenueNavBtn);
 
-        roleLabel.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        roleLabel.setForeground(new java.awt.Color(255, 255, 255));
-        roleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        roleLabel.setText("Full Name");
+        runnerLogoutJButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        runnerLogoutJButton2.setForeground(new java.awt.Color(255, 255, 255));
+        runnerLogoutJButton2.setText("Log Out");
+        runnerLogoutJButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runnerLogoutJButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -224,15 +247,12 @@ public class RunnerForm extends javax.swing.JFrame {
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(runnerLogoutJButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
-            .addGroup(sidePanelLayout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(roleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         sidePanelLayout.setVerticalGroup(
             sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,9 +263,9 @@ public class RunnerForm extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(roleLabel)
-                .addGap(41, 41, 41))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 350, Short.MAX_VALUE)
+                .addComponent(runnerLogoutJButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31))
         );
 
         getContentPane().add(sidePanel, java.awt.BorderLayout.LINE_START);
@@ -271,31 +291,14 @@ public class RunnerForm extends javax.swing.JFrame {
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/profile-icon.png"))); // NOI18N
         jLabel5.setName(""); // NOI18N
 
-        jSeparator2.setForeground(new java.awt.Color(102, 102, 102));
-        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
-
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bell.png"))); // NOI18N
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel7.setText("3+");
-
         javax.swing.GroupLayout topBarPanelLayout = new javax.swing.GroupLayout(topBarPanel);
         topBarPanel.setLayout(topBarPanelLayout);
         topBarPanelLayout.setHorizontalGroup(
             topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarPanelLayout.createSequentialGroup()
-                .addContainerGap(1036, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addGap(0, 0, 0)
-                .addComponent(jLabel7)
-                .addGap(18, 18, 18)
+                .addContainerGap(1094, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addGap(2, 2, 2)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(32, 32, 32)
                 .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(emailLabel)
                     .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -312,20 +315,13 @@ public class RunnerForm extends javax.swing.JFrame {
                         .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(topBarPanelLayout.createSequentialGroup()
-                                .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(topBarPanelLayout.createSequentialGroup()
-                                            .addComponent(nameLabel)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(emailLabel)))
-                                    .addComponent(jLabel7))
+                                .addComponent(nameLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(emailLabel)
                                 .addGap(2, 2, 2))))
                     .addGroup(topBarPanelLayout.createSequentialGroup()
                         .addGap(28, 28, 28)
-                        .addGroup(topBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel4))))
+                        .addComponent(jLabel4)))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
@@ -542,7 +538,7 @@ public class RunnerForm extends javax.swing.JFrame {
         jScrollPane2.setViewportView(taskOrderListJTextArea);
 
         jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel16.setText("Order List");
+        jLabel16.setText("Location:");
 
         leftPanelBtn.setText("<");
         leftPanelBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -571,6 +567,9 @@ public class RunnerForm extends javax.swing.JFrame {
         taskOrderIdJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         taskOrderIdJLabel.setText("#244");
 
+        taskDeliveryLocationJLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        taskDeliveryLocationJLabel.setText("Block A");
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -590,10 +589,13 @@ public class RunnerForm extends javax.swing.JFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(taskCustomerNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(taskDeliveryLocationJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel8Layout.createSequentialGroup()
@@ -643,7 +645,9 @@ public class RunnerForm extends javax.swing.JFrame {
                                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(taskCustomerNameJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel16)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel16)
+                                    .addComponent(taskDeliveryLocationJLabel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addComponent(jScrollPane2)))
                 .addGap(28, 28, 28)
@@ -695,7 +699,7 @@ public class RunnerForm extends javax.swing.JFrame {
         deliveryHistoryJTable.setModel(new javax.swing.table.DefaultTableModel(
             this.deliveryHistory,
             new String [] {
-                "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "DeliveryStatus", "Feedback"
+                "Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
             }
         )
         {
@@ -724,7 +728,6 @@ public class RunnerForm extends javax.swing.JFrame {
 
         JTableHeader header = deliveryHistoryJTable.getTableHeader();
         header.setPreferredSize(new Dimension(20, 40));
-        tableHelper.centerTableValues(deliveryHistoryJTable);
         deliveryHistoryJTable.setRowHeight(40);
         deliveryHistoryJTable.setSelectionBackground(new java.awt.Color(190, 190, 190));
         deliveryHistoryJTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
@@ -732,6 +735,7 @@ public class RunnerForm extends javax.swing.JFrame {
         deliveryHistoryJTable.setShowGrid(true);
         deliveryHistoryJTable.getTableHeader().setResizingAllowed(false);
         deliveryHistoryJTable.getTableHeader().setReorderingAllowed(false);
+        tableHelper.centerTableValues(deliveryHistoryJTable);
         jScrollPane1.setViewportView(deliveryHistoryJTable);
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -761,8 +765,8 @@ public class RunnerForm extends javax.swing.JFrame {
                 .addGap(38, 38, 38)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(187, Short.MAX_VALUE))
         );
 
         contentPanel.add(runnerTaskHistoryPanel, "RunnerTaskHistory");
@@ -935,28 +939,89 @@ public class RunnerForm extends javax.swing.JFrame {
         jLabel19.setText("Revenue");
         jLabel19.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jPanel11.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel6.setText("Delivery Fees");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel7.setText("Block A - RM 5");
+
+        jLabel26.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
+        jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel26.setText("Block D - RM 2");
+
+        jLabel27.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
+        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel27.setText("Block B - RM 3");
+
+        jLabel28.setFont(new java.awt.Font("Segoe UI", 2, 18)); // NOI18N
+        jLabel28.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel28.setText("Block E - RM 2");
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel27)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel26)
+                            .addComponent(jLabel28)))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel6)))
+                .addContainerGap(34, Short.MAX_VALUE))
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel6)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel28)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout runnerRevenuePanelLayout = new javax.swing.GroupLayout(runnerRevenuePanel);
         runnerRevenuePanel.setLayout(runnerRevenuePanelLayout);
         runnerRevenuePanelLayout.setHorizontalGroup(
             runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(runnerRevenuePanelLayout.createSequentialGroup()
-                .addContainerGap(262, Short.MAX_VALUE)
+                .addContainerGap(60, Short.MAX_VALUE)
                 .addGroup(runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
+                        .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(211, 211, 211))
+                        .addGap(139, 139, 139))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
                         .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(355, 355, 355))))
+                        .addGap(362, 362, 362))))
         );
         runnerRevenuePanelLayout.setVerticalGroup(
             runnerRevenuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
-                .addGap(40, 40, 40)
+            .addGroup(runnerRevenuePanelLayout.createSequentialGroup()
+                .addGap(37, 37, 37)
                 .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(107, 107, 107)
+                .addGap(108, 108, 108)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addContainerGap(224, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, runnerRevenuePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(294, 294, 294))
         );
 
         contentPanel.add(runnerRevenuePanel, "RunnerRevenue");
@@ -971,10 +1036,45 @@ public class RunnerForm extends javax.swing.JFrame {
 
 
     private void deliveryHistoryNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryHistoryNavBtnActionPerformed
+        // Refresh delivery history table
+        this.deliveryHistory = rs.getDeliveryHistory();
+        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory,
+                new String[]{"Delivery ID", "Order ID", "Customer Name", "Vendor", "Location", "Date", "Time", "Delivery Status", "Feedback"
+                });
+        tableHelper.centerTableValues(deliveryHistoryJTable);
+        int[] columnWidths = {20, 20, 100, 50, 50, 50, 50, 50, 350}; // Set your desired widths
+        TableColumnModel columnModel = deliveryHistoryJTable.getColumnModel();
 
+        for (int i = 0; i < columnWidths.length; i++) {
+            TableColumn column = columnModel.getColumn(i);
+            column.setPreferredWidth(columnWidths[i]);
+        }
     }//GEN-LAST:event_deliveryHistoryNavBtnActionPerformed
 
     private void homeNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeNavBtnActionPerformed
+        // Delivery Task 
+        if (rs.checkOngoingTask(user)) {
+            // If runner has ongoing task display a new card
+            CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+            card.show(runnerTaskPanel, "RunnerOngoingTask");
+            List<String> taskDetails = rs.displayOngoingTaskDetails(user);
+            ongLocationJLabel.setText(taskDetails.get(0));
+            ongOrderIdJLabel.setText("#" + taskDetails.get(1));
+            ongVendorNameJLabel.setText(taskDetails.get(2));
+            ongCustomerNameJLabel.setText(taskDetails.get(3));
+        } else {
+            this.deliveryTasks = rs.getDeliveryTask(user);
+            this.orderKeys = rs.getOrderKeys(user);
+
+            if (orderKeys.length == 0) {
+                CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+                card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
+            } else {
+                rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel,taskDeliveryLocationJLabel, taskOrderListJTextArea);
+                CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
+                card.show(runnerTaskPanel, "RunnerPendingTask");
+            }
+        }
     }//GEN-LAST:event_homeNavBtnActionPerformed
 
     private void taskDeclineBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskDeclineBtnActionPerformed
@@ -992,13 +1092,14 @@ public class RunnerForm extends javax.swing.JFrame {
         // Refresh displayTask.
         this.deliveryTasks = rs.getDeliveryTask(user);
         this.orderKeys = rs.getOrderKeys(user);
+        this.orderListPanelIndex = 0;
 
         // DisplayTask() if orderkeys.length > 0;
         if (orderKeys.length == 0) {
             CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
             card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
         } else {
-            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel,taskDeliveryLocationJLabel, taskOrderListJTextArea);
             CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
             card.show(runnerTaskPanel, "RunnerPendingTask");
         }
@@ -1020,12 +1121,12 @@ public class RunnerForm extends javax.swing.JFrame {
         // Show a panel where runner needs to click to finish the task.
         CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
         card.show(runnerTaskPanel, "RunnerOngoingTask");
-        rs.displayOngoingTaskDetails(user, ongCustomerNameJLabel, ongLocationJLabel, ongOrderIdJLabel, ongVendorNameJLabel);
+        List<String> taskDetails = rs.displayOngoingTaskDetails(user);
+        ongLocationJLabel.setText(taskDetails.get(0));
+        ongOrderIdJLabel.setText("#" + taskDetails.get(1));
+        ongVendorNameJLabel.setText(taskDetails.get(2));
+        ongCustomerNameJLabel.setText(taskDetails.get(3));
 
-        // Refresh delivery history table
-        this.deliveryHistory = rs.getDeliveryHistory();
-        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory);
-        
         // Reset order list panel index
         orderListPanelIndex = 0;
     }//GEN-LAST:event_taskAcceptBtnActionPerformed
@@ -1033,14 +1134,14 @@ public class RunnerForm extends javax.swing.JFrame {
     private void leftPanelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftPanelBtnActionPerformed
         if (orderListPanelIndex > 0) {
             this.orderListPanelIndex--;
-            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskDeliveryLocationJLabel, taskOrderListJTextArea);
         }
     }//GEN-LAST:event_leftPanelBtnActionPerformed
 
     private void rightPanelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightPanelBtnActionPerformed
         if (orderListPanelIndex < orderKeys.length - 1) {
             this.orderListPanelIndex++;
-            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel,taskDeliveryLocationJLabel, taskOrderListJTextArea);
         }
     }//GEN-LAST:event_rightPanelBtnActionPerformed
 
@@ -1056,23 +1157,30 @@ public class RunnerForm extends javax.swing.JFrame {
         this.deliveryTasks = rs.getDeliveryTask(user);
         this.orderKeys = rs.getOrderKeys(user);
 
+        // Reset order list panel index
+        orderListPanelIndex = 0;
+
         //  DisplayTask() if orderkeys.length > 0;
         if (orderKeys.length == 0) {
             CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
             card.show(runnerTaskPanel, "RunnerNoTaskAtTheMoment");
         } else {
-            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel, taskOrderListJTextArea);
+            rs.displayTask(orderKeys, orderListPanelIndex, deliveryTasks, taskCustomerNameJLabel, taskVendorNameJLabel, taskOrderIdJLabel,taskDeliveryLocationJLabel, taskOrderListJTextArea);
             CardLayout card = (CardLayout) runnerTaskPanel.getLayout();
             card.show(runnerTaskPanel, "RunnerPendingTask");
         }
 
-        // Refresh delivery history table
-        this.deliveryHistory = rs.getDeliveryHistory();
-        tableHelper.refreshTable(deliveryHistoryJTable, deliveryHistory);
 
-        // Refresh revenue values
-        rs.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
     }//GEN-LAST:event_taskFinishBtnActionPerformed
+
+    private void runnerLogoutJButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runnerLogoutJButton2ActionPerformed
+        authenticationManager.logout(this);
+    }//GEN-LAST:event_runnerLogoutJButton2ActionPerformed
+
+    private void revenueNavBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueNavBtnActionPerformed
+        // Refresh revenue values
+        this.setRevenueValues(user, totalRevenueJLabel, monthlyRevenueJLabel, yearlyRevenueJLabel, todayRevenueJLabel);
+    }//GEN-LAST:event_revenueNavBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1089,7 +1197,7 @@ public class RunnerForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RunnerForm(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "Runner")).setVisible(true);
+                new RunnerForm(new User(5, "Alice Johnson", "123@123.com", "qweqweqwe".toCharArray(), "runner")).setVisible(true);
             }
         });
     }
@@ -1118,6 +1226,9 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1128,6 +1239,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelText;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1139,7 +1251,6 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JButton leftPanelBtn;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel monthlyRevenueJLabel;
@@ -1150,8 +1261,8 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JLabel ongVendorNameJLabel;
     private javax.swing.JButton revenueNavBtn;
     private javax.swing.JButton rightPanelBtn;
-    private javax.swing.JLabel roleLabel;
     private javax.swing.JPanel runnerHomePanel;
+    private javax.swing.JButton runnerLogoutJButton2;
     private javax.swing.JPanel runnerRevenuePanel;
     private javax.swing.JPanel runnerTaskHistoryPanel;
     private javax.swing.JPanel runnerTaskPanel;
@@ -1159,6 +1270,7 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JButton taskAcceptBtn;
     private javax.swing.JLabel taskCustomerNameJLabel;
     private javax.swing.JButton taskDeclineBtn;
+    private javax.swing.JLabel taskDeliveryLocationJLabel;
     private javax.swing.JButton taskFinishBtn;
     private javax.swing.JLabel taskOrderIdJLabel;
     private javax.swing.JTextArea taskOrderListJTextArea;
@@ -1169,4 +1281,11 @@ public class RunnerForm extends javax.swing.JFrame {
     private javax.swing.JLabel yearlyRevenueJLabel;
     private javax.swing.JLabel yearlyRevenueJLabel1;
     // End of variables declaration//GEN-END:variables
+
+    private void setRevenueValues(User user, javax.swing.JLabel totalRevenueJLabel, javax.swing.JLabel monthlyRevenueJLabel, javax.swing.JLabel yearlyRevenueJLabel, javax.swing.JLabel todayRevenueJLabel) {
+        totalRevenueJLabel.setText("RM " + runnerRevenueDao.checkTotalRevenue(user));
+        monthlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 1));
+        yearlyRevenueJLabel.setText("RM " + runnerRevenueDao.checkPastMonthRevenue(user, 12));
+        todayRevenueJLabel.setText("RM " + runnerRevenueDao.checkDailyRevenue(user));
+    }
 }

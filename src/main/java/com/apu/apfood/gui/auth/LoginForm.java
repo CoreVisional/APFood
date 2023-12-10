@@ -51,7 +51,6 @@ public class LoginForm extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenu1 = new javax.swing.JMenu();
-        registrationLink = new javax.swing.JLabel();
         signInBtn = new javax.swing.JButton();
         clearBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -60,25 +59,12 @@ public class LoginForm extends javax.swing.JFrame {
         emailInput = new javax.swing.JTextField();
         emailLabel = new javax.swing.JLabel();
         passwordInput = new javax.swing.JPasswordField();
+        showPasswordJCheckBox = new javax.swing.JCheckBox();
 
         jMenu1.setText("jMenu1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        registrationLink.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        registrationLink.setText("Forgot your password? Click here!");
-        registrationLink.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        registrationLink.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                registrationLinkMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                registrationLinkMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                registrationLinkMouseExited(evt);
-            }
-        });
+        setTitle("APFood");
 
         signInBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         signInBtn.setText("Sign in");
@@ -141,6 +127,13 @@ public class LoginForm extends javax.swing.JFrame {
         passwordInput.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         passwordInput.setToolTipText("************");
 
+        showPasswordJCheckBox.setText("Show Password");
+        showPasswordJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showPasswordJCheckBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -153,20 +146,15 @@ public class LoginForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(passwordInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(emailLabel)
-                                .addComponent(emailInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(passwordLabel)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(signInBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(30, 30, 30)
-                                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(238, 238, 238))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(registrationLink)
-                            .addGap(285, 285, 285)))))
+                    .addComponent(emailInput, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(signInBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(showPasswordJCheckBox, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(238, 238, 238))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,36 +169,19 @@ public class LoginForm extends javax.swing.JFrame {
                 .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(passwordInput, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
+                .addGap(11, 11, 11)
+                .addComponent(showPasswordJCheckBox)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(signInBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
-                .addComponent(registrationLink, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(236, Short.MAX_VALUE))
+                .addContainerGap(307, Short.MAX_VALUE))
         );
 
         passwordInput.getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void registrationLinkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrationLinkMouseClicked
-        this.dispose();
-    }//GEN-LAST:event_registrationLinkMouseClicked
-
-    private void registrationLinkMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrationLinkMouseEntered
-        // When hovered, underline label
-        font = registrationLink.getFont();
-        Map attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        registrationLink.setFont(font.deriveFont(attributes));
-    }//GEN-LAST:event_registrationLinkMouseEntered
-
-    private void registrationLinkMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrationLinkMouseExited
-        // Remove underline when mouse leaves
-        registrationLink.setFont(font);
-    }//GEN-LAST:event_registrationLinkMouseExited
 
     private void emailInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailInputActionPerformed
 
@@ -229,23 +200,19 @@ public class LoginForm extends javax.swing.JFrame {
         if (userObject.getRole().equals("admin")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new AdminForm(userObject); // Should pass in userObject
-            System.out.println(userObject);
+            new AdminForm(userObject);
         } else if (userObject.getRole().equals("customer")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new CustomerForm(userObject); // Should pass in userObject
-            System.out.println(userObject);
         } else if (userObject.getRole().equals("runner")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             new RunnerForm(userObject);
-            System.out.println(userObject);
         } else if (userObject.getRole().equals("vendor")) {
             JOptionPane.showMessageDialog(this, "Login success! \nClick OK to continue", "Success", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new VendorForm(); // Should pass in userObject
-            System.out.println(userObject);
+            new VendorForm(userObject);
         }
     }//GEN-LAST:event_signInBtnActionPerformed
 
@@ -254,6 +221,16 @@ public class LoginForm extends javax.swing.JFrame {
         emailInput.setText("");
         passwordInput.setText("");
     }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void showPasswordJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPasswordJCheckBoxActionPerformed
+        if (showPasswordJCheckBox.isSelected()) {
+            // If the checkbox is checked, show the password
+            passwordInput.setEchoChar((char) 0); // Display characters as is (no masking)
+        } else {
+            // If the checkbox is unchecked, hide the password
+            passwordInput.setEchoChar('*'); // Show password as asterisks (masked)
+        }
+    }//GEN-LAST:event_showPasswordJCheckBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -317,7 +294,7 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField passwordInput;
     private javax.swing.JLabel passwordLabel;
-    private javax.swing.JLabel registrationLink;
+    private javax.swing.JCheckBox showPasswordJCheckBox;
     private javax.swing.JButton signInBtn;
     // End of variables declaration//GEN-END:variables
 }

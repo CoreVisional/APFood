@@ -18,7 +18,7 @@ public class Order extends BaseModel {
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
     public Order() {
-        
+
     }
 
     public Order(int userId, int menuId, int quantity, String remarks, String mode, String deliveryLocation) {
@@ -45,6 +45,7 @@ public class Order extends BaseModel {
         this.discountAvailable = discountAvailable;
     }
 
+
     public int getOrderId() {
         return orderId;
     }
@@ -68,7 +69,7 @@ public class Order extends BaseModel {
     public void setMenuId(int menuId) {
         this.menuId = menuId;
     }
-    
+
     public String getVendorName() {
         return vendorName;
     }

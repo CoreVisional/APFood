@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
  *
  * @author Alex
  */
-public class ReviewService {
+public class FeedbackService {
     
     private final ReviewDao reviewDao;
     private final UserDao userDao;
     private final UserService userService;
     
-    public ReviewService(ReviewDao reviewDao, UserDao userDao, UserService userService) {
+    public FeedbackService(ReviewDao reviewDao, UserDao userDao, UserService userService) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.userService = userService;
@@ -33,7 +33,7 @@ public class ReviewService {
 
         return allReviews.stream()
             .filter(review -> {
-                String customerId = userDao.getCustomerId(String.valueOf(review.getOrderId()), vendorName);
+                String customerId = userDao.getUserId(String.valueOf(review.getOrderId()), vendorName);
                 return userService.isCustomer(Integer.parseInt(customerId));
             })
             .collect(Collectors.toList());

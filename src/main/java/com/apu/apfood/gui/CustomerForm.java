@@ -29,7 +29,7 @@ import com.apu.apfood.db.models.User;
 import com.apu.apfood.helpers.TableHelper;
 import com.apu.apfood.services.NotificationService;
 import com.apu.apfood.services.OrderService;
-import com.apu.apfood.services.ReviewService;
+import com.apu.apfood.services.FeedbackService;
 import com.apu.apfood.services.SubscriptionService;
 import com.apu.apfood.services.TransactionService;
 import com.apu.apfood.services.UserService;
@@ -93,7 +93,8 @@ public class CustomerForm extends javax.swing.JFrame {
     NotificationService notificationService = new NotificationService(notificationDao);
     TransactionService transactionService = new TransactionService(transactionDao);
     SubscriptionService subscriptionService = new SubscriptionService(subscriptionDao, transactionDao);
-    ReviewService reviewService = new ReviewService(reviewDao, userDao, userService);
+    FeedbackService reviewService = new FeedbackService(reviewDao, userDao, userService);
+//    ReviewService reviewService = new ReviewService(reviewDao, userDao, userService);
     OrderService orderService = new OrderService(orderDao, vendorService, subscriptionService, notificationService);
     
     // Instantiate helpers classes
@@ -117,6 +118,8 @@ public class CustomerForm extends javax.swing.JFrame {
         this.loggedInUser = user;
         initComponents();
         initCustomComponents();
+        
+        
     }
 
     private void initCustomComponents () {
@@ -458,6 +461,11 @@ public class CustomerForm extends javax.swing.JFrame {
         subscriptionsSidebarBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 subscriptionsSidebarBtnMousePressed(evt);
+            }
+        });
+        subscriptionsSidebarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscriptionsSidebarBtnActionPerformed(evt);
             }
         });
         jPanel3.add(subscriptionsSidebarBtn);
@@ -3076,7 +3084,7 @@ public class CustomerForm extends javax.swing.JFrame {
         List<Map<String, String>> processedReviews = new ArrayList<>();
 
         for (Review review : reviews) {
-            String customerId = userDao.getCustomerId(String.valueOf(review.getOrderId()), vendorName);
+            String customerId = userDao.getUserId(String.valueOf(review.getOrderId()), vendorName);
             String customerName = userDao.getUserById(Integer.parseInt(customerId)).getName();
 
             Map<String, String> reviewData = new HashMap<>();
@@ -3149,6 +3157,9 @@ public class CustomerForm extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, scrollPane, selectedVendorName + " Reviews", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_viewReviewsFromMenuBtnMousePressed
 
+    private void subscriptionsSidebarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionsSidebarBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_subscriptionsSidebarBtnActionPerformed
     private void topUpPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topUpPanelMousePressed
         String topUpAmountStr = JOptionPane.showInputDialog(this, "Enter the amount to top up:", "Credit Top-Up Request", JOptionPane.PLAIN_MESSAGE);
 

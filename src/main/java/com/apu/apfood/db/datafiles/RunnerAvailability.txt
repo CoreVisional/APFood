@@ -1,3 +1,3 @@
 id| deliveryRunnerId| status
-1| 1| Available
-2| 5| Available
+1| 5| Available
+2| 6| Available
