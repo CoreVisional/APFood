@@ -3,6 +3,7 @@ package com.apu.apfood.services;
 import com.apu.apfood.db.dao.SubscriptionDao;
 import com.apu.apfood.db.dao.TransactionDao;
 import com.apu.apfood.db.models.Subscription;
+import com.apu.apfood.db.models.Transaction;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +31,10 @@ public class SubscriptionService {
             Subscription subscription = new Subscription(userId, subscriptionStartDate, subscriptionEndDate);
             subscriptionDao.add(subscription);
 
-            transactionDao.writeTransaction(String.valueOf(userId), "-4", "Subscription");
+            double subscriptionFee = -4.00;
+            Transaction subscriptionTransaction = new Transaction(userId, subscriptionFee, "Subscription");
+
+            transactionDao.add(subscriptionTransaction);
         }
     }
     
