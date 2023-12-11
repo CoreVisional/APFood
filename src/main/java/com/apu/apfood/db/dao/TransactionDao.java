@@ -35,8 +35,8 @@ public class TransactionDao extends APFoodDao<Transaction> {
     protected String serialize(Transaction transaction) {
         return transaction.getUserId() + "| " +
                transaction.getAmount() + "| " +
-               transaction.getTransactionOn() + "| " +
-               transaction.getTransactionAt() + "| " +
+               transaction.getTransactionDate()+ "| " +
+               transaction.getTransactionTime()+ "| " +
                transaction.getRemarks() + "\n";
     }
     
