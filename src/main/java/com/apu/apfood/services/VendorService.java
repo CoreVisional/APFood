@@ -422,7 +422,7 @@ public class VendorService {
                         totalPrice += fee;
                     }
 
-                    transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Refund for [orderid: " + String.valueOf(orderId) + "]");
+                    transactionDao.writeTransaction(userId, String.valueOf(totalPrice), "Order Declined");
                 }
             }
         } else {
