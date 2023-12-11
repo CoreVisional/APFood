@@ -2406,8 +2406,8 @@ public class CustomerForm extends javax.swing.JFrame {
             .filter(transaction -> transaction.getUserId() == loggedInUser.getId())
             .map(transaction -> new Object[]{
                 String.format("RM %.2f", transaction.getAmount()),
-                transaction.getTransactionOn(),
-                transaction.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")),
+                transaction.getTransactionDate(),
+                transaction.getTransactionTime().format(DateTimeFormatter.ofPattern("HH:mm a")),
                 transaction.getRemarks(),
                 transaction.getRemarks().equals("Top up") ? "Top Up Receipt Available to View" : ""
             })
@@ -2830,8 +2830,8 @@ public class CustomerForm extends javax.swing.JFrame {
         String receiptContent = String.format(
             "Top-up for: %s\nTop-up by: %s\nAmount: RM %.2f\nDate: %s\nTime: %s\nRemarks: %s",
             userName, adminName, transaction.getAmount(), 
-            transaction.getTransactionOn(), 
-            transaction.getTransactionAt().format(DateTimeFormatter.ofPattern("HH:mm a")),
+            transaction.getTransactionDate(), 
+            transaction.getTransactionTime().format(DateTimeFormatter.ofPattern("HH:mm a")),
             transaction.getRemarks()
         );
 
@@ -3035,12 +3035,24 @@ public class CustomerForm extends javax.swing.JFrame {
     }
     
     private void subscribeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscribeBtnActionPerformed
+        final double subscriptionFee = 4.00;
+
+        if (!transactionService.hasSufficientBalance(loggedInUser.getId(), subscriptionFee)) {
+            JOptionPane.showMessageDialog(this, "Insufficient credit balance to perform this operation.", "Insufficient Balance", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         if ("Subscribe".equals(subscribeBtn.getText()) || "Renew Subscription".equals(subscribeBtn.getText())) {
             subscriptionService.addSubscription(loggedInUser.getId());
             JOptionPane.showMessageDialog(this, "Subscription successful. Enjoy your benefits!", "Subscription", JOptionPane.INFORMATION_MESSAGE);
             updateCreditBalanceDisplay();
+
+            // Update the subscription status
+            isUserSubscribed = subscriptionService.isUserSubscribed(loggedInUser.getId());
         }
-        updateSubscriptionButton(); // Update the button after the action
+
+        updateSubscriptionButton();
+        updateSubscriptionStatusDisplay();
     }//GEN-LAST:event_subscribeBtnActionPerformed
 
     private List<Map<String, String>> fetchVendorReviews(String vendorName) {
