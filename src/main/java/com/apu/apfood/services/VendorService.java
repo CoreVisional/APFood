@@ -68,6 +68,7 @@ public class VendorService {
     public VendorService(User vendor) {
         this.vendor = vendor;
         this.vendorName = vendorDao.getVendorName(vendor.getId());
+        this.reviewDao = new ReviewDao(vendorName);
     }
 
     public VendorService() {
@@ -231,7 +232,8 @@ public class VendorService {
                 OrderDetails.getOrderTime().toString().split("\\.")[0],
                 OrderDetails.getMode(),
                 review.getRating(),
-                review.getFeedback()
+                review.getFeedback(),
+                OrderDetails.getOrderStatus()
             };
         };
         tableHelper.populateTable(new ArrayList<>(ordersMap.values()), orderHistoryTable, rowMapper, false);
