@@ -2748,8 +2748,19 @@ public class CustomerForm extends javax.swing.JFrame {
                        .append("Grand Total: RM ").append(String.format("%.2f", grandTotal));
 
         // Display the receipt
+        Font receiptFont = new Font("Arial", Font.PLAIN, 14);
+        Color backgroundColor = new Color(235, 235, 235); // Light gray
+        Color textColor = new Color(50, 50, 50); // Dark gray
+
         JTextArea textArea = new JTextArea(receiptContent.toString());
+        textArea.setFont(receiptFont);
+        textArea.setForeground(textColor); // Set text color
+        textArea.setBackground(backgroundColor); // Set background color
         textArea.setEditable(false);
+
+        // Improve spacing
+        textArea.setMargin(new Insets(10, 10, 10, 10)); // Set margin for text area
+
         JScrollPane scrollPane = new JScrollPane(textArea);
         JOptionPane.showMessageDialog(this, scrollPane, "Order Receipt", JOptionPane.INFORMATION_MESSAGE);
     }
