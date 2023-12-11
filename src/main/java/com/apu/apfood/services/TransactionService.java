@@ -17,8 +17,8 @@ public class TransactionService {
         this.transactionDao = transactionDao;
     }
     
-    public void addTransaction(int userId, double amount, String remark) {       
-        Transaction transaction = new Transaction(userId, amount, remark);
+    public void addTransaction(int userId, double amount, String remarks) {       
+        Transaction transaction = new Transaction(userId, amount, remarks);
         transactionDao.add(transaction);
     }
     
@@ -46,9 +46,9 @@ public class TransactionService {
         return balance >= amount;
     }
     
-    public void processRefund(int userId, double amount, String remark) {
+    public void processRefund(int userId, double amount, String remarks) {
         if (amount > 0) {
-            Transaction refundTransaction = new Transaction(userId, amount, remark);
+            Transaction refundTransaction = new Transaction(userId, amount, remarks);
             transactionDao.add(refundTransaction);
         }
     }
