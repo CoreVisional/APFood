@@ -51,20 +51,20 @@ public class Transaction extends BaseModel {
         this.amount = amount;
     }
 
-    public LocalDate getTransactionOn() {
+    public LocalDate getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionOn(LocalDate transactionOn) {
-        this.transactionDate = transactionOn;
+    public void setTransactionDate(LocalDate transactionDate) {
+        this.transactionDate = transactionDate;
     }
 
-    public LocalTime getTransactionAt() {
+    public LocalTime getTransactionTime() {
         return transactionTime;
     }
 
-    public void setTransactionAt(LocalTime transactionAt) {
-        this.transactionTime = transactionAt;
+    public void setTransactionTime(LocalTime transactionTime) {
+        this.transactionTime = transactionTime;
     }
 
     public String getRemarks() {
