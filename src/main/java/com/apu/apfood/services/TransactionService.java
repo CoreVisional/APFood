@@ -40,10 +40,10 @@ public class TransactionService {
         return df.format(totalAmount);
     }
     
-    public boolean hasSufficientBalance(int userId, double orderAmount) {
+    public boolean hasSufficientBalance(int userId, double amount) {
         String balanceStr = getTotalBalance(String.valueOf(userId));
         double balance = Double.parseDouble(balanceStr);
-        return balance >= orderAmount;
+        return balance >= amount;
     }
     
     public void processRefund(int userId, double amount, String remark) {
