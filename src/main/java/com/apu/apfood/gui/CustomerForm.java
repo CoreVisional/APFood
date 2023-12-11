@@ -2673,10 +2673,7 @@ public class CustomerForm extends javax.swing.JFrame {
 
         selectedVendorName = (String) orderHistoryTbl.getValueAt(selectedRow, 0);
         LocalDate orderDate = LocalDate.parse((String) orderHistoryTbl.getValueAt(selectedRow, 1));
-
-        // Adjusted DateTimeFormatter for 24-hour format without AM/PM
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm a");
-        LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2), timeFormatter);
+        LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2));
 
         List<Order> orderDetails = orderService.getOrderDetails(orderId, selectedVendorName, orderDate, orderTime);
 
