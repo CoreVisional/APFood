@@ -1,8 +1,9 @@
 id| userId| name| email| password| role
-1| 1| Adam Smith| adam@gmail.com| adamSmith@123| admin
-2| 2| Jane Doe| jane@gmail.com| janedoe@qwe| customer
-3| 3| Jack Kwan| jack@picante.apu.edu.my| jack@pass123| vendor
-4| 4| Howard Lim| picante@picante.apu.edu.my| HowardLim@qqqq| vendor
-5| 5| Alice Johnson| alice@gmail.com| alicejon| runner
-6| 6| Gil Bin| gil@gmail.com| GilBin@runner789| runner
-7| 7| Columbus| columbus@gmail.com| columbuscool| admin
+1| 1| SYSTEM| system@system.com| password| admin
+2| 2| Jane Doe| jane.doe@gmail.com| mydearjane123| admin
+3| 3| Adam Smith| adam.smith@gmail.com| adamSmith@123| customer
+4| 4| Jack Kwan| jack@picante.apu.edu.my| jack@pass123| vendor
+5| 5| Howard Lim| howard@modesto.apu.edu.my| HowardLim@qqqq| vendor
+6| 6| Tyler Fan| tyler.fan@bigrips.apu.edu.my| TylerStonk123| vendor
+7| 7| Alice Johnson| alice@gmail.com| alicejon| runner
+8| 8| Gil Bin| gil@gmail.com| GilBin@runner789| runner
