@@ -756,6 +756,7 @@
                                         <Column editable="true" title="Status" type="java.lang.String"/>
                                       </Table>
                                     </Property>
+                                    <Property name="rowHeight" type="int" value="30"/>
                                     <Property name="showGrid" type="boolean" value="true"/>
                                   </Properties>
                                 </Component>

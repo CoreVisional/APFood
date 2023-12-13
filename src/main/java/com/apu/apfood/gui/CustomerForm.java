@@ -733,6 +733,7 @@ public class CustomerForm extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        orderHistoryTbl.setRowHeight(30);
         orderHistoryTbl.setShowGrid(true);
         jScrollPane4.setViewportView(orderHistoryTbl);
 
@@ -2189,6 +2190,11 @@ public class CustomerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_addToCartBtnActionPerformed
 
     private void browseMenuBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_browseMenuBtnMousePressed
+        
+        cartItems.clear();
+        updateOrderCartTable();
+        updateCartUIElements();  
+        
         int selectedRow = vendorsTable.getSelectedRow();
         if (selectedRow >= 0) {
 
@@ -2555,18 +2561,17 @@ public class CustomerForm extends javax.swing.JFrame {
     private void historyBtnMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_historyBtnMousePressed
         guiHelper.panelSwitcher(historyBtn, contentPanel, "historyPanel");
         setTitle("History - APFood");
-        
-        int userId = 1; // User ID for demonstration
+
         List<OrderStatus> statuses = Arrays.asList(OrderStatus.READY, OrderStatus.DECLINED, OrderStatus.CANCELLED);
 
-        Map<String, List<Order>> groupedOrders = orderService.getUserOrdersGrouped(userId, statuses);
+        Map<String, List<Order>> groupedOrders = orderService.getUserOrdersGrouped(loggedInUser.getId(), statuses);
         List<Object[]> tableData = new ArrayList<>();
 
         for (Map.Entry<String, List<Order>> entry : groupedOrders.entrySet()) {
             List<Order> orders = entry.getValue();
             if (!orders.isEmpty()) {
                 Order representativeOrder = orders.get(0); // // A representative order for common details
-                double totalAmount = orderService.calculateTotalAmountForGroupedOrders(orders, representativeOrder.getVendorName(), userId);
+                double totalAmount = orderService.calculateTotalAmountForGroupedOrders(orders, representativeOrder.getVendorName(), loggedInUser.getId());
                 Object[] row = formatOrderTable(representativeOrder, totalAmount);
                 tableData.add(row);
             }
@@ -2657,7 +2662,7 @@ public class CustomerForm extends javax.swing.JFrame {
         LocalDate orderDate = LocalDate.parse((String) orderHistoryTbl.getValueAt(selectedRow, 1));
         LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2));
         
-        List<Order> orderDetails = orderService.getOrderDetails(orderId, vendorName, orderDate, orderTime);
+        List<Order> orderDetails = orderService.getOrderDetails(loggedInUser.getId(), orderId, vendorName, orderDate, orderTime);
         showOrderDetailsPopup(orderDetails, vendorName);
     }//GEN-LAST:event_viewPastOrderDetailsBtnActionPerformed
 
@@ -2675,7 +2680,7 @@ public class CustomerForm extends javax.swing.JFrame {
         LocalDate orderDate = LocalDate.parse((String) orderHistoryTbl.getValueAt(selectedRow, 1));
         LocalTime orderTime = LocalTime.parse((String) orderHistoryTbl.getValueAt(selectedRow, 2));
 
-        List<Order> orderDetails = orderService.getOrderDetails(orderId, selectedVendorName, orderDate, orderTime);
+        List<Order> orderDetails = orderService.getOrderDetails(loggedInUser.getId(), orderId, selectedVendorName, orderDate, orderTime);
 
         loadVendorMenu(selectedVendorName);
         guiHelper.panelSwitcher(reorderBtn, contentPanel, "vendorMenuPanel");

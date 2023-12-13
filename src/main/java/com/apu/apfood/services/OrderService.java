@@ -115,8 +115,8 @@ public class OrderService {
         }
     }
     
-    public List<Order> getOrderDetails(int orderId, String vendorName, LocalDate orderDate, LocalTime orderTime) {
-        return orderDao.getUserOrders(1, Arrays.asList(OrderStatus.values())).stream()
+    public List<Order> getOrderDetails(int userId, int orderId, String vendorName, LocalDate orderDate, LocalTime orderTime) {
+        return orderDao.getUserOrders(userId, Arrays.asList(OrderStatus.values())).stream()
             .filter(order -> order.getOrderId() == orderId &&
                              order.getVendorName().equals(vendorName) &&
                              order.getOrderId() == orderId &&
